@@ -1,7 +1,5 @@
-const Home = () => {
-  return (
-    <div>Home</div>
-  )
-}
+import { redirect } from "next/navigation"
 
-export default Home
+export default function Home() {
+  redirect("/design-system")
+}
