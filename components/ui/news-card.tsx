@@ -8,9 +8,11 @@ export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
   subtitle?: string
   category?: string
   location?: string
-  timeAgo: string
+  timeAgo?: string
   readTime?: string
   imageUrl?: string
+  variant?: "horizontal" | "vertical"
+  sourcesCount?: number
   bias?: {
     left: number
     center: number
@@ -19,18 +21,42 @@ export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
-  ({ className, title, subtitle, category, location, timeAgo, readTime, imageUrl, bias, ...props }, ref) => {
+  (
+    {
+      className,
+      title,
+      subtitle,
+      category,
+      location,
+      timeAgo,
+      readTime,
+      imageUrl,
+      variant = "horizontal",
+      sourcesCount,
+      bias,
+      ...props
+    },
+    ref
+  ) => {
+    const isVertical = variant === "vertical"
+
     return (
       <div
         ref={ref}
         className={cn(
-          "flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-card text-card-foreground shadow-sm hover:shadow-md transition-all sm:flex-row w-full max-w-2xl",
+          "flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-card text-card-foreground shadow-sm hover:shadow-md transition-all w-full",
+          isVertical ? "" : "sm:flex-row max-w-2xl",
           className
         )}
         {...props}
       >
-        {/* Left Side: Image */}
-        <div className="relative h-40 w-full shrink-0 bg-[var(--surface)] sm:h-auto sm:w-[35%]">
+        {/* Image Container */}
+        <div
+          className={cn(
+            "relative shrink-0 bg-[var(--surface)] w-full",
+            isVertical ? "h-52" : "h-40 sm:h-auto sm:w-[35%]"
+          )}
+        >
           {imageUrl ? (
             <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
           ) : (
@@ -44,8 +70,8 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
           </button>
         </div>
 
-        {/* Right Side: Content */}
-        <div className="flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0">
+        {/* Content Container */}
+        <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0")}>
           <div className="space-y-2">
             {/* Category / Location */}
             {(category || location) && (
@@ -83,15 +109,23 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
 
           {/* Footer Metadata */}
           <div className="flex items-center gap-4 text-caption font-medium text-[var(--text-secondary)]">
-            <div className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5" />
-              <span>{timeAgo}</span>
-            </div>
-            {readTime && (
-              <div className="flex items-center gap-1">
-                <Bookmark className="h-3.5 w-3.5" />
-                <span>{readTime}</span>
-              </div>
+            {sourcesCount !== undefined ? (
+              <span className="text-[12px] font-semibold text-text-secondary">{sourcesCount} sources</span>
+            ) : (
+              <>
+                {timeAgo && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5" />
+                    <span>{timeAgo}</span>
+                  </div>
+                )}
+                {readTime && (
+                  <div className="flex items-center gap-1">
+                    <Bookmark className="h-3.5 w-3.5" />
+                    <span>{readTime}</span>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
