@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -23,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans bg-[#F6F6F6] text-[#0D0D0F] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]">
-        <Header />
-        <div className="flex-1">{children}</div>
-        <Footer />
+        <ClerkProvider dynamic appearance={{ theme: shadcn }}>
+          <Header />
+          <div className="flex-1">{children}</div>
+          <Footer />
+        </ClerkProvider>
       </body>
     </html>
   );

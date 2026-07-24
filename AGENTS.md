@@ -16,7 +16,7 @@ This version has breaking changes APIs, conventions, and file structure may all 
 
 # 1. Product
 
-PIXCA collects real news articles from configured sources, analyzes them with AI, stores them in Supabase, and displays reader-friendly sentiment and framing insights.
+PIXCA collects real news articles from configured sources, analyzes them with AI, stores them in Supabase, and displays reader-friendly sentiment and framing insights. When the user provides design references, screenshots, images, or assets, inspect them before implementation. If they contain the previous product name "Skew", replace it with "Pixca".
 
 Build only:
 
@@ -40,11 +40,11 @@ Do not overbuild.
 
 For every implementation request:
 
-1. Read `AGENTS.md`.
+1. Read `AGENTS.md` and follow its instructions as the highest priority project guidance. `AGENTS.md` is the source of truth for implementation decisions. User requests may override these rules only when the user explicitly requests a deviation, explains why, and the relevant rule is intentionally changed.
 2. Read the skills explicitly mentioned by the user.
 3. Read clearly needed supporting skills from the approved skill list.
-4. Inspect relevant code.
-5. Ask a focused question only if the task has meaningful ambiguity.
+4. Inspect only the code, files, and dependencies relevant to the approved prompt.
+5. Ask a focused question only if the task has meaningful ambiguity. Do not ask questions when reasonable assumptions can be made without affecting the implementation outcome.
 6. Create a detailed prompt file in `prompts/`.
 7. Ask: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
 8. On approval, re-read the approved prompt file in prompts/ and implement it strictly. Implement only after user approval.
@@ -52,6 +52,12 @@ For every implementation request:
 10. Share exact steps to test or run the completed feature.
 
 Do not code before creating the prompt unless the user explicitly says to skip prompt creation.
+
+Design references and assets
+
+Only inspect screenshots, images, Figma files, uploaded assets, or external design references when they are actually provided by the user or exist in the repository.
+
+Do not invent, assume, or request design references unless they are required to complete the task.
 
 ---
 
@@ -100,7 +106,25 @@ Each prompt must include:
 - checks to run
 - exact manual test steps expected after implementation
 
-For UI tasks, also include visual interpretation, layout, typography, spacing, colors, responsiveness, and pixel-perfect expectations.
+For UI tasks, analyze existing design patterns, component usage, visual hierarchy, and interaction behavior before implementation. Include visual interpretation, layout structure, typography, spacing, colors, responsiveness, accessibility, and pixel-perfect expectations in the implementation prompt. Avoid generic layouts and preserve the existing design language.
+
+If screenshots, images, Figma files, design references, or assets are provided by the user or exist in the repository:
+
+- inspect visual hierarchy
+- inspect typography
+- inspect spacing system
+- inspect colors
+- inspect component patterns
+- inspect responsive behavior
+- inspect interactions
+- compare against existing components
+
+If no references are provided:
+
+- follow existing project design patterns
+- reuse existing components and tokens
+- do not create a new visual language
+- do not invent design references
 
 ---
 

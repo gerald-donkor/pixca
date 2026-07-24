@@ -6,6 +6,7 @@ import {
   MoreHorizontal,
   ChevronLeft
 } from "lucide-react"
+import { auth } from "@clerk/nextjs/server"
 import { Button } from "@/components/ui/button"
 import { BiasMeter } from "@/components/ui/bias-meter"
 import { NewsCard } from "@/components/ui/news-card"
@@ -92,7 +93,9 @@ function SidebarProgressBar({
   )
 }
 
-export default function ArticleDetailsPage() {
+export default async function ArticleDetailsPage() {
+  await auth.protect();
+
   return (
     <div className="min-h-screen bg-white text-[#0D0D0F] pb-16">
       {/* Top Back Navigation Bar */}

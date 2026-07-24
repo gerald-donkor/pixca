@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Menu, MapPin, Globe } from "lucide-react"
+import { Show, UserButton } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
@@ -70,9 +71,16 @@ export function Header() {
             <Button variant="default" className="bg-[#0D0D0F] text-white hover:bg-zinc-800 font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-4 rounded-md">
               Subscribe
             </Button>
-            <Button variant="outline" className="border-[var(--border)] text-[#0D0D0F] hover:bg-zinc-50 font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-4 rounded-md">
-              Login
-            </Button>
+            <Show when="signed-out">
+              <Link href="/sign-in">
+                <Button variant="outline" className="border-[var(--border)] text-[#0D0D0F] hover:bg-zinc-50 font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-4 rounded-md">
+                  Sign In
+                </Button>
+              </Link>
+            </Show>
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
           </div>
         </div>
       </header>
