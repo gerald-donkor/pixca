@@ -5,6 +5,23 @@ export type SentimentLabel = "positive" | "neutral" | "negative";
 export type BiasLabel = "left" | "center" | "right" | "mixed" | "unclear";
 export type LogLevel = "info" | "warn" | "error";
 
+/** One row returned by `public.match_related_articles` (schema.sql section 7). */
+export type RelatedArticleRow = {
+  article_id: string;
+  title: string;
+  image_url: string;
+  published_at: string;
+  source_name: string;
+  sentiment_label: SentimentLabel;
+  bias_label: BiasLabel;
+  left_percentage: number;
+  center_percentage: number;
+  right_percentage: number;
+  confidence: number;
+  /** Cosine similarity, `1 - (embedding <=> query)`. Not displayed in the UI. */
+  similarity: number;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -88,6 +105,11 @@ export type Database = {
           disclaimer: string;
           model: string;
           created_at: string;
+          /**
+           * PostgREST serializes a `vector` column as its text literal
+           * (`"[0.1,0.2,...]"`), never as a JSON array.
+           */
+          embedding: string | null;
         };
         Insert: {
           id?: string;
@@ -106,6 +128,8 @@ export type Database = {
           disclaimer: string;
           model: string;
           created_at?: string;
+          /** Accepts the same text literal on write; `number[]` is normalized first. */
+          embedding?: number[] | string | null;
         };
         Update: Partial<Database["public"]["Tables"]["article_analyses"]["Insert"]>;
         Relationships: [
@@ -196,7 +220,18 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      /** Section 20 related articles; cosine ordering PostgREST cannot express. */
+      match_related_articles: {
+        Args: {
+          p_article_id: string;
+          /** `vector` text literal, e.g. `"[0.1,0.2,...]"`. */
+          p_embedding: string;
+          p_match_count: number;
+        };
+        Returns: RelatedArticleRow[];
+      };
+    };
     Enums: Record<string, never>;
   };
 };

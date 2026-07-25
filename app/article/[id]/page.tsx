@@ -10,7 +10,9 @@ import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { BiasMeter } from "@/components/ui/bias-meter"
-import { getArticleWithAnalysis } from "@/lib/supabase/queries/articles"
+import { RelatedArticles } from "@/components/ui/related-articles"
+import { getArticleWithAnalysis, getRelatedArticles } from "@/lib/supabase/queries/articles"
+import type { RelatedArticleRow } from "@/lib/supabase/types"
 import {
   biasLabelColorClass,
   sentimentLabelColorClass,
@@ -48,6 +50,26 @@ function SidebarProgressBar({
   )
 }
 
+/**
+ * Section 20: nothing to look up until the article has an embedding, and a
+ * failed similarity query must never take the article page down with it.
+ */
+async function loadRelatedArticles(
+  articleId: string,
+  embedding: string | null
+): Promise<RelatedArticleRow[]> {
+  if (embedding === null) {
+    return []
+  }
+
+  try {
+    return await getRelatedArticles(articleId, embedding)
+  } catch (error) {
+    console.error(`[article] related articles failed for ${articleId}:`, error)
+    return []
+  }
+}
+
 export default async function ArticleDetailsPage({
   params,
 }: {
@@ -65,6 +87,7 @@ export default async function ArticleDetailsPage({
   const analysis = article.analysis
   const framing = analysis ? strongestFramingPercentage(analysis) : null
   const paragraphs = splitIntoParagraphs(article.raw_text)
+  const related = await loadRelatedArticles(article.id, analysis?.embedding ?? null)
 
   return (
     <div className="min-h-screen bg-white text-[#0D0D0F] pb-16">
@@ -175,6 +198,9 @@ export default async function ArticleDetailsPage({
                 </Button>
               </div>
             </div>
+
+            {/* Related Articles by pgvector cosine similarity */}
+            <RelatedArticles articles={related} />
 
           </div>
 

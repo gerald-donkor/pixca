@@ -11,19 +11,37 @@ import { toMessage } from "@/lib/pipeline/run-logger";
 const PREFIX = "[analyze]";
 
 export const analysisLog = {
-  started(model: string, batchSize: number, limit: number | null): void {
+  started(
+    model: string,
+    embeddingModel: string,
+    batchSize: number,
+    limit: number | null
+  ): void {
     console.info(
-      `${PREFIX} analysis started — model ${model}, batch size ${batchSize}, ` +
-        `limit ${limit === null ? "none (all pending)" : limit}`
+      `${PREFIX} analysis started — model ${model}, embeddings ${embeddingModel}, ` +
+        `batch size ${batchSize}, limit ${limit === null ? "none (all pending)" : limit}`
     );
   },
 
-  batchStarted(batchNumber: number, count: number): void {
-    console.info(`${PREFIX} batch ${batchNumber} — ${count} pending article(s)`);
+  batchStarted(batchNumber: number, count: number, embedOnly: number): void {
+    console.info(
+      `${PREFIX} batch ${batchNumber} — ${count} pending article(s)` +
+        (embedOnly > 0 ? ` (${embedOnly} embedding backfill)` : "")
+    );
   },
 
   articleStarted(articleId: string, title: string): void {
     console.info(`${PREFIX} analyzing ${articleId} — "${truncate(title, 90)}"`);
+  },
+
+  articleEmbedStarted(articleId: string, title: string): void {
+    console.info(
+      `${PREFIX} embedding only (analysis already saved) ${articleId} — "${truncate(title, 90)}"`
+    );
+  },
+
+  articleEmbedded(articleId: string, dimensions: number): void {
+    console.info(`${PREFIX} embedded ${articleId} — ${dimensions} dimensions`);
   },
 
   articleAnalyzed(articleId: string, label: string, confidence: number): void {
@@ -36,9 +54,28 @@ export const analysisLog = {
     console.warn(`${PREFIX} failed ${articleId} (${reason}): ${message}`);
   },
 
-  batchFinished(batchNumber: number, analyzed: number, failed: number): void {
+  batchFinished(
+    batchNumber: number,
+    analyzed: number,
+    embedded: number,
+    failed: number
+  ): void {
     console.info(
-      `${PREFIX} batch ${batchNumber} done — ${analyzed} analyzed, ${failed} failed`
+      `${PREFIX} batch ${batchNumber} done — ${analyzed} analyzed, ` +
+        `${embedded} embedded, ${failed} failed`
+    );
+  },
+
+  rateLimited(model: string): void {
+    console.warn(
+      `${PREFIX} rate limited by ${model} — stopping the run early. ` +
+        "Remaining articles stay pending and are picked up by the next run."
+    );
+  },
+
+  timeBudgetReached(budgetMs: number): void {
+    console.warn(
+      `${PREFIX} stopping — ${budgetMs}ms run budget reached; remaining articles stay pending`
     );
   },
 
@@ -53,7 +90,12 @@ export const analysisLog = {
   },
 
   completed(summary: AnalysisRunSummary): void {
-    console.info(`${PREFIX} analysis ${summary.status} in ${summary.durationMs}ms`);
+    console.info(
+      `${PREFIX} analysis ${summary.status} in ${summary.durationMs}ms — ` +
+        `${summary.articlesAnalyzed} analyzed, ${summary.articlesEmbedded} embedded, ` +
+        `${summary.articlesSkipped} skipped, ${summary.articlesFailed} failed` +
+        (summary.stoppedReason === null ? "" : ` (stopped early: ${summary.stoppedReason})`)
+    );
     console.info(`${PREFIX} summary`, summary);
   },
 };

@@ -51,23 +51,35 @@ export type AnalysisFailureCounts = Record<string, number>;
 export type AnalysisItemResult = {
   articleId: string;
   title: string;
-  status: "analyzed" | "failed";
-  /** Populated when the article failed; null when it was analyzed. */
+  /** `embedded` means an existing analysis was backfilled with an embedding. */
+  status: "analyzed" | "embedded" | "failed";
+  /** Populated when the article failed; null otherwise. */
   reason: string | null;
 };
+
+/**
+ * Why a run ended before all pending articles were attempted. `null` means it
+ * ran to completion — nothing was left to do.
+ */
+export type AnalysisStoppedReason = "rate_limited" | "time_budget" | null;
 
 /** The section 19 analysis run summary object. */
 export type AnalysisRunSummary = {
   status: AnalysisRunStatus;
   model: string;
+  embeddingModel: string;
   articlesPending: number;
   articlesAnalyzed: number;
+  /** Articles that got an embedding this run, including backfilled ones. */
+  articlesEmbedded: number;
   articlesSkipped: number;
   articlesFailed: number;
   batchesRun: number;
   durationMs: number;
   failureReasons: AnalysisFailureCounts;
   articles: AnalysisItemResult[];
+  /** Set when the run stopped early; articles it never attempted stay pending. */
+  stoppedReason: AnalysisStoppedReason;
   /** Populated when the run itself aborted, e.g. the pending query failed. */
   error: string | null;
 };

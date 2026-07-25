@@ -17,6 +17,7 @@ import {
   normalizePercentages,
   type AnalysisOutput,
 } from "@/lib/ai/analysis-schema";
+import { isRateLimitError, toModelErrorMessage } from "@/lib/ai/errors";
 import { ANALYSIS_SYSTEM_PROMPT, buildAnalysisPrompt } from "@/lib/ai/prompt";
 import { ANALYSIS_DISCLAIMER_FALLBACK, ANALYSIS_MODEL_ID } from "@/lib/config/ai";
 import { ANALYSIS_MAX_ATTEMPTS } from "@/lib/config/limits";
@@ -32,16 +33,24 @@ export type AnalyzableArticle = {
 export type AnalysisFailureReason =
   | "invalid_output"
   | "percentages_unusable"
-  | "model_error";
+  | "model_error"
+  | "rate_limited";
 
 export type AnalyzeArticleResult =
   | { ok: true; analysis: ArticleAnalysisInsert }
   | { ok: false; reason: AnalysisFailureReason; message: string };
 
+/** Only an output-shape failure can plausibly be fixed by asking again. */
+const RETRYABLE_REASONS: ReadonlySet<AnalysisFailureReason> = new Set([
+  "invalid_output",
+  "percentages_unusable",
+]);
+
 /**
  * Analyze one article. Invalid model output is retried once
- * (`ANALYSIS_MAX_ATTEMPTS`); after that the article is reported as failed and
- * nothing is saved, so the next run picks it up again.
+ * (`ANALYSIS_MAX_ATTEMPTS`); a rate limit or a transport error is returned on
+ * the first failure so a dead run costs exactly one request per article.
+ * Nothing is saved on failure, so the next run picks the article up again.
  */
 export async function analyzeArticle(
   article: AnalyzableArticle
@@ -60,10 +69,15 @@ export async function analyzeArticle(
     }
 
     lastFailure = attemptResult;
+
+    if (!RETRYABLE_REASONS.has(attemptResult.reason)) {
+      return lastFailure;
+    }
   }
 
   return lastFailure;
 }
+
 
 async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArticleResult> {
   let output: AnalysisOutput;
@@ -78,6 +92,9 @@ async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArtic
         rawText: article.raw_text,
       }),
       output: Output.object({ schema: analysisOutputSchema }),
+      // One attempt = one API request. Retry policy lives in the loop above,
+      // not in two places; the SDK default of 2 silently tripled quota use.
+      maxRetries: 0,
     });
 
     // Re-parse rather than trusting the SDK's own validation, so a provider
@@ -96,10 +113,8 @@ async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArtic
   } catch (error) {
     return {
       ok: false,
-      reason: error instanceof Error && error.name.includes("NoObjectGenerated")
-        ? "invalid_output"
-        : "model_error",
-      message: error instanceof Error ? error.message : "Unknown model error",
+      reason: resolveErrorReason(error),
+      message: toModelErrorMessage(error),
     };
   }
 
@@ -136,6 +151,16 @@ async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArtic
       model: ANALYSIS_MODEL_ID,
     },
   };
+}
+
+function resolveErrorReason(error: unknown): AnalysisFailureReason {
+  if (isRateLimitError(error)) {
+    return "rate_limited";
+  }
+
+  return error instanceof Error && error.name.includes("NoObjectGenerated")
+    ? "invalid_output"
+    : "model_error";
 }
 
 function emptyToNull(value: string | null): string | null {

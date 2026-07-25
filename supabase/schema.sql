@@ -11,8 +11,9 @@
 -- as required for any table in the exposed `public` schema, with zero
 -- policies for `anon` / `authenticated` (default deny).
 --
--- pgvector / article_analyses.embedding is added later (AGENTS.md section 20)
--- after AI analysis is working. Not part of this file.
+-- pgvector / article_analyses.embedding and the related-articles function live
+-- in section 7 at the end of this file (AGENTS.md section 20). They require the
+-- `vector` extension to be enabled in the Dashboard first.
 
 -- Shared trigger function to keep `updated_at` current on row updates.
 create or replace function public.set_updated_at()
@@ -156,3 +157,85 @@ alter table public.oxylabs_schedule_runs enable row level security;
 
 create index oxylabs_schedule_runs_schedule_id_idx on public.oxylabs_schedule_runs (schedule_id);
 create index oxylabs_schedule_runs_pending_idx on public.oxylabs_schedule_runs (result_status, processed);
+
+-- 7. pgvector: article_analyses.embedding + related articles (section 20) ---
+
+-- Prerequisite (one time, by hand): Supabase Dashboard -> Database ->
+-- Extensions -> enable "vector". Supabase installs pgvector into the
+-- `extensions` schema, which is already on the default search_path. If a
+-- statement below fails with `type "vector" does not exist`, qualify it as
+-- `extensions.vector(1536)`.
+--
+-- 1536 dimensions, not the `gemini-embedding-001` default of 3072: the
+-- analysis pipeline passes `outputDimensionality: 1536`, which keeps this
+-- column and the index below stable with no later migration or re-embedding.
+
+alter table public.article_analyses
+  add column if not exists embedding vector(1536);
+
+comment on column public.article_analyses.embedding is
+  'gemini-embedding-001 embedding at outputDimensionality 1536; null until the analysis pipeline embeds the article.';
+
+-- IVFFlat cosine index. `lists = 100` follows pgvector guidance for small
+-- tables; it only approximates, so ordering correctness never depends on it.
+-- Rebuild with a larger `lists` if this table grows by an order of magnitude.
+create index if not exists article_analyses_embedding_idx
+  on public.article_analyses
+  using ivfflat (embedding vector_cosine_ops)
+  with (lists = 100);
+
+-- Related articles by cosine distance. PostgREST cannot express
+-- `order by embedding <=> $1`, so the ordering lives in SQL and the app calls
+-- this with `.rpc()` from the service-role client only.
+create or replace function public.match_related_articles(
+  p_article_id uuid,
+  p_embedding vector(1536),
+  p_match_count int default 5
+)
+returns table (
+  article_id uuid,
+  title text,
+  image_url text,
+  published_at timestamptz,
+  source_name text,
+  sentiment_label text,
+  bias_label text,
+  left_percentage numeric,
+  center_percentage numeric,
+  right_percentage numeric,
+  confidence numeric,
+  similarity double precision
+)
+language sql
+stable
+security invoker
+set search_path = public, extensions
+as $$
+  select
+    a.id,
+    a.title,
+    a.image_url,
+    a.published_at,
+    s.name,
+    an.sentiment_label,
+    an.bias_label,
+    an.left_percentage,
+    an.center_percentage,
+    an.right_percentage,
+    an.confidence,
+    1 - (an.embedding <=> p_embedding) as similarity
+  from public.article_analyses an
+  join public.articles a on a.id = an.article_id
+  join public.sources s on s.id = a.source_id
+  where an.embedding is not null
+    and a.analyzed_at is not null
+    and a.id <> p_article_id
+  order by an.embedding <=> p_embedding
+  limit p_match_count;
+$$;
+
+-- Functions in `public` are executable by every role by default; this one
+-- reads article rows, so only the service-role server code may call it.
+revoke all on function public.match_related_articles(uuid, vector, int) from public;
+revoke all on function public.match_related_articles(uuid, vector, int) from anon, authenticated;
+grant execute on function public.match_related_articles(uuid, vector, int) to service_role;

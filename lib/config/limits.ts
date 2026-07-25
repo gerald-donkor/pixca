@@ -62,11 +62,39 @@ export const MAX_ANALYSIS_BATCH_SIZE = 25;
  */
 export const MAX_ANALYSIS_INPUT_CHARACTERS = 24_000;
 
-/** First attempt plus one retry on invalid model output (section 19). */
+/**
+ * First attempt plus one retry on invalid model output (section 19). This
+ * applies *only* to output-shape failures (`invalid_output`,
+ * `percentages_unusable`) — asking the model again can plausibly fix those.
+ * Transport errors and rate limits are never retried; retrying them just burns
+ * more quota.
+ */
 export const ANALYSIS_MAX_ATTEMPTS = 2;
 
-/** Politeness delay between sequential model calls. */
-export const ANALYSIS_REQUEST_DELAY_MS = 500;
+/**
+ * Delay between sequential model calls. Sized for the measured `gemini-2.5-flash`
+ * free-tier ceiling of 5 requests per minute (60 ÷ 5 = 12s, plus headroom).
+ * Embeddings ride along inside the same per-article slot and need no separate
+ * delay at their 100 RPM budget. Runs are slow by design; the hourly cron is
+ * the intended consumer.
+ */
+export const ANALYSIS_REQUEST_DELAY_MS = 13_000;
+
+/**
+ * Wall-clock budget for one analysis run. Below the analyze route's
+ * `maxDuration = 300` so a long backfill returns a real summary instead of
+ * being killed mid-flight; whatever is left stays pending for the next run.
+ */
+export const MAX_ANALYSIS_RUN_MS = 240_000;
 
 /** Analyzed articles listed on the homepage — matches the 12-card grid. */
 export const HOMEPAGE_ARTICLES_LIMIT = 12;
+
+/**
+ * Article text sent to the embedding model. Smaller than the analysis budget:
+ * embeddings capture topic, and the lead of an article carries it.
+ */
+export const MAX_EMBEDDING_INPUT_CHARACTERS = 8_000;
+
+/** Related articles shown on the details page — section 20 says up to 5. */
+export const RELATED_ARTICLES_LIMIT = 5;
