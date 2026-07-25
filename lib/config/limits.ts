@@ -67,3 +67,6 @@ export const ANALYSIS_MAX_ATTEMPTS = 2;
 
 /** Politeness delay between sequential model calls. */
 export const ANALYSIS_REQUEST_DELAY_MS = 500;
+
+/** Analyzed articles listed on the homepage — matches the 12-card grid. */
+export const HOMEPAGE_ARTICLES_LIMIT = 12;

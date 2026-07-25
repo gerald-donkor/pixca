@@ -1,6 +1,9 @@
 import * as React from "react"
 import { Clock, Bookmark, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { biasLabelColorClass, sentimentLabelColorClass } from "@/lib/ui/analysis-display"
+import { formatConfidence, titleCase } from "@/lib/ui/format"
+import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types"
 import { BiasMeter } from "./bias-meter"
 
 export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -18,6 +21,12 @@ export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
     center: number
     right: number
   }
+  /** Stored-data props. When set they take precedence over category/location. */
+  sourceName?: string
+  publishedLabel?: string
+  sentimentLabel?: SentimentLabel
+  framingLabel?: BiasLabel
+  confidence?: number
 }
 
 export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
@@ -34,11 +43,19 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
       variant = "horizontal",
       sourcesCount,
       bias,
+      sourceName,
+      publishedLabel,
+      sentimentLabel,
+      framingLabel,
+      confidence,
       ...props
     },
     ref
   ) => {
     const isVertical = variant === "vertical"
+    const primaryMeta = sourceName ?? category
+    const secondaryMeta = publishedLabel ?? location
+    const hasAnalysisFooter = sentimentLabel !== undefined || framingLabel !== undefined
 
     return (
       <div
@@ -73,12 +90,12 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
         {/* Content Container */}
         <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0")}>
           <div className="space-y-2">
-            {/* Category / Location */}
-            {(category || location) && (
+            {/* Source / Published date — falls back to category / location */}
+            {(primaryMeta || secondaryMeta) && (
               <div className="flex items-center gap-1.5 text-caption font-semibold text-[var(--text-secondary)]">
-                {category && <span>{category}</span>}
-                {category && location && <span>•</span>}
-                {location && <span>{location}</span>}
+                {primaryMeta && <span>{primaryMeta}</span>}
+                {primaryMeta && secondaryMeta && <span>•</span>}
+                {secondaryMeta && <span>{secondaryMeta}</span>}
               </div>
             )}
 
@@ -108,8 +125,26 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
           )}
 
           {/* Footer Metadata */}
-          <div className="flex items-center gap-4 text-caption font-medium text-[var(--text-secondary)]">
-            {sourcesCount !== undefined ? (
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption font-medium text-[var(--text-secondary)]">
+            {hasAnalysisFooter ? (
+              <>
+                {sentimentLabel && (
+                  <span className={cn("text-[12px] font-semibold", sentimentLabelColorClass(sentimentLabel))}>
+                    {titleCase(sentimentLabel)}
+                  </span>
+                )}
+                {framingLabel && (
+                  <span className={cn("text-[12px] font-semibold", biasLabelColorClass(framingLabel))}>
+                    AI-estimated: {titleCase(framingLabel)}
+                  </span>
+                )}
+                {confidence !== undefined && (
+                  <span className="text-[12px] font-semibold text-text-secondary">
+                    {formatConfidence(confidence)} confidence
+                  </span>
+                )}
+              </>
+            ) : sourcesCount !== undefined ? (
               <span className="text-[12px] font-semibold text-text-secondary">{sourcesCount} sources</span>
             ) : (
               <>
