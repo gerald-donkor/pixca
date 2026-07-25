@@ -24,7 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans bg-[#F6F6F6] text-[#0D0D0F] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]">
+      <body
+        className="min-h-full flex flex-col font-sans bg-[#F6F6F6] text-[#0D0D0F] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]"
+        suppressHydrationWarning
+      >
         <ClerkProvider dynamic appearance={{ theme: shadcn }}>
           <Header />
           <div className="flex-1">{children}</div>

@@ -43,7 +43,7 @@ For every implementation request:
 1. Read `AGENTS.md` and follow its instructions as the highest priority project guidance. `AGENTS.md` is the source of truth for implementation decisions. User requests may override these rules only when the user explicitly requests a deviation, explains why, and the relevant rule is intentionally changed.
 2. Read the skills explicitly mentioned by the user.
 3. Read clearly needed supporting skills from the approved skill list.
-4. Inspect only the code, files, and dependencies relevant to the approved prompt.
+4. Inspect only the code, files, and dependencies relevant to the approved prompt. Do not inspect, modify, or reason about unrelated parts of the repository unless they directly affect the approved implementation.
 5. Ask a focused question only if the task has meaningful ambiguity. Do not ask questions when reasonable assumptions can be made without affecting the implementation outcome.
 6. Create a detailed prompt file in `prompts/`.
 7. Ask: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
@@ -86,12 +86,34 @@ For Cheerio, Zod, Tailwind, and shadcn/ui, use existing project patterns, packag
 
 # 4. Prompt files
 
-Prompt files live in the `prompts/` directory. Use names like:
+Prompt files live in the `prompts/` directory.
 
-- `prompts/oxylabs-scraping.md`
-- `prompts/oxylabs-scheduler.md`
-- `prompts/ai-analysis.md`
-- `prompts/news-details-page-ui.md`
+Always prefix prompt filenames with a two-digit sequential number to preserve creation and execution order. Use names like:
+
+Format:
+
+- `01-<feature-name>.md`
+- `02-<feature-name>.md`
+- `03-<feature-name>.md`
+- `04-<feature-name>.md`
+- `05-<feature-name>.md`
+- `06-<feature-name>.md`
+
+Examples:
+
+- `prompts/01-design-system.md`
+- `prompts/02-clerk-auth.md`
+- `prompts/03-supabase-schema.md`
+- `prompts/04-oxylabs-scraping.md`
+- `prompts/05-ai-analysis.md`
+- `prompts/06-news-details-page.md`
+
+When creating a new prompt:
+
+- determine the highest existing prompt number
+- create the next sequential number
+- never overwrite an existing prompt
+- never renumber existing prompt files
 
 Each prompt must include:
 
@@ -108,7 +130,7 @@ Each prompt must include:
 
 For UI tasks, analyze existing design patterns, component usage, visual hierarchy, and interaction behavior before implementation. Include visual interpretation, layout structure, typography, spacing, colors, responsiveness, accessibility, and pixel-perfect expectations in the implementation prompt. Avoid generic layouts and preserve the existing design language.
 
-If screenshots, images, Figma files, design references, or assets are provided by the user or exist in the repository:
+If screenshots, images, Figma files, design references, or UI assets are provided by the user or exist in the repository:
 
 - inspect visual hierarchy
 - inspect typography
@@ -118,6 +140,8 @@ If screenshots, images, Figma files, design references, or assets are provided b
 - inspect responsive behavior
 - inspect interactions
 - compare against existing components
+- identify reusable components before creating new ones
+- extend existing components where possible instead of duplicating them
 
 If no references are provided:
 
