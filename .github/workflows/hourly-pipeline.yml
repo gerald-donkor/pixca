@@ -1,0 +1,48 @@
+# Hourly trigger for the automatic scrape -> analyze pipeline (AGENTS.md
+# section 18).
+#
+# This replaces Vercel Cron, whose Hobby plan allows only one run per day.
+# The route itself is unchanged: it still expects `Authorization: Bearer
+# <CRON_SECRET>`, exactly as Vercel Cron would send it.
+#
+# Timing mirrors the Vercel Cron design — Oxylabs Scheduler runs its jobs at
+# `0 * * * *`, and this fires 15 minutes later to give those jobs time to
+# finish. GitHub's scheduler is best-effort and can lag under load; that is
+# harmless here, since processing is idempotent and a late run simply picks up
+# the same completed jobs.
+#
+# Required repository configuration:
+#   Settings -> Secrets and variables -> Actions
+#     Secret   CRON_SECRET  — must match the CRON_SECRET set in Vercel
+#     Variable APP_URL      — deployment origin, e.g. https://pixca.vercel.app
+
+name: Hourly pipeline
+
+on:
+  schedule:
+    - cron: "15 * * * *"
+  # Lets you trigger a run by hand from the Actions tab.
+  workflow_dispatch:
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Trigger scheduled-result processing and AI analysis
+        env:
+          APP_URL: ${{ vars.APP_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$APP_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "APP_URL variable and CRON_SECRET secret must both be configured."
+            exit 1
+          fi
+
+          # The pipeline runs analysis serially and can take several minutes.
+          # --fail-with-body surfaces a non-2xx (e.g. 401) as a failed job while
+          # still printing the response, and the secret is never echoed.
+          curl --silent --show-error --fail-with-body \
+            --max-time 600 \
+            --header "Authorization: Bearer ${CRON_SECRET}" \
+            "${APP_URL%/}/api/cron/pipeline"
