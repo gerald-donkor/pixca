@@ -72,8 +72,12 @@ export const MAX_ANALYSIS_INPUT_CHARACTERS = 24_000;
 export const ANALYSIS_MAX_ATTEMPTS = 2;
 
 /**
- * Delay between sequential model calls. Sized for the measured `gemini-2.5-flash`
- * free-tier ceiling of 5 requests per minute (60 ÷ 5 = 12s, plus headroom).
+ * Delay between sequential model calls. A conservative carry-over from the
+ * previous analysis model's measured free-tier ceiling of 5 requests per minute
+ * (60 ÷ 5 = 12s, plus headroom), kept pending confirmation of the real
+ * free-tier RPM for the current `ANALYSIS_MODEL_ID` in AI Studio — Google no
+ * longer publishes per-model free-tier limits in the public docs. Guessing lower risks
+ * re-triggering the rate-limit failures this delay was added to fix.
  * Embeddings ride along inside the same per-article slot and need no separate
  * delay at their 100 RPM budget. Runs are slow by design; the hourly cron is
  * the intended consumer.
@@ -98,3 +102,32 @@ export const MAX_EMBEDDING_INPUT_CHARACTERS = 8_000;
 
 /** Related articles shown on the details page — section 20 says up to 5. */
 export const RELATED_ARTICLES_LIMIT = 5;
+
+/**
+ * Oxylabs Scheduler cron — top of every hour (section 18). Vercel Cron then
+ * fires at `15 * * * *` to give Oxylabs 15 minutes to finish its jobs.
+ */
+export const OXYLABS_SCHEDULE_CRON = "0 * * * *";
+
+/**
+ * The Scheduler API requires `end_time`. A fixed far-future constant (rather
+ * than a computed date) keeps `schedule_config` byte-identical across sync
+ * runs, so re-running sync never looks like a change.
+ */
+export const OXYLABS_SCHEDULE_END_TIME = "2099-12-31 23:59:59";
+
+/** Geo location sent with scheduled homepage jobs — matches the Realtime client. */
+export const OXYLABS_SCHEDULE_GEO_LOCATION = "United States";
+
+/**
+ * Newest done jobs inspected per schedule when processing results. Only the
+ * newest unseen job is actually processed; the rest are recorded and marked
+ * processed as stale, so this only bounds bookkeeping work.
+ */
+export const OXYLABS_SCHEDULE_MAX_RUNS_LOOKBACK = 20;
+
+/** Stored schedule runs returned by `GET /api/oxylabs/runs` by default. */
+export const DEFAULT_SCHEDULE_RUNS_LIMIT = 50;
+
+/** Upper bound the runs route will accept for `?limit=`. */
+export const MAX_SCHEDULE_RUNS_LIMIT = 200;

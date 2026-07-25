@@ -8,9 +8,11 @@ import {
 } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
+import { getPostHogClient } from "@/lib/posthog-server"
 import { Button } from "@/components/ui/button"
 import { BiasMeter } from "@/components/ui/bias-meter"
 import { RelatedArticles } from "@/components/ui/related-articles"
+import { NewsletterSubscribe } from "@/components/ui/newsletter-subscribe"
 import { getArticleWithAnalysis, getRelatedArticles } from "@/lib/supabase/queries/articles"
 import type { RelatedArticleRow } from "@/lib/supabase/types"
 import {
@@ -75,13 +77,29 @@ export default async function ArticleDetailsPage({
 }: {
   params: Promise<{ id: string }>
 }) {
-  await auth.protect();
+  const { userId } = await auth.protect();
 
   const { id } = await params
   const article = await getArticleWithAnalysis(id)
 
   if (!article) {
     notFound()
+  }
+
+  const posthog = getPostHogClient();
+  if (posthog && userId) {
+    posthog.capture({
+      distinctId: userId,
+      event: "article_viewed",
+      properties: {
+        article_id: article.id,
+        source_name: article.source.name,
+        has_analysis: article.analysis !== null,
+        bias_label: article.analysis?.bias_label ?? null,
+        sentiment_label: article.analysis?.sentiment_label ?? null,
+      },
+    });
+    await posthog.flush();
   }
 
   const analysis = article.analysis
@@ -187,16 +205,7 @@ export default async function ArticleDetailsPage({
                 <h3 className="text-lg font-extrabold text-[#0D0D0F]">Stay Informed. Stay Balanced.</h3>
                 <p className="text-xs text-zinc-500 font-semibold">Get the top stories and bias analysis delivered to your inbox.</p>
               </div>
-              <div className="flex w-full md:w-auto items-center gap-3 shrink-0">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium py-2.5 px-4 outline-none focus:border-zinc-400 flex-1 md:w-64"
-                />
-                <Button variant="default" className="bg-[#0D0D0F] hover:bg-zinc-800 text-white font-bold text-xs py-2.5 px-5 h-auto rounded-md">
-                  Subscribe
-                </Button>
-              </div>
+              <NewsletterSubscribe />
             </div>
 
             {/* Related Articles by pgvector cosine similarity */}

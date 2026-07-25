@@ -3,6 +3,9 @@ import "server-only";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { OxylabsSchedule, OxylabsScheduleRun } from "@/lib/supabase/types";
 
+/** Same bound as the article URL existence check — never more than 15 per `.in()`. */
+const JOB_ID_CHUNK_SIZE = 15;
+
 export async function upsertScheduleForSource(params: {
   sourceId: string;
   oxylabsScheduleId: string;
@@ -83,6 +86,47 @@ export async function listUnprocessedDoneRuns(): Promise<OxylabsScheduleRun[]> {
     .eq("result_status", "done")
     .eq("processed", false)
     .order("created_at", { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+/**
+ * Which of these Oxylabs job IDs already have a `oxylabs_schedule_runs` row.
+ * Chunked at 15 per `.in()`, mirroring the article URL existence check.
+ */
+export async function findScheduleRunsByJobIds(jobIds: string[]): Promise<Set<string>> {
+  const existing = new Set<string>();
+
+  for (let i = 0; i < jobIds.length; i += JOB_ID_CHUNK_SIZE) {
+    const chunk = jobIds.slice(i, i + JOB_ID_CHUNK_SIZE);
+    const { data, error } = await getSupabaseAdminClient()
+      .from("oxylabs_schedule_runs")
+      .select("oxylabs_job_id")
+      .in("oxylabs_job_id", chunk);
+
+    if (error) {
+      throw error;
+    }
+
+    for (const row of data) {
+      existing.add(row.oxylabs_job_id);
+    }
+  }
+
+  return existing;
+}
+
+/** Newest-first stored runs for `GET /api/oxylabs/runs`. */
+export async function listScheduleRuns(limit: number): Promise<OxylabsScheduleRun[]> {
+  const { data, error } = await getSupabaseAdminClient()
+    .from("oxylabs_schedule_runs")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
   if (error) {
     throw error;

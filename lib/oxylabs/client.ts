@@ -65,16 +65,6 @@ export async function fetchPageHtml(
   url: string,
   options: FetchPageOptions = {}
 ): Promise<string> {
-  const username = process.env.OXY_WSA_USERNAME;
-  const password = process.env.OXY_WSA_PASSWORD;
-
-  if (!username || !password) {
-    throw new OxylabsError(
-      "missing_credentials",
-      "Missing OXY_WSA_USERNAME / OXY_WSA_PASSWORD environment variables."
-    );
-  }
-
   const payload: OxylabsQueryPayload = {
     source: "universal",
     url,
@@ -83,7 +73,7 @@ export async function fetchPageHtml(
     ...(options.render ? { render: "html" as const } : {}),
   };
 
-  const authorization = `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+  const authorization = buildAuthorizationHeader();
 
   let lastError: OxylabsError | null = null;
 
@@ -159,7 +149,26 @@ function extractContent(body: unknown): string | null {
   return typeof first?.content === "string" ? first.content : null;
 }
 
-function mapStatusToCode(status: number): OxylabsErrorCode {
+/**
+ * Basic auth header from the server-only Oxylabs credentials. Shared with the
+ * Scheduler client (`lib/oxylabs/scheduler.ts`) so credential handling lives in
+ * exactly one place. Throws `missing_credentials` when unset.
+ */
+export function buildAuthorizationHeader(): string {
+  const username = process.env.OXY_WSA_USERNAME;
+  const password = process.env.OXY_WSA_PASSWORD;
+
+  if (!username || !password) {
+    throw new OxylabsError(
+      "missing_credentials",
+      "Missing OXY_WSA_USERNAME / OXY_WSA_PASSWORD environment variables."
+    );
+  }
+
+  return `Basic ${Buffer.from(`${username}:${password}`).toString("base64")}`;
+}
+
+export function mapStatusToCode(status: number): OxylabsErrorCode {
   if (status === 400) return "invalid_request";
   if (status === 401) return "unauthorized";
   if (status === 403) return "forbidden";
@@ -175,7 +184,7 @@ function isRetryable(error: OxylabsError): boolean {
   return error.code === "upstream_error" && (error.httpStatus === null || error.httpStatus >= 500);
 }
 
-function toOxylabsError(error: unknown): OxylabsError {
+export function toOxylabsError(error: unknown): OxylabsError {
   if (error instanceof OxylabsError) {
     return error;
   }

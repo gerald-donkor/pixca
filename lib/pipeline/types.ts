@@ -83,3 +83,66 @@ export type AnalysisRunSummary = {
   /** Populated when the run itself aborted, e.g. the pending query failed. */
   error: string | null;
 };
+
+// --- Oxylabs Scheduler (section 18) -----------------------------------------
+
+export type SchedulerRunStatus = "completed" | "failed";
+
+export type ScheduleSyncSourceResult = {
+  sourceId: string;
+  sourceName: string;
+  listingUrl: string;
+  /** Exact digit string; null when creation failed. */
+  oxylabsScheduleId: string | null;
+  status: "created" | "existing" | "failed";
+  error: string | null;
+};
+
+/** Result of `POST /api/oxylabs/schedules`. */
+export type ScheduleSyncSummary = {
+  status: SchedulerRunStatus;
+  activeSources: number;
+  schedulesCreated: number;
+  schedulesExisting: number;
+  schedulesFailed: number;
+  /** Upstream schedules deactivated because no DB row references them. */
+  orphansDeactivated: number;
+  orphanFailures: string[];
+  durationMs: number;
+  sources: ScheduleSyncSourceResult[];
+};
+
+export type ScheduledJobResult = {
+  sourceName: string;
+  oxylabsScheduleId: string;
+  oxylabsJobId: string;
+  status: "processed" | "stale_skipped" | "already_seen" | "fetch_failed";
+  error: string | null;
+};
+
+/** Result of `POST /api/oxylabs/scheduled-results/process`. */
+export type ScheduledProcessSummary = {
+  status: SchedulerRunStatus;
+  schedulesChecked: number;
+  doneJobsFound: number;
+  jobsSkippedAlreadySeen: number;
+  jobsStaleSkipped: number;
+  jobsProcessed: number;
+  jobFetchFailures: number;
+  durationMs: number;
+  jobs: ScheduledJobResult[];
+  /** Absent when no source had fresh HTML, so the pipeline never ran. */
+  scrape: ScrapeRunSummary | null;
+  /** Populated when the run itself aborted before processing anything. */
+  error: string | null;
+};
+
+/** Result of `GET /api/cron/pipeline` — step one then step two (section 18). */
+export type CronPipelineSummary = {
+  status: SchedulerRunStatus;
+  durationMs: number;
+  scrape: ScheduledProcessSummary | null;
+  scrapeError: string | null;
+  analysis: AnalysisRunSummary | null;
+  analysisError: string | null;
+};

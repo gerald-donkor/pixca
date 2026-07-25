@@ -584,7 +584,7 @@ AI analysis must be triggered with `POST /api/analyze`.
 The request must include the `x-PIXCA-admin-secret` header.
 
 Analysis runs through the Vercel AI SDK using the Google Gemini provider
-(`@ai-sdk/google`) with the `gemini-2.5-flash` model, authenticated with
+(`@ai-sdk/google`) with the `gemini-3.6-flash` model, authenticated with
 `GOOGLE_GENERATIVE_AI_API_KEY`. Centralize the model ID in `lib/config/`; never
 inline it in a route handler. The `model` column in `article_analyses` stores the
 Gemini model ID string.
@@ -707,7 +707,7 @@ Canonical list lives in `.env.example`. Only `NEXT_PUBLIC_*` values may reach br
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`                                               | Supabase anon key                                                                       | client + server |
 | `SUPABASE_SERVICE_ROLE_KEY`                                                   | Service-role DB access for writes and pipeline reads                                    | server only     |
 | `OXY_WSA_USERNAME` / `OXY_WSA_PASSWORD`                                       | Oxylabs Web Scraper API + Scheduler auth                                                | server only     |
-| `GOOGLE_GENERATIVE_AI_API_KEY`                                                | AI analysis (`gemini-2.5-flash`) and `gemini-embedding-001` embeddings                  | server only     |
+| `GOOGLE_GENERATIVE_AI_API_KEY`                                                | AI analysis (`gemini-3.6-flash`) and `gemini-embedding-001` embeddings                  | server only     |
 | `PIXCA_ADMIN_SECRET`                                                         | Shared secret for `x-PIXCA-admin-secret` on action routes (section 15)                 | server only     |
 | `ANALYSIS_BATCH_SIZE`                                                         | Optional; articles analyzed per batch (default 5)                                       | server only     |
 | `CRON_SECRET`                                                                 | Protects `GET /api/cron/pipeline`; injected by Vercel, not in `.env.local` (section 18) | server only     |

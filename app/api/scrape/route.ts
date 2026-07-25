@@ -10,6 +10,7 @@ import { runScrapePipeline } from "@/lib/pipeline/scrape";
 import { sourceNeedsRender } from "@/lib/scraping/render-policy";
 import { getActiveSources } from "@/lib/supabase/queries/sources";
 import type { Source } from "@/lib/supabase/types";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -73,6 +74,23 @@ export async function POST(request: NextRequest): Promise<Response> {
       fetchHomepageHtml: fetchHtml,
       fetchDetailHtml: fetchHtml,
     });
+
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({
+        distinctId: "system",
+        event: "scrape_run_completed",
+        properties: {
+          status: summary.status,
+          sources_checked: summary.sourcesChecked,
+          articles_inserted: summary.articlesInserted,
+          articles_rejected: summary.articlesRejected,
+          duplicates_skipped: summary.duplicatesSkipped,
+          duration_ms: summary.durationMs,
+        },
+      });
+      await posthog.flush();
+    }
 
     return Response.json({
       ...summary,

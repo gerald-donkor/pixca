@@ -31,7 +31,11 @@ export function requireAdminSecret(request: NextRequest): Response | null {
   return null;
 }
 
-function constantTimeEquals(a: string, b: string): boolean {
+/**
+ * Length-safe, non-short-circuiting string comparison. Shared with the cron
+ * guard (`lib/api/cron-secret.ts`) so every secret check compares the same way.
+ */
+export function constantTimeEquals(a: string, b: string): boolean {
   const bufferA = Buffer.from(a, "utf8");
   const bufferB = Buffer.from(b, "utf8");
 

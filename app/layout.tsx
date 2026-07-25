@@ -5,6 +5,7 @@ import { shadcn } from "@clerk/ui/themes";
 import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { PostHogIdentify } from "@/components/posthog/identify";
 
 const poppins = Poppins({
   variable: "--font-sans",
@@ -29,6 +30,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <ClerkProvider dynamic appearance={{ theme: shadcn }}>
+          <PostHogIdentify />
           <Header />
           <div className="flex-1">{children}</div>
           <Footer />

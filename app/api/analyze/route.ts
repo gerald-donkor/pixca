@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireAdminSecret } from "@/lib/api/admin-secret";
 import { MAX_ANALYSIS_BATCH_SIZE } from "@/lib/config/limits";
 import { runAnalysisPipeline } from "@/lib/pipeline/analysis";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -44,6 +45,25 @@ export async function POST(request: NextRequest): Promise<Response> {
 
   try {
     const summary = await runAnalysisPipeline(parsed.data);
+
+    const posthog = getPostHogClient();
+    if (posthog) {
+      posthog.capture({
+        distinctId: "system",
+        event: "analysis_run_completed",
+        properties: {
+          status: summary.status,
+          articles_analyzed: summary.articlesAnalyzed,
+          articles_embedded: summary.articlesEmbedded,
+          articles_failed: summary.articlesFailed,
+          articles_pending: summary.articlesPending,
+          batches_run: summary.batchesRun,
+          duration_ms: summary.durationMs,
+          model: summary.model,
+        },
+      });
+      await posthog.flush();
+    }
 
     return Response.json(summary);
   } catch (error) {

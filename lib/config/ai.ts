@@ -2,8 +2,16 @@
 // model ID in `lib/config/`; never inline it in a route handler").
 // No secrets and no client imports live here.
 
-/** Gemini model used for article analysis; also stored in `article_analyses.model`. */
-export const ANALYSIS_MODEL_ID = "gemini-2.5-flash";
+/**
+ * Gemini model used for article analysis; also stored in `article_analyses.model`.
+ *
+ * Deliberately pinned to an exact version rather than the `gemini-flash-latest`
+ * alias. The two resolve to the same model today, but `article_analyses.model`
+ * is a permanent record of what produced each row: a floating alias would write
+ * a string whose meaning changes when Google re-points it, and could silently
+ * swap models partway through a backfill.
+ */
+export const ANALYSIS_MODEL_ID = "gemini-3.6-flash";
 
 /** Gemini embedding model behind pgvector similarity search (section 20). */
 export const EMBEDDING_MODEL_ID = "gemini-embedding-001";
