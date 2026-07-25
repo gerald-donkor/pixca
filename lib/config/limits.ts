@@ -49,3 +49,21 @@ export const MIN_TITLE_CHARACTERS = 15;
 
 /** Hard cap on stored `raw_text` so one runaway page cannot bloat a row. */
 export const MAX_RAW_TEXT_CHARACTERS = 60_000;
+
+/** Articles analyzed per batch when `ANALYSIS_BATCH_SIZE` is unset (section 19). */
+export const DEFAULT_ANALYSIS_BATCH_SIZE = 5;
+
+/** Upper bound the API will accept for `batchSize`. */
+export const MAX_ANALYSIS_BATCH_SIZE = 25;
+
+/**
+ * Article text sent to the model. Generous enough that a normal article goes
+ * whole; bounds token cost on outliers.
+ */
+export const MAX_ANALYSIS_INPUT_CHARACTERS = 24_000;
+
+/** First attempt plus one retry on invalid model output (section 19). */
+export const ANALYSIS_MAX_ATTEMPTS = 2;
+
+/** Politeness delay between sequential model calls. */
+export const ANALYSIS_REQUEST_DELAY_MS = 500;

@@ -42,3 +42,32 @@ export type ScrapeRunSummary = {
 
 /** Supplies homepage HTML — a live Oxylabs fetch now, Oxylabs job results later. */
 export type HomepageHtmlFetcher = (listingUrl: string) => Promise<string>;
+
+export type AnalysisRunStatus = "completed" | "failed";
+
+/** Counts grouped by failure reason, e.g. `{ invalid_output: 2 }`. */
+export type AnalysisFailureCounts = Record<string, number>;
+
+export type AnalysisItemResult = {
+  articleId: string;
+  title: string;
+  status: "analyzed" | "failed";
+  /** Populated when the article failed; null when it was analyzed. */
+  reason: string | null;
+};
+
+/** The section 19 analysis run summary object. */
+export type AnalysisRunSummary = {
+  status: AnalysisRunStatus;
+  model: string;
+  articlesPending: number;
+  articlesAnalyzed: number;
+  articlesSkipped: number;
+  articlesFailed: number;
+  batchesRun: number;
+  durationMs: number;
+  failureReasons: AnalysisFailureCounts;
+  articles: AnalysisItemResult[];
+  /** Populated when the run itself aborted, e.g. the pending query failed. */
+  error: string | null;
+};

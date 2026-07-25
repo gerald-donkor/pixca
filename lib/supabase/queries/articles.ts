@@ -90,19 +90,68 @@ export async function insertArticle(article: ArticleInsert): Promise<InsertArtic
   return { ok: true, article: data };
 }
 
+/** Only the columns the analysis pipeline needs — `raw_text` is the heavy one. */
+export type PendingAnalysisArticle = Pick<
+  Article,
+  "id" | "source_id" | "title" | "published_at" | "raw_text"
+>;
+
+/**
+ * Section 19 **pending-analysis check**. An article is pending when no
+ * `article_analyses` row exists for it — never `analyzed_at IS NULL`, which
+ * can be set while the analysis row is absent.
+ *
+ * The LEFT JOIN cannot be filtered in SQL (Supabase joined-table filter
+ * gotcha), so the null check happens in JS. To avoid pulling every `raw_text`
+ * in the table through that filter, ids are resolved first and only the
+ * selected batch is fetched in full.
+ */
 export async function getPendingAnalysisArticles({
   limit,
+  articleIds,
 }: {
   limit: number;
-}): Promise<Article[]> {
-  const { data, error } = await getSupabaseAdminClient()
+  articleIds?: string[];
+}): Promise<PendingAnalysisArticle[]> {
+  const client = getSupabaseAdminClient();
+
+  let idQuery = client
     .from("articles")
-    .select("*, analysis:article_analyses(id)")
+    .select("id, analysis:article_analyses(id)")
+    .order("scraped_at", { ascending: true });
+
+  if (articleIds) {
+    if (articleIds.length === 0) {
+      return [];
+    }
+
+    idQuery = idQuery.in("id", articleIds);
+  }
+
+  const { data: idRows, error: idError } = await idQuery;
+
+  if (idError) {
+    throw idError;
+  }
+
+  const pendingIds = idRows
+    .filter((row) => row.analysis === null)
+    .slice(0, limit)
+    .map((row) => row.id);
+
+  if (pendingIds.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await client
+    .from("articles")
+    .select("id, source_id, title, published_at, raw_text")
+    .in("id", pendingIds)
     .order("scraped_at", { ascending: true });
 
   if (error) {
     throw error;
   }
 
-  return data.filter((row) => row.analysis === null).slice(0, limit);
+  return data;
 }
