@@ -70,10 +70,14 @@ const SOURCE_RULES: SourceRule[] = [
     keys: ["guardian", "theguardian.com"],
     isArticleUrl: (url) => {
       const segments = getPathSegments(url);
+      // A `/section/YYYY/mon/DD/slug` path is already strong evidence on its
+      // own. Requiring a long slug on top of it rejected genuine breaking news
+      // ("trump-european-union-tariffs" is only 28 chars) while keeping longer
+      // feature slugs — a bias against exactly the stories we most want.
       return (
         segments.length >= 5 &&
         DATE_PATH_PATTERN.test(getPathname(url)) &&
-        isLongSlug(segments[segments.length - 1])
+        countSlugWords(segments[segments.length - 1]) >= 3
       );
     },
   },
@@ -160,7 +164,13 @@ function matchesGenericArticleShape(url: string): boolean {
 /** A story slug: several hyphenated words, long enough not to be a section name. */
 function isLongSlug(segment: string): boolean {
   const withoutExtension = segment.replace(/\.(html?|php|aspx)$/i, "");
-  const words = withoutExtension.split("-").filter((word) => word.length > 0);
 
-  return words.length >= 4 && withoutExtension.length >= 30;
+  return countSlugWords(segment) >= 4 && withoutExtension.length >= 30;
+}
+
+function countSlugWords(segment: string): number {
+  return segment
+    .replace(/\.(html?|php|aspx)$/i, "")
+    .split("-")
+    .filter((word) => word.length > 0).length;
 }

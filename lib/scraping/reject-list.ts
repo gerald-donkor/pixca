@@ -184,6 +184,25 @@ const REJECTED_EXTENSIONS = [
   ".zip",
 ];
 
+/**
+ * Slug-level product / review / shopping signals. The segment-based rules above
+ * miss these because sites file buying guides under ordinary editorial
+ * sections, e.g. `/food/2025/jul/31/best-rice-cookers-us`.
+ */
+const REJECTED_SLUG_PATTERNS: RegExp[] = [
+  /^best-/,
+  /^cheapest-/,
+  /^top-\d+-/,
+  /-reviews?$/,
+  /^(deals|discounts?)-/,
+  /-deals?$/,
+  /buying-guide/,
+  /gift-guide/,
+  /^how-to-buy-/,
+  /-worth-buying$/,
+  /^shop-/,
+];
+
 export type RejectListMatch = {
   rejected: boolean;
   /** Human-readable reason for run logging; null when not rejected. */
@@ -217,6 +236,12 @@ export function matchesRejectList(url: string): RejectListMatch {
   const rejectedSegment = segments.find((segment) => REJECTED_SEGMENTS.has(segment));
   if (rejectedSegment) {
     return { rejected: true, detail: `rejected path segment "${rejectedSegment}"` };
+  }
+
+  const slug = segments[segments.length - 1] ?? "";
+  const slugPattern = REJECTED_SLUG_PATTERNS.find((pattern) => pattern.test(slug));
+  if (slugPattern) {
+    return { rejected: true, detail: "product/review/shopping slug" };
   }
 
   return { rejected: false, detail: null };
