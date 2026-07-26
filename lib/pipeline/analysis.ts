@@ -13,6 +13,7 @@ import { analyzeArticle } from "@/lib/ai/analyze-article";
 import { embedArticle } from "@/lib/ai/embed-article";
 import { ANALYSIS_MODEL_ID, EMBEDDING_MODEL_ID } from "@/lib/config/ai";
 import {
+  ANALYSIS_CALL_ESTIMATE_MS,
   ANALYSIS_REQUEST_DELAY_MS,
   DEFAULT_ANALYSIS_BATCH_SIZE,
   MAX_ANALYSIS_BATCH_SIZE,
@@ -43,6 +44,12 @@ export type RunAnalysisPipelineOptions = {
   limit?: number;
   /** Analyze exactly these articles, skipping the drain loop. */
   articleIds?: string[];
+  /**
+   * Absolute `Date.now()` instant this run must finish by. Defaults to
+   * `MAX_ANALYSIS_RUN_MS` from the start of the run. Used by the cron route so
+   * analysis inherits the time step one did not consume.
+   */
+  deadline?: number;
 };
 
 export async function runAnalysisPipeline(
@@ -51,6 +58,8 @@ export async function runAnalysisPipeline(
   const startedAt = Date.now();
   const batchSize = resolveBatchSize(options.batchSize);
   const limit = options.limit ?? null;
+  const deadline = options.deadline ?? startedAt + MAX_ANALYSIS_RUN_MS;
+  const budgetMs = deadline - startedAt;
 
   analysisLog.started(ANALYSIS_MODEL_ID, EMBEDDING_MODEL_ID, batchSize, limit);
 
@@ -66,13 +75,20 @@ export async function runAnalysisPipeline(
     processedIds: new Set<string>(),
     stoppedReason: null,
     callsMade: 0,
-    deadline: startedAt + MAX_ANALYSIS_RUN_MS,
+    deadline,
+    budgetMs,
   };
 
   let error: string | null = null;
 
   try {
-    if (options.articleIds) {
+    // A caller-supplied deadline can already be spent (the cron route hands us
+    // whatever step one left). Stop here rather than querying Supabase and
+    // starting a call that cannot finish inside the budget.
+    if (Date.now() + ANALYSIS_CALL_ESTIMATE_MS >= deadline) {
+      state.stoppedReason = "time_budget";
+      analysisLog.timeBudgetReached(budgetMs);
+    } else if (options.articleIds) {
       await runSelectedArticles(state, options.articleIds, batchSize, limit);
     } else {
       await drainPendingArticles(state, batchSize, limit);
@@ -124,8 +140,10 @@ type RunState = {
   stoppedReason: AnalysisStoppedReason;
   /** Gemini calls made so far, used to pace the first article of each batch. */
   callsMade: number;
-  /** Wall-clock instant the run must stop by (`MAX_ANALYSIS_RUN_MS`). */
+  /** Wall-clock instant the run must stop by (`MAX_ANALYSIS_RUN_MS` or caller-supplied). */
   deadline: number;
+  /** `deadline - startedAt`, logged so a cron-shortened run reports its real budget. */
+  budgetMs: number;
 };
 
 /** Default run: keep pulling batches until no pending article remains. */
@@ -215,13 +233,18 @@ async function processBatch(state: RunState, batch: PendingAnalysisArticle[]): P
       break;
     }
 
-    if (state.callsMade > 0) {
-      if (Date.now() + ANALYSIS_REQUEST_DELAY_MS >= state.deadline) {
-        state.stoppedReason = "time_budget";
-        analysisLog.timeBudgetReached(MAX_ANALYSIS_RUN_MS);
-        break;
-      }
+    // Reserve the call itself, not just the pacing delay — stopping after an
+    // overshoot is what pushed the first production cron run to 299.6s.
+    const reserve =
+      (state.callsMade > 0 ? ANALYSIS_REQUEST_DELAY_MS : 0) + ANALYSIS_CALL_ESTIMATE_MS;
 
+    if (Date.now() + reserve >= state.deadline) {
+      state.stoppedReason = "time_budget";
+      analysisLog.timeBudgetReached(state.budgetMs);
+      break;
+    }
+
+    if (state.callsMade > 0) {
       await delay(ANALYSIS_REQUEST_DELAY_MS);
     }
 

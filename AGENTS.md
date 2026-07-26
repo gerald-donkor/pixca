@@ -29,7 +29,7 @@ Build only:
 - AI article analysis
 - logs
 - pgvector similarity search for related articles
-- Vercel Cron for automatic scheduling
+- GitHub Actions scheduled workflow for automatic hourly triggering
 - minimal responsive UI
 
 Do not overbuild.
@@ -187,7 +187,7 @@ Use:
 - Tailwind CSS
 - shadcn/ui
 - pgvector (via Supabase Extensions)
-- Vercel Cron
+- GitHub Actions scheduled workflow (`.github/workflows/hourly-pipeline.yml`)
 
 Do not use:
 
@@ -439,13 +439,13 @@ Use `GET` only for read/status routes:
 - `GET /api/oxylabs/schedules`
 - `GET /api/oxylabs/runs`
 
-One exception â€” the Vercel Cron route uses `GET` because Vercel Cron always sends GET requests:
+One exception â€” the cron pipeline route uses `GET` because scheduled triggers send GET requests:
 
 - `GET /api/cron/pipeline` â€” internal only, protected by `CRON_SECRET`, not callable by browsers or users
 
 Do not switch scraping or AI analysis between `GET` and `POST`.
 
-Scraping and AI analysis must be triggered with `POST` for manual calls. The Vercel Cron route is the only GET exception and must be protected by `CRON_SECRET`.
+Scraping and AI analysis must be triggered with `POST` for manual calls. The cron pipeline route is the only GET exception and must be protected by `CRON_SECRET`.
 
 ---
 
@@ -521,12 +521,12 @@ The sync route must:
 
 ## Two separate one-time setups
 
-Creating Oxylabs schedules and configuring Vercel Cron are two independent one-time steps. Neither one triggers the other.
+Creating Oxylabs schedules and configuring the hourly trigger are two independent one-time steps. Neither one triggers the other.
 
 - `POST /api/oxylabs/schedules` â€” tells Oxylabs what to scrape hourly. Done once per source set.
-- Vercel Cron config â€” tells Vercel to call `/api/cron/pipeline` at :15 past every hour. Done once via `vercel.json`.
+- GitHub Actions workflow â€” calls `/api/cron/pipeline` at :15 past every hour. Done once via `.github/workflows/hourly-pipeline.yml`, plus a `CRON_SECRET` repo secret and an `APP_URL` repo variable.
 
-Both must be completed for the pipeline to be fully automatic. Until Vercel Cron is configured, the process route must be called manually.
+Both must be completed for the pipeline to be fully automatic. Until the hourly trigger is configured, the process route must be called manually.
 
 Articles only appear on the homepage after `analyzed_at` is set. Until analysis runs, use `POST /api/analyze` manually after scraping.
 
@@ -546,8 +546,8 @@ Do not require manual intervention after schedules are created.
 The automatic pipeline flow is:
 
 1. Oxylabs Scheduler runs its jobs at the top of every hour.
-2. A Vercel Cron Job fires 15 minutes later to give Oxylabs time to finish.
-3. The cron triggers `/api/cron/pipeline`, which runs both steps in sequence.
+2. A scheduled GitHub Actions workflow fires 15 minutes later to give Oxylabs time to finish.
+3. The workflow calls `/api/cron/pipeline`, which runs both steps in sequence.
 4. Step one: process scheduled results â€” fetch completed Oxylabs job HTML, extract candidate links, reject non-article URLs, dedupe, scrape article detail pages, validate, and insert valid articles.
 5. Step two: immediately run AI analysis on all newly inserted articles that are still pending analysis.
 6. If step one fails, step two must still run â€” there may be pre-existing unanalyzed articles.
@@ -555,7 +555,7 @@ The automatic pipeline flow is:
 
 The cron route is internal only and must not be callable by browsers or users.
 
-Protect the cron route using the `CRON_SECRET` environment variable, which Vercel injects automatically on every cron request. Reject requests with a missing or wrong value with `401`.
+Protect the cron route using the `CRON_SECRET` environment variable, sent by the caller as an `Authorization: Bearer <CRON_SECRET>` header and compared in constant time. Reject requests with a missing or wrong value with `401`. The same value must be set in the Vercel project environment (so the route can verify it) and as a GitHub Actions repo secret (so the workflow can send it).
 
 In local development, skip the secret check so the route can be tested manually.
 
@@ -566,12 +566,12 @@ When implementing Oxylabs Scheduler, always deliver all parts together:
 - Sync schedules route â€” creates one Oxylabs schedule per active source
 - List schedules route â€” reads stored schedule rows
 - Manual process route â€” allows on-demand processing
-- Vercel Cron config â€” registers the automatic hourly trigger
+- GitHub Actions workflow â€” registers the automatic hourly trigger
 - Cron pipeline route â€” chains scheduled result processing then AI analysis
 
 
 - **Oxylabs Scheduler** tells Oxylabs to scrape our active source homepages every hour and store the results. That’s set up once with a route in our app.
-- **Vercel Cron** tells Vercel to call our pipeline 15  minutes later, to take those stored results, turn them into articles, and analyze them. That’s set up once
+- **The GitHub Actions workflow** calls our pipeline 15 minutes later, to take those stored results, turn them into articles, and analyze them. That’s set up once. It replaces Vercel Cron, whose Hobby plan allows only one run per day.
 
 Scheduler processing must use the same validation, cleanup, dedupe, and console summary logging as manual scraping.
 
@@ -696,7 +696,7 @@ Never run from browser code:
 
 ## Environment variables
 
-Canonical list lives in `.env.example`. Only `NEXT_PUBLIC_*` values may reach browser code; everything else is server-only. `CRON_SECRET` is injected by Vercel and must not be added to `.env.local`.
+Canonical list lives in `.env.example`. Only `NEXT_PUBLIC_*` values may reach browser code; everything else is server-only. `CRON_SECRET` is set in the Vercel project environment and mirrored as a GitHub Actions repo secret; it must not be added to `.env.local`.
 
 | Variable                                                                      | Purpose                                                                                 | Exposure        |
 | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------- |
@@ -710,7 +710,7 @@ Canonical list lives in `.env.example`. Only `NEXT_PUBLIC_*` values may reach br
 | `GOOGLE_GENERATIVE_AI_API_KEY`                                                | AI analysis (`gemini-3.6-flash`) and `gemini-embedding-001` embeddings                  | server only     |
 | `PIXCA_ADMIN_SECRET`                                                         | Shared secret for `x-PIXCA-admin-secret` on action routes (section 15)                 | server only     |
 | `ANALYSIS_BATCH_SIZE`                                                         | Optional; articles analyzed per batch (default 5)                                       | server only     |
-| `CRON_SECRET`                                                                 | Protects `GET /api/cron/pipeline`; injected by Vercel, not in `.env.local` (section 18) | server only     |
+| `CRON_SECRET`                                                                 | Protects `GET /api/cron/pipeline`; set in Vercel + GitHub secret (section 18)           | server only     |
 
 Keep this table and `.env.example` in sync when variables change.
 

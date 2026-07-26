@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { requireCronSecret } from "@/lib/api/cron-secret";
+import { CRON_PIPELINE_BUDGET_MS } from "@/lib/config/limits";
 import { runAnalysisPipeline } from "@/lib/pipeline/analysis";
 import { cronLog } from "@/lib/pipeline/scheduler-logger";
 import { processScheduledResults } from "@/lib/pipeline/scheduler";
@@ -30,6 +31,13 @@ export async function GET(request: NextRequest): Promise<Response> {
 
   const startedAt = Date.now();
 
+  // One wall-clock budget for the whole request. Step one is not interrupted —
+  // it is already bounded by the schedule count, `MAX_DETAIL_PAGES_PER_SOURCE`,
+  // and the consecutive-failure breaker, and cutting it mid-source would waste
+  // detail fetches already paid for. Step two inherits whatever remains instead
+  // of assuming a fresh `MAX_ANALYSIS_RUN_MS`.
+  const deadline = startedAt + CRON_PIPELINE_BUDGET_MS;
+
   cronLog.started();
 
   const summary: CronPipelineSummary = {
@@ -53,7 +61,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   cronLog.stepTwoStarted();
 
   try {
-    summary.analysis = await runAnalysisPipeline({});
+    summary.analysis = await runAnalysisPipeline({ deadline });
   } catch (error) {
     summary.analysisError = toSafeMessage(error);
     cronLog.stepTwoFailed(summary.analysisError);

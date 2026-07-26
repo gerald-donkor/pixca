@@ -91,6 +91,23 @@ export const ANALYSIS_REQUEST_DELAY_MS = 13_000;
  */
 export const MAX_ANALYSIS_RUN_MS = 240_000;
 
+/**
+ * Reserved before starting an article so a run stops *before* overshooting its
+ * budget rather than after. One slot covers the analyze call plus its embedding;
+ * production runs measure ~20s, so 30s leaves room for a slower-than-usual call.
+ */
+export const ANALYSIS_CALL_ESTIMATE_MS = 30_000;
+
+/**
+ * Wall-clock budget for the whole cron request — scheduled-result processing
+ * plus analysis. Sits below the cron route's `maxDuration = 300` so the final
+ * summary is returned and persisted instead of the function being killed
+ * mid-flight; the first production run finished in 299,609ms of a 300,000ms
+ * limit because analysis started a fresh 240s budget after step one had already
+ * spent ~55s. The 20s of headroom covers the summary write and serialization.
+ */
+export const CRON_PIPELINE_BUDGET_MS = 280_000;
+
 /** Analyzed articles listed on the homepage — matches the 12-card grid. */
 export const HOMEPAGE_ARTICLES_LIMIT = 12;
 
