@@ -27,10 +27,20 @@ export async function POST(req: Request) {
 
     const origin = req.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+    const resolvedProductId =
+      productId ||
+      (planName.toLowerCase().includes("enterprise")
+        ? interval === "annual"
+          ? process.env.POLAR_ENTERPRISE_ANNUAL_PRODUCT_ID
+          : process.env.POLAR_ENTERPRISE_MONTHLY_PRODUCT_ID
+        : interval === "annual"
+        ? process.env.POLAR_PRO_ANNUAL_PRODUCT_ID
+        : process.env.POLAR_PRO_MONTHLY_PRODUCT_ID);
+
     // If Polar credentials are live in environment, create live checkout session
-    if (isPolarConfigured() && productId) {
+    if (isPolarConfigured() && resolvedProductId) {
       const checkout = await polar.checkouts.create({
-        products: [productId],
+        products: [resolvedProductId],
         customerEmail: email,
         externalCustomerId: userId || undefined,
         customerName: name,
