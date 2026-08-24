@@ -61,10 +61,13 @@ export function Header() {
         <div className="container mx-auto max-w-[1400px] flex flex-col md:row justify-between items-center gap-2">
           {/* Left Side */}
           <div className="header-anim-item flex items-center gap-4">
-            <span className="cursor-pointer hover:text-white transition-colors flex items-center gap-1.5">
-              <span className="inline-block w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-              Browser Extension
-            </span>
+            <Link
+              href="/logs"
+              className="cursor-pointer hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <span aria-hidden="true" className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              System Status
+            </Link>
             <div className="flex items-center gap-1.5 border-l border-zinc-800 pl-4">
               <span className="text-zinc-400 mr-1">Theme:</span>
               <button

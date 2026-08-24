@@ -33,7 +33,7 @@ export function Footer() {
               <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-500">Help & Status</h4>
               <ul className="space-y-2 text-xs text-zinc-400 font-medium">
                 <li>
-                  <Link href="/logs" className="hover:text-white cursor-pointer transition-colors">
+                  <Link href="/logs" className="block hover:text-white cursor-pointer transition-colors">
                     System Status
                   </Link>
                 </li>
