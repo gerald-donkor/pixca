@@ -75,13 +75,22 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
         if (isOpen) {
-          gsap.to(backdropRef.current, { autoAlpha: 1, duration: 0.2 });
-          gsap.to(panelRef.current, { autoAlpha: 1, xPercent: 0, duration: 0.2 });
+          gsap.fromTo(
+            backdropRef.current,
+            { autoAlpha: 0 },
+            { autoAlpha: 1, duration: 0.2, ease: "power2.out" }
+          );
+          gsap.fromTo(
+            panelRef.current,
+            { autoAlpha: 0, x: 0 },
+            { autoAlpha: 1, duration: 0.2, ease: "power2.out" }
+          );
         } else {
-          gsap.to(backdropRef.current, { autoAlpha: 0, duration: 0.15 });
+          gsap.to(backdropRef.current, { autoAlpha: 0, duration: 0.15, ease: "power2.in" });
           gsap.to(panelRef.current, {
             autoAlpha: 0,
             duration: 0.15,
+            ease: "power2.in",
             onComplete: () => setIsMounted(false),
           });
         }
@@ -96,13 +105,13 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
           );
           gsap.fromTo(
             panelRef.current,
-            { xPercent: -100, autoAlpha: 1 },
-            { xPercent: 0, duration: 0.35, ease: "power3.out" }
+            { x: "-100%", autoAlpha: 1 },
+            { x: "0%", duration: 0.35, ease: "power3.out" }
           );
         } else {
           gsap.to(backdropRef.current, { autoAlpha: 0, duration: 0.25, ease: "power2.in" });
           gsap.to(panelRef.current, {
-            xPercent: -100,
+            x: "-100%",
             duration: 0.25,
             ease: "power3.in",
             onComplete: () => setIsMounted(false),
@@ -129,14 +138,13 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
       <div
         ref={backdropRef}
         onClick={onClose}
-        className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer opacity-0"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs cursor-pointer"
       />
 
       {/* Drawer Panel */}
       <div
         ref={panelRef}
-        className="relative z-10 w-[320px] max-w-[85vw] h-full bg-card border-r border-border flex flex-col justify-between overflow-y-auto p-6 shadow-2xl opacity-0"
-        style={{ transform: "translateX(-100%)" }}
+        className="relative z-10 w-[320px] max-w-[85vw] h-full bg-card border-r border-border flex flex-col justify-between overflow-y-auto p-6 shadow-2xl"
       >
         {/* Top Section */}
         <div className="flex flex-col gap-6">
