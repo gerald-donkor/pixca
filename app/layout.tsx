@@ -40,6 +40,13 @@ export const metadata: Metadata = {
     description:
       "Get multiple viewpoints on top stories. Pixca is an AI-powered news aggregator analyzing framing, sentiment, and bias in real time.",
   },
+  alternates: {
+    canonical: "/",
+    types: {
+      "application/rss+xml": "/rss.xml",
+      "application/atom+xml": "/feed.xml",
+    },
+  },
 };
 
 export default function RootLayout({
