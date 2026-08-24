@@ -7,7 +7,9 @@ import type {
   Article,
   ArticleAnalysis,
   ArticleInsert,
+  BiasLabel,
   RelatedArticleRow,
+  SentimentLabel,
   Source,
 } from "@/lib/supabase/types";
 
@@ -38,17 +40,55 @@ export type InsertArticleResult =
   | { ok: true; article: Article }
   | { ok: false; reason: "duplicate" };
 
+export interface GetPublishedArticlesOptions {
+  limit: number;
+  offset: number;
+  sourceId?: string;
+  sourceName?: string;
+  biasLabel?: BiasLabel;
+  sentimentLabel?: SentimentLabel;
+  query?: string;
+}
+
 export async function getPublishedArticles({
   limit,
   offset,
-}: {
-  limit: number;
-  offset: number;
-}): Promise<ArticleWithSourceAndAnalysis[]> {
-  const { data, error } = await getSupabaseAdminClient()
+  sourceId,
+  sourceName,
+  biasLabel,
+  sentimentLabel,
+  query,
+}: GetPublishedArticlesOptions): Promise<ArticleWithSourceAndAnalysis[]> {
+  const sourceJoin = sourceName && !sourceId ? "source:sources!inner(*)" : "source:sources(*)";
+  const analysisJoin =
+    biasLabel || sentimentLabel
+      ? `analysis:article_analyses!inner(${ARTICLE_ANALYSIS_COLUMNS})`
+      : `analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS})`;
+
+  let queryBuilder = getSupabaseAdminClient()
     .from("articles")
-    .select(`*, source:sources(*), analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS})`)
-    .not("analyzed_at", "is", null)
+    .select(`*, ${sourceJoin}, ${analysisJoin}`)
+    .not("analyzed_at", "is", null);
+
+  if (sourceId) {
+    queryBuilder = queryBuilder.eq("source_id", sourceId);
+  } else if (sourceName) {
+    queryBuilder = queryBuilder.ilike("source.name", sourceName);
+  }
+
+  if (biasLabel) {
+    queryBuilder = queryBuilder.eq("analysis.bias_label", biasLabel);
+  }
+
+  if (sentimentLabel) {
+    queryBuilder = queryBuilder.eq("analysis.sentiment_label", sentimentLabel);
+  }
+
+  if (query && query.trim()) {
+    queryBuilder = queryBuilder.ilike("title", `%${query.trim()}%`);
+  }
+
+  const { data, error } = await queryBuilder
     .order("published_at", { ascending: false })
     .range(offset, offset + limit - 1);
 
@@ -56,7 +96,7 @@ export async function getPublishedArticles({
     throw error;
   }
 
-  return data;
+  return data as unknown as ArticleWithSourceAndAnalysis[];
 }
 
 export async function getArticleWithAnalysis(
