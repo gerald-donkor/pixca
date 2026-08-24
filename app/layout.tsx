@@ -6,6 +6,8 @@ import "./globals.css";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PostHogIdentify } from "@/components/posthog/identify";
+import { ThemeProvider } from "@/components/layout/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const poppins = Poppins({
   variable: "--font-sans",
@@ -24,18 +26,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} h-full antialiased`}>
+    <html lang="en" suppressHydrationWarning className={`${poppins.variable} h-full antialiased`}>
       <body
-        className="min-h-full flex flex-col font-sans bg-[#F6F6F6] text-[#0D0D0F] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]"
+        className="min-h-full flex flex-col font-sans bg-[var(--surface)] text-[var(--text-primary)] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]"
         suppressHydrationWarning
       >
-        <ClerkProvider dynamic appearance={{ theme: shadcn }}>
-          <PostHogIdentify />
-          <Header />
-          <div className="flex-1">{children}</div>
-          <Footer />
-        </ClerkProvider>
+        <ThemeProvider>
+          <ClerkProvider dynamic appearance={{ theme: shadcn }}>
+            <PostHogIdentify />
+            <Header />
+            <div className="flex-1">{children}</div>
+            <Footer />
+            <Toaster />
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

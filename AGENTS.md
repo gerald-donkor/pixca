@@ -49,9 +49,15 @@ For every implementation request:
 7. Ask: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
 8. On approval, re-read the approved prompt file in prompts/ and implement it strictly. Implement only after user approval. Entering "y" or "Y" = `Approved. Execute.`
 9. Run available checks.
-10. Share exact steps to test or run the completed feature.
+10. Commit changes to `main` using `.agents/skills/caveman-commit`.
+11. Share exact steps to test or run the completed feature.
 
 Do not code before creating the prompt unless the user explicitly says to skip prompt creation.
+
+## Interactive Shorthand & User Inputs
+
+- Entering `i` or `I` = **Next prompt query / Inspection**. Always use `i` or `I` to know what prompt is next to be written for a specific task or roadmap phase. When `i` or `I` is entered, the agent must immediately inspect `prompts/` to identify the highest existing prompt number, check the project roadmap (e.g. Section 23) and active task context, determine the exact next sequential prompt (number, filename, goal, target files, skills, verification), and present a detailed breakdown of what prompt is next to be written without writing code or executing unapproved steps.
+- Entering `y` or `Y` = **Approved. Execute.** Entering `y` or `Y` approves the prepared prompt and instructs the agent to implement it strictly.
 
 Design references and assets
 
@@ -69,6 +75,12 @@ Use only these skills:
 - `.agents/skills/supabase`
 - `.agents/skills/oxylabs-web-scraper`
 - `.agents/skills/ai-sdk`
+- `.agents/skills/gsap-core`
+- `.agents/skills/gsap-react`
+- `.agents/skills/gsap-scrolltrigger`
+- `.agents/skills/gsap-timeline`
+- `.agents/skills/gsap-performance`
+- `.agents/skills/caveman-commit`
 
 Use them for:
 
@@ -77,6 +89,11 @@ Use them for:
 - `supabase`: schema, migrations, queries, service role usage, dedupe, logs, pgvector
 - `oxylabs-web-scraper`: Oxylabs Web Scraper API, Scheduler, scheduled jobs, scraping behavior
 - `ai-sdk`: Vercel AI SDK and Google Gemini provider usage, model calls, AI analysis output handling
+- `gsap-core` & `gsap-react`: UI animations, `@gsap/react` `useGSAP()` hook, tweens, staggers, and context cleanup
+- `gsap-scrolltrigger`: Scroll-driven animations, reading progress indicators, `ScrollTrigger.batch` for article grid reveal
+- `gsap-timeline`: Choreographed page entrances, drawer transitions, and micro-interactions
+- `gsap-performance`: 60fps compositor optimization (transforms & autoAlpha), reducing layout thrashing, and respecting `prefers-reduced-motion`
+- `caveman-commit`: generating terse conventional commit messages and committing changes to `main` after prompt execution
 
 Do not invent new skills.
 
@@ -110,10 +127,26 @@ Examples:
 
 When creating a new prompt:
 
-- determine the highest existing prompt number
+- determine the highest existing prompt number (using the `i` or `I` protocol below)
 - create the next sequential number
 - never overwrite an existing prompt
 - never renumber existing prompt files
+
+## Determining the Next Prompt (`i` or `I` Protocol)
+
+Always use `i` or `I` to know what prompt is next to be written for a specific task:
+
+1. **Scan `prompts/`**: Check all existing prompt files in `prompts/` to determine the current highest two-digit sequential number (e.g. `18` in `18-ui-interactive-foundations.md`).
+2. **Compute Next Sequence Number**: The next prompt file must strictly be `N + 1` (zero-padded to two digits, e.g. `19`).
+3. **Map Task/Roadmap to Prompt**: Cross-reference the active feature roadmap (such as Section 23 UI Interactivity & GSAP Animation Roadmap) or user task requirements to identify the specific feature name and filename (e.g. `prompts/19-header-interactive-navigation.md`).
+4. **Present Detailed Next Prompt Specification**: When the user provides `i` or `I`, respond with a complete, structured overview of the next prompt to be written:
+   - **Prompt Number & Filename**: e.g., `prompts/19-header-interactive-navigation.md`
+   - **Feature Goal**: Clear 1-2 sentence description of what the prompt achieves.
+   - **Files to Modify/Create**: Explicit list of target file paths with `[NEW]` or `[MODIFY]` tags.
+   - **Skills Required**: Relevant skills from Section 3 (e.g., `gsap-core`, `gsap-react`, `gsap-timeline`).
+   - **Key Architecture & Design Requirements**: Core technical rules, state boundaries, or GSAP patterns to adhere to.
+   - **Verification Checks**: Commands to run (`npm run typecheck`, `npm run lint`).
+5. **Strict No-Code Rule on Query**: Answering an `i` or `I` prompt query is purely informational and planning-oriented; do not generate code or mutate application state during prompt inspection.
 
 Each prompt must include:
 
@@ -732,11 +765,13 @@ When in doubt:
 2. Use the relevant skill.
 3. Preserve server/client boundaries.
 4. Ask a focused question if needed.
-5. Save a prompt before coding.
-6. Ask if it is good to execute.
-7. Implement after confirmation.
-8. Run available checks.
-9. Share exact test steps.
+5. Use `i` or `I` to know what prompt is next to be written.
+6. Save a prompt before coding.
+7. Ask if it is good to execute (confirm with `y` or `Y`).
+8. Implement after confirmation.
+9. Run available checks.
+10. Commit to main using `.agents/skills/caveman-commit`.
+11. Share exact test steps.
 
 ---
 
@@ -750,7 +785,87 @@ When in doubt:
 
 Development and runtime:
 
-- `npm run dev` â€” start the Next.js dev server; watch its terminal for scrape and analysis logs (section 17)
-- `npm run start` â€” run the production build locally after `npm run build`
+- `npm run dev` — start the Next.js dev server; watch its terminal for scrape and analysis logs (section 17)
+- `npm run start` — run the production build locally after `npm run build`
 
 After implementation, run `typecheck` and `lint` at minimum. Add `build` when routes, config, or server modules changed. Report the exact command output; do not claim a check passed without running it.
+
+---
+
+# 23. UI Interactivity & GSAP Animation Roadmap
+
+This section defines the comprehensive architecture and prompt roadmap to make the entire PIXCA UI interactive, responsive, accessible, and animated using **GSAP** (`gsap`, `@gsap/react`, `ScrollTrigger`).
+
+## Scope and Principles
+
+1. **Client/Server Separation**: Server Components handle data fetching via Supabase queries; interactive and animated features use focused Client Components.
+2. **GSAP Best Practices**:
+   - Strictly use the `useGSAP()` hook from `@gsap/react` with a scoped `containerRef` to guarantee proper React 19 lifecycle management, instant cleanup on unmount, and zero memory leaks.
+   - All GSAP animations run exclusively on the client (never during SSR).
+   - Animate compositor-friendly properties (`transform`, `autoAlpha`, `scale`) to guarantee smooth 60fps performance and avoid layout thrashing.
+   - Use `ScrollTrigger.batch` for efficient staggered viewport reveals on the article grid.
+   - Respect `prefers-reduced-motion: reduce` with `gsap.matchMedia()` for accessibility.
+3. **URL as State of Truth**: Homepage source, bias, and search filters are driven by URL search parameters (`?source=...&bias=...&q=...`) to enable shareable links, browser back/forward history, and SSR compatibility with `await connection()`.
+4. **Optimistic & Resilient UX**: Actions like saving/bookmarking, sharing, and newsletter subscription provide instant visual feedback with springy micro-animations and toast notifications.
+5. **Accessible Components**: Interactive drawers, tooltips, popovers, and dropdowns follow accessible design patterns with keyboard and touch support using `@base-ui/react`.
+
+## Sequential Prompt Execution Steps
+
+The UI implementation is divided into the following sequential prompt files in `prompts/`:
+
+### Prompt 18: `prompts/18-ui-interactive-foundations.md`
+- **Goal**: Establish the core interactive UI & GSAP animation infrastructure.
+- **Files**:
+  - `package.json` [MODIFY]: Add `gsap`, `@gsap/react`, `sonner`.
+  - `lib/gsap/index.ts` [NEW]: Plugin registration (`useGSAP`, `ScrollTrigger`), global defaults, and reduced-motion matchMedia helpers.
+  - `components/ui/toaster.tsx` [NEW]: Sonner toaster component configured with theme CSS variables.
+  - `components/layout/theme-provider.tsx` [NEW]: Theme state provider with localStorage sync.
+  - `components/ui/tooltip.tsx` [NEW]: Accessible tooltip primitive.
+  - `components/ui/popover.tsx` [NEW]: Accessible popover primitive.
+  - `app/layout.tsx` [MODIFY]: Integrate ThemeProvider and Toaster.
+- **Verification**: `npm run typecheck`, `npm run lint`.
+
+### Prompt 19: `prompts/19-header-interactive-navigation.md`
+- **Goal**: Make the global header and utility bar fully functional with GSAP entrance & drawer animations.
+- **Files**:
+  - `components/layout/header.tsx` [MODIFY]: Interactive navigation, GSAP entrance timeline (`y: -10, autoAlpha: 0, stagger: 0.05`).
+  - `components/layout/dynamic-date.tsx` [NEW]: Live client-formatted date with hydration protection.
+  - `components/layout/mobile-drawer.tsx` [NEW]: Slide-out drawer with GSAP spring animation (`xPercent: -100` to `0`).
+  - `components/layout/edition-selector.tsx` [NEW]: Dropdown popover for international editions.
+  - `components/layout/theme-toggle.tsx` [NEW]: Light/Dark/System toggle buttons.
+- **Verification**: `npm run typecheck`, `npm run lint`.
+
+### Prompt 20: `prompts/20-homepage-source-pills-and-filters.md`
+- **Goal**: Make homepage source pills, filters, search, and news grid interactive with GSAP staggers.
+- **Files**:
+  - `components/ui/source-pills-bar.tsx` [NEW]: Client component for smooth chevron scrolling & source filter pills with boundary auto-fade.
+  - `components/ui/filter-bar.tsx` [NEW]: Search input + Bias/Sentiment filter chip bar.
+  - `components/ui/article-grid.tsx` [NEW]: Client grid wrapper with `useGSAP` staggers (`y: 20, autoAlpha: 0, stagger: 0.08`) and `ScrollTrigger.batch`.
+  - `app/page.tsx` [MODIFY]: Wire search params, filter queries, and pass to client components.
+- **Verification**: `npm run typecheck`, `npm run lint`.
+
+### Prompt 21: `prompts/21-article-details-actions-and-tooltips.md`
+- **Goal**: Make all action buttons and explainer elements on the news details page interactive with GSAP micro-animations.
+- **Files**:
+  - `hooks/use-bookmarks.ts` [NEW]: LocalStorage bookmark management hook.
+  - `components/ui/reading-progress.tsx` [NEW]: ScrollTrigger scrubbed reading progress bar (`scaleX: 0` to `1`).
+  - `components/ui/article-action-bar.tsx` [NEW]: Bookmark with GSAP click bounce (`scale: 1.25 -> 1.0`), Native Share / Clipboard fallback, and Options menu.
+  - `components/ui/bias-meter.tsx` [MODIFY]: Add GSAP bar expansion animation (`ease: "power2.out"`).
+  - `components/ui/ai-metric-explainer.tsx` [NEW]: Popover tooltips for Bias Distribution, Bias Analysis, and AI Summary methodology.
+  - `app/article/[id]/page.tsx` [MODIFY]: Integrate reading progress, action bar, animated bias meter, and metric tooltips.
+- **Verification**: `npm run typecheck`, `npm run lint`.
+
+### Prompt 22: `prompts/22-newsletter-and-feedback-system.md`
+- **Goal**: Turn the newsletter block into a fully interactive subscription component with GSAP form transitions.
+- **Files**:
+  - `components/ui/newsletter-subscribe.tsx` [MODIFY]: Client-side email validation, loading spinner, GSAP success morph, and toast notifications.
+  - `app/api/newsletter/route.ts` [NEW]: API route for newsletter capture.
+- **Verification**: `npm run typecheck`, `npm run lint`.
+
+### Prompt 23: `prompts/23-saved-articles-and-user-curation.md`
+- **Goal**: Provide user curation pages and feeds with fluid card transitions.
+- **Files**:
+  - `app/saved/page.tsx` [NEW]: Bookmarked articles view with GSAP removal animations and quick-access links.
+  - `app/blindspot/page.tsx` [NEW]: Curated feed highlighting political framing divergence.
+  - `components/layout/header.tsx` [MODIFY]: Connect "Saved", "Blindspot", and "For You" links.
+- **Verification**: `npm run typecheck`, `npm run lint`, `npm run build`.
