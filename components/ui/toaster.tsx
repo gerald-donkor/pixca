@@ -25,7 +25,7 @@ function Toaster({ ...props }: ToasterProps) {
           error:
             "group-[.toaster]:!border-red-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
           success:
-            "group-[.toaster]:!border-emerald-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
+            "group-[.toaster]:!bg-emerald-600 dark:group-[.toaster]:!bg-emerald-700 group-[.toaster]:!text-white group-[.toaster]:!border-2 group-[.toaster]:!border-blue-400 dark:group-[.toaster]:!border-blue-400 group-[.toaster]:!shadow-[0_8px_25px_rgba(59,130,246,0.3)] [&_[data-icon]]:!text-white [&_[data-description]]:!text-emerald-100",
           info:
             "group-[.toaster]:!border-blue-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
         },
