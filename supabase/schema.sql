@@ -239,3 +239,16 @@ $$;
 revoke all on function public.match_related_articles(uuid, vector, int) from public;
 revoke all on function public.match_related_articles(uuid, vector, int) from anon, authenticated;
 grant execute on function public.match_related_articles(uuid, vector, int) to service_role;
+
+-- 8. newsletter_subscribers -----------------------------------------------
+
+create table if not exists public.newsletter_subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  subscribed_at timestamptz not null default now()
+);
+
+comment on table public.newsletter_subscribers is 'service_role only -- no anon/authenticated policies by design.';
+
+alter table public.newsletter_subscribers enable row level security;
+

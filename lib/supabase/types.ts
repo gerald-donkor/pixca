@@ -218,6 +218,20 @@ export type Database = {
           },
         ];
       };
+      newsletter_subscribers: {
+        Row: {
+          id: string;
+          email: string;
+          subscribed_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          subscribed_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["newsletter_subscribers"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -258,3 +272,8 @@ export type OxylabsScheduleUpdate = Database["public"]["Tables"]["oxylabs_schedu
 export type OxylabsScheduleRun = Database["public"]["Tables"]["oxylabs_schedule_runs"]["Row"];
 export type OxylabsScheduleRunInsert = Database["public"]["Tables"]["oxylabs_schedule_runs"]["Insert"];
 export type OxylabsScheduleRunUpdate = Database["public"]["Tables"]["oxylabs_schedule_runs"]["Update"];
+
+export type NewsletterSubscriber = Database["public"]["Tables"]["newsletter_subscribers"]["Row"];
+export type NewsletterSubscriberInsert = Database["public"]["Tables"]["newsletter_subscribers"]["Insert"];
+export type NewsletterSubscriberUpdate = Database["public"]["Tables"]["newsletter_subscribers"]["Update"];
+
