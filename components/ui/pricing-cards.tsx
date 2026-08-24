@@ -61,8 +61,8 @@ const PLANS: TierPlan[] = [
     description: "For professionals, researchers, and journalists needing deep narrative intelligence.",
     highlight: true,
     prices: {
-      USD: { monthly: 9, annual: 86, monthlyEq: 7.17, save: 22 },
-      GHS: { monthly: 120, annual: 1150, monthlyEq: 95.83, save: 290 },
+      USD: { monthly: 9.99, annual: 89.99, monthlyEq: 7.5, save: 29.89 },
+      GHS: { monthly: 129.99, annual: 1199.99, monthlyEq: 100, save: 359.89 },
     },
     features: [
       "Everything in Free Reader, plus:",
@@ -84,8 +84,8 @@ const PLANS: TierPlan[] = [
     description: "For newsrooms, institutions, and developers building on news intelligence.",
     highlight: false,
     prices: {
-      USD: { monthly: 29, annual: 279, monthlyEq: 23.25, save: 69 },
-      GHS: { monthly: 390, annual: 3740, monthlyEq: 311.67, save: 940 },
+      USD: { monthly: 29.99, annual: 289.99, monthlyEq: 24.17, save: 69.89 },
+      GHS: { monthly: 399.99, annual: 3799.99, monthlyEq: 316.67, save: 999.89 },
     },
     features: [
       "Everything in Pixca Pro, plus:",
@@ -114,7 +114,7 @@ export function PricingCards() {
     interval: BillingInterval;
   }>({
     name: "Pixca Pro",
-    price: 9,
+    price: 9.99,
     currency: "USD",
     interval: "monthly",
   });

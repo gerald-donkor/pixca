@@ -48,7 +48,7 @@ export function CheckoutModal({
   planName = "Pixca Pro",
   currency = "USD",
   interval = "monthly",
-  price = 9,
+  price = 9.99,
 }: CheckoutModalProps) {
   const { user, isLoaded } = useUser();
 
