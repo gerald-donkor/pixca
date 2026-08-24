@@ -9,7 +9,7 @@ import "server-only";
 // the `output` property; `@ai-sdk/google` reads
 // `GOOGLE_GENERATIVE_AI_API_KEY` from the environment by itself.
 
-import { google } from "@ai-sdk/google";
+import { google, type GoogleLanguageModelOptions } from "@ai-sdk/google";
 import { Output, generateText } from "ai";
 import {
   analysisOutputSchema,
@@ -17,7 +17,11 @@ import {
   normalizePercentages,
   type AnalysisOutput,
 } from "@/lib/ai/analysis-schema";
-import { isRateLimitError, toModelErrorMessage } from "@/lib/ai/errors";
+import {
+  isRateLimitError,
+  isSafetyOrRefusalError,
+  toModelErrorMessage,
+} from "@/lib/ai/errors";
 import { ANALYSIS_SYSTEM_PROMPT, buildAnalysisPrompt } from "@/lib/ai/prompt";
 import { ANALYSIS_DISCLAIMER_FALLBACK, ANALYSIS_MODEL_ID } from "@/lib/config/ai";
 import { ANALYSIS_MAX_ATTEMPTS } from "@/lib/config/limits";
@@ -34,7 +38,8 @@ export type AnalysisFailureReason =
   | "invalid_output"
   | "percentages_unusable"
   | "model_error"
-  | "rate_limited";
+  | "rate_limited"
+  | "safety_blocked";
 
 export type AnalyzeArticleResult =
   | { ok: true; analysis: ArticleAnalysisInsert }
@@ -92,6 +97,32 @@ async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArtic
         rawText: article.raw_text,
       }),
       output: Output.object({ schema: analysisOutputSchema }),
+      providerOptions: {
+        google: {
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HATE_SPEECH",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_NONE",
+            },
+            {
+              category: "HARM_CATEGORY_CIVIC_INTEGRITY",
+              threshold: "BLOCK_NONE",
+            },
+          ],
+        } satisfies GoogleLanguageModelOptions,
+      },
       // One attempt = one API request. Retry policy lives in the loop above,
       // not in two places; the SDK default of 2 silently tripled quota use.
       maxRetries: 0,
@@ -156,6 +187,10 @@ async function attemptAnalysis(article: AnalyzableArticle): Promise<AnalyzeArtic
 function resolveErrorReason(error: unknown): AnalysisFailureReason {
   if (isRateLimitError(error)) {
     return "rate_limited";
+  }
+
+  if (isSafetyOrRefusalError(error)) {
+    return "safety_blocked";
   }
 
   return error instanceof Error && error.name.includes("NoObjectGenerated")
