@@ -4,6 +4,7 @@ import { cache } from "react";
 import { toVectorLiteral } from "@/lib/ai/embed-article";
 import { RELATED_ARTICLES_LIMIT } from "@/lib/config/limits";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { isValidUuid } from "@/lib/utils";
 import type {
   Article,
   ArticleAnalysis,
@@ -72,6 +73,9 @@ export async function getPublishedArticles({
     .not("analyzed_at", "is", null);
 
   if (sourceId) {
+    if (!isValidUuid(sourceId)) {
+      return [];
+    }
     queryBuilder = queryBuilder.eq("source_id", sourceId);
   } else if (sourceName) {
     queryBuilder = queryBuilder.ilike("source.name", sourceName);
@@ -94,6 +98,9 @@ export async function getPublishedArticles({
     .range(offset, offset + limit - 1);
 
   if (error) {
+    if (error.code === "22P02") {
+      return [];
+    }
     throw error;
   }
 
@@ -102,6 +109,10 @@ export async function getPublishedArticles({
 
 export const getArticleWithAnalysis = cache(
   async (id: string): Promise<ArticleWithSourceAndAnalysisDetail | null> => {
+    if (!isValidUuid(id)) {
+      return null;
+    }
+
     const { data, error } = await getSupabaseAdminClient()
       .from("articles")
       .select(
@@ -111,6 +122,9 @@ export const getArticleWithAnalysis = cache(
       .maybeSingle();
 
     if (error) {
+      if (error.code === "22P02" || error.code === "PGRST116") {
+        return null;
+      }
       throw error;
     }
 
@@ -215,8 +229,12 @@ export async function getPendingAnalysisArticles({
     .is("embedding", null);
 
   if (articleIds) {
-    idQuery = idQuery.in("id", articleIds);
-    embedQuery = embedQuery.in("article_id", articleIds);
+    const validIds = articleIds.filter(isValidUuid);
+    if (validIds.length === 0) {
+      return [];
+    }
+    idQuery = idQuery.in("id", validIds);
+    embedQuery = embedQuery.in("article_id", validIds);
   }
 
   const [{ data: idRows, error: idError }, { data: embedRows, error: embedError }] =
@@ -293,6 +311,10 @@ export async function getRelatedArticles(
   articleId: string,
   embedding: string | number[]
 ): Promise<RelatedArticleRow[]> {
+  if (!isValidUuid(articleId)) {
+    return [];
+  }
+
   const { data, error } = await getSupabaseAdminClient().rpc("match_related_articles", {
     p_article_id: articleId,
     p_embedding: toVectorLiteral(embedding),
@@ -300,8 +322,11 @@ export async function getRelatedArticles(
   });
 
   if (error) {
+    if (error.code === "22P02") {
+      return [];
+    }
     throw error;
   }
 
-  return data;
+  return data ?? [];
 }

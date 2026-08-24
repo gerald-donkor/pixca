@@ -3,6 +3,7 @@ import "server-only";
 import { toVectorLiteral } from "@/lib/ai/embed-article";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { ArticleAnalysis, ArticleAnalysisInsert } from "@/lib/supabase/types";
+import { isValidUuid } from "@/lib/utils";
 
 export async function insertArticleAnalysis(
   data: ArticleAnalysisInsert
@@ -29,23 +30,37 @@ export async function updateAnalysisEmbedding(
   analysisId: string,
   embedding: number[]
 ): Promise<void> {
+  if (!isValidUuid(analysisId)) {
+    return;
+  }
+
   const { error } = await getSupabaseAdminClient()
     .from("article_analyses")
     .update({ embedding: toVectorLiteral(embedding) })
     .eq("id", analysisId);
 
   if (error) {
+    if (error.code === "22P02") {
+      return;
+    }
     throw error;
   }
 }
 
 export async function markArticleAnalyzed(articleId: string): Promise<void> {
+  if (!isValidUuid(articleId)) {
+    return;
+  }
+
   const { error } = await getSupabaseAdminClient()
     .from("articles")
     .update({ analyzed_at: new Date().toISOString() })
     .eq("id", articleId);
 
   if (error) {
+    if (error.code === "22P02") {
+      return;
+    }
     throw error;
   }
 }

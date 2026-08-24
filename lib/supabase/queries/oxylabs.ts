@@ -2,6 +2,7 @@ import "server-only";
 
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import type { OxylabsSchedule, OxylabsScheduleRun } from "@/lib/supabase/types";
+import { isValidUuid } from "@/lib/utils";
 
 /** Same bound as the article URL existence check — never more than 15 per `.in()`. */
 const JOB_ID_CHUNK_SIZE = 15;
@@ -136,12 +137,19 @@ export async function listScheduleRuns(limit: number): Promise<OxylabsScheduleRu
 }
 
 export async function markScheduleRunProcessed(id: string): Promise<void> {
+  if (!isValidUuid(id)) {
+    return;
+  }
+
   const { error } = await getSupabaseAdminClient()
     .from("oxylabs_schedule_runs")
     .update({ processed: true })
     .eq("id", id);
 
   if (error) {
+    if (error.code === "22P02") {
+      return;
+    }
     throw error;
   }
 }
