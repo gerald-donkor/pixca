@@ -77,7 +77,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
           {imageUrl ? (
             <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-[var(--bg-secondary)] text-text-secondary p-4 text-center">
+            <div className="flex h-full w-full items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-secondary)] p-4 text-center">
               <span className="text-[13px] font-medium leading-[1.6]">Image Placeholder</span>
             </div>
           )}
@@ -139,13 +139,13 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
                   </span>
                 )}
                 {confidence !== undefined && (
-                  <span className="text-[12px] font-semibold text-text-secondary">
+                  <span className="text-[12px] font-semibold text-[var(--text-secondary)]">
                     {formatConfidence(confidence)} confidence
                   </span>
                 )}
               </>
             ) : sourcesCount !== undefined ? (
-              <span className="text-[12px] font-semibold text-text-secondary">{sourcesCount} sources</span>
+              <span className="text-[12px] font-semibold text-[var(--text-secondary)]">{sourcesCount} sources</span>
             ) : (
               <>
                 {timeAgo && (

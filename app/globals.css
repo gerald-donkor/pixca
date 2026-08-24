@@ -107,16 +107,16 @@
 .dark {
   --text-primary: #FFFFFF;
   --text-secondary: #A1A1AA;
-  --surface: #18181B;
+  --surface: #09090B;
   --bg-primary: #09090B;
   --bg-secondary: #27272A;
   --bias-center: #3F3F46;
 
   --background: #09090B;
   --foreground: #FFFFFF;
-  --card: #09090B;
+  --card: #121215;
   --card-foreground: #FFFFFF;
-  --popover: #09090B;
+  --popover: #121215;
   --popover-foreground: #FFFFFF;
   --primary: #FFFFFF;
   --primary-foreground: #09090B;

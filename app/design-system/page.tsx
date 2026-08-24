@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 export default function DesignSystemPage() {
   return (
-    <div className="min-h-screen bg-[#F6F6F6] text-[#0D0D0F] font-sans antialiased selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] font-sans antialiased selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]">
       {/* Main Grid Wrapper */}
       <main className="container mx-auto max-w-[1400px] px-6 py-10 space-y-8">
         
@@ -40,13 +40,13 @@ export default function DesignSystemPage() {
           <div className="space-y-6">
             
             {/* BRAND */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm flex flex-col items-center justify-center text-center min-h-[220px]">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs flex flex-col items-center justify-center text-center min-h-[220px]">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)] mb-6 self-start">
                 Brand
               </div>
               <div className="flex flex-col items-center flex-grow justify-center mb-4">
                 <span className="text-4xl font-extrabold tracking-tight select-none">
-                  Pixca<span className="text-xs font-semibold px-2 py-0.5 ml-1 bg-[var(--text-primary)] text-white rounded-sm align-middle">News</span>
+                  Pixca<span className="text-xs font-semibold px-2 py-0.5 ml-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-sm align-middle">News</span>
                 </span>
                 <p className="mt-3 text-[13px] text-[var(--text-secondary)] font-medium max-w-[200px]">
                   Balanced news coverage, powered by AI.
@@ -55,7 +55,7 @@ export default function DesignSystemPage() {
             </div>
 
             {/* COLORS */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-6">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-6">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Colors
               </div>
@@ -76,9 +76,9 @@ export default function DesignSystemPage() {
                       <span className="text-[10px] text-[var(--text-secondary)]">#6B7280</span>
                     </div>
                     <div className="space-y-1">
-                      <div className="h-12 w-full rounded bg-[#F6F6F6] border border-[var(--border)]" />
+                      <div className="h-12 w-full rounded bg-zinc-100 dark:bg-zinc-800 border border-[var(--border)]" />
                       <span className="text-[11px] font-bold block leading-none">Surface</span>
-                      <span className="text-[10px] text-[var(--text-secondary)]">#F6F6F6</span>
+                      <span className="text-[10px] text-[var(--text-secondary)]">var(--surface)</span>
                     </div>
                   </div>
                 </div>
@@ -93,7 +93,7 @@ export default function DesignSystemPage() {
                       <span className="text-[10px] text-[var(--text-secondary)]">#B42318</span>
                     </div>
                     <div className="space-y-1">
-                      <div className="h-12 w-full rounded bg-[#E5E7EB] border border-[var(--border)]" />
+                      <div className="h-12 w-full rounded bg-[#E5E7EB] dark:bg-zinc-700 border border-[var(--border)]" />
                       <span className="text-[11px] font-bold block leading-none">Center</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">#E5E7EB</span>
                     </div>
@@ -110,24 +110,24 @@ export default function DesignSystemPage() {
                   <span className="text-[11px] uppercase font-bold tracking-wider text-[var(--text-secondary)] block mb-2">Neutrals</span>
                   <div className="grid grid-cols-4 gap-2">
                     <div className="space-y-1">
-                      <div className="h-10 w-full rounded bg-[#FFFFFF] border border-[var(--border)]" />
+                      <div className="h-10 w-full rounded bg-white dark:bg-zinc-900 border border-[var(--border)]" />
                       <span className="text-[9px] font-bold block truncate leading-none">BG Prim</span>
-                      <span className="text-[8px] text-[var(--text-secondary)]">#FFFFFF</span>
+                      <span className="text-[8px] text-[var(--text-secondary)]">Primary</span>
                     </div>
                     <div className="space-y-1">
-                      <div className="h-10 w-full rounded bg-[#F0F0F0] border border-[var(--border)]" />
+                      <div className="h-10 w-full rounded bg-zinc-100 dark:bg-zinc-800 border border-[var(--border)]" />
                       <span className="text-[9px] font-bold block truncate leading-none">BG Sec</span>
-                      <span className="text-[8px] text-[var(--text-secondary)]">#F0F0F0</span>
+                      <span className="text-[8px] text-[var(--text-secondary)]">Secondary</span>
                     </div>
                     <div className="space-y-1">
-                      <div className="h-10 w-full rounded bg-[#E5E7EB] border border-[var(--border)]" />
+                      <div className="h-10 w-full rounded bg-zinc-200 dark:bg-zinc-800 border border-[var(--border)]" />
                       <span className="text-[9px] font-bold block truncate leading-none">Border</span>
-                      <span className="text-[8px] text-[var(--text-secondary)]">#E5E7EB</span>
+                      <span className="text-[8px] text-[var(--text-secondary)]">Border</span>
                     </div>
                     <div className="space-y-1">
-                      <div className="h-10 w-full rounded bg-[#E5E7EB] border border-[var(--border)]" />
+                      <div className="h-10 w-full rounded bg-zinc-200 dark:bg-zinc-800 border border-[var(--border)]" />
                       <span className="text-[9px] font-bold block truncate leading-none">Divider</span>
-                      <span className="text-[8px] text-[var(--text-secondary)]">#E5E7EB</span>
+                      <span className="text-[8px] text-[var(--text-secondary)]">Divider</span>
                     </div>
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export default function DesignSystemPage() {
             </div>
 
             {/* SPACING SYSTEM */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Spacing System <span className="text-[10px] lowercase font-normal">(4px base unit)</span>
               </div>
@@ -182,7 +182,7 @@ export default function DesignSystemPage() {
           <div className="space-y-6">
             
             {/* TYPOGRAPHY */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-6">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-6">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Typography
               </div>
@@ -196,37 +196,37 @@ export default function DesignSystemPage() {
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">H1</span>
                     <span className="text-h1 font-bold text-[var(--text-primary)] flex-1">Page / Screen Title</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">32px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">H2</span>
                     <span className="text-h2 font-semibold text-[var(--text-primary)] flex-1">Section Title</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">24px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">H3</span>
                     <span className="text-h3 font-semibold text-[var(--text-primary)] flex-1">Card / Module Title</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">20px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">H4</span>
                     <span className="text-h4 font-medium text-[var(--text-primary)] flex-1">Subheading</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">16px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">Body Lg</span>
                     <span className="text-body-lg text-[var(--text-primary)] flex-1">Important content</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">16px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">Body Md</span>
                     <span className="text-body-md text-[var(--text-primary)] flex-1">Body text</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">14px</span>
                   </div>
-                  <div className="flex items-baseline gap-4 border-b border-[#F6F6F6] pb-2">
+                  <div className="flex items-baseline gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-2">
                     <span className="text-caption font-bold w-16 shrink-0 text-[var(--text-secondary)]">Body Sm</span>
                     <span className="text-body-sm text-[var(--text-primary)] flex-1">Supporting text</span>
                     <span className="text-caption font-medium text-right w-12 text-[var(--text-secondary)]">13px</span>
@@ -241,11 +241,11 @@ export default function DesignSystemPage() {
             </div>
 
             {/* ICONS */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Icons
               </div>
-              <div className="grid grid-cols-5 gap-4 p-2 bg-[#F6F6F6] rounded-lg border border-[var(--border)] justify-items-center">
+              <div className="grid grid-cols-5 gap-4 p-2 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-[var(--border)] justify-items-center">
                 <Menu className="h-5 w-5 stroke-[2]" />
                 <Search className="h-5 w-5 stroke-[2]" />
                 <Bookmark className="h-5 w-5 stroke-[2]" />
@@ -268,7 +268,7 @@ export default function DesignSystemPage() {
             </div>
 
             {/* GRID SYSTEM */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Grid System
               </div>
@@ -301,7 +301,7 @@ export default function DesignSystemPage() {
           <div className="space-y-6">
             
             {/* UI ELEMENTS */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-6">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-6">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 UI Elements
               </div>
@@ -326,7 +326,7 @@ export default function DesignSystemPage() {
                   <div className="grid grid-cols-4 gap-2 items-center">
                     <span className="text-xs font-bold text-[var(--text-secondary)]">Secondary</span>
                     <Button size="xs" variant="secondary">Button</Button>
-                    <Button size="xs" variant="secondary" className="bg-[#F0F0F0]">Button</Button>
+                    <Button size="xs" variant="secondary" className="bg-zinc-100 dark:bg-zinc-800">Button</Button>
                     <Button size="xs" variant="outline">Button</Button>
                   </div>
                   <div className="grid grid-cols-4 gap-2 items-center">
@@ -357,7 +357,7 @@ export default function DesignSystemPage() {
             </div>
 
             {/* CARD EXAMPLE */}
-            <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+            <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
               <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                 Card Example
               </div>
@@ -370,34 +370,34 @@ export default function DesignSystemPage() {
                 readTime="12 min read"
                 imageUrl="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=500&auto=format&fit=crop&q=60"
                 bias={{ left: 25, center: 50, right: 49 }}
-                className="shadow-sm border-[var(--border)] bg-white max-w-full"
+                className="shadow-xs border-[var(--border)] bg-card max-w-full"
               />
             </div>
 
             {/* SHADOWS & BORDERS */}
             <div className="grid grid-cols-2 gap-4">
               {/* Shadows */}
-              <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
                 <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                   Shadows
                 </div>
                 <div className="space-y-3 text-xs font-semibold">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded bg-white shadow-sm border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded bg-card shadow-xs border border-[var(--border)]" />
                     <div>
                       <span className="block">Small</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">rgba(0,0,0,0.05)</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded bg-white shadow-md border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded bg-card shadow-md border border-[var(--border)]" />
                     <div>
                       <span className="block">Medium</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">rgba(0,0,0,0.08)</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded bg-white shadow-lg border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded bg-card shadow-lg border border-[var(--border)]" />
                     <div>
                       <span className="block">Large</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">rgba(0,0,0,0.12)</span>
@@ -407,27 +407,27 @@ export default function DesignSystemPage() {
               </div>
 
               {/* Border Radius */}
-              <div className="bg-white rounded-xl border border-[var(--border)] p-6 shadow-sm space-y-4">
+              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
                 <div className="text-xs uppercase font-bold tracking-wider text-[var(--text-secondary)]">
                   Border Radius
                 </div>
                 <div className="space-y-3 text-xs font-semibold">
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-sm bg-white border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded-sm bg-card border border-[var(--border)]" />
                     <div>
                       <span className="block">Small</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">4px</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-md bg-white border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded-md bg-card border border-[var(--border)]" />
                     <div>
                       <span className="block">Medium</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">8px</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-lg bg-white border border-[var(--border)]" />
+                    <div className="h-8 w-8 rounded-lg bg-card border border-[var(--border)]" />
                     <div>
                       <span className="block">Large</span>
                       <span className="text-[10px] text-[var(--text-secondary)]">12px</span>
