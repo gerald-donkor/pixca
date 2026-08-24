@@ -28,16 +28,20 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Help */}
-          <div className="space-y-3">
-            <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-500">Help</h4>
-            <ul className="space-y-2 text-xs text-zinc-400 font-medium">
-              <li className="hover:text-white cursor-pointer transition-colors">Help Center</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Guides</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Privacy Policy</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Terms of Service</li>
-            </ul>
-          </div>
+            {/* Column 3: Help */}
+            <div className="space-y-3">
+              <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-500">Help & Status</h4>
+              <ul className="space-y-2 text-xs text-zinc-400 font-medium">
+                <li>
+                  <Link href="/logs" className="hover:text-white cursor-pointer transition-colors">
+                    System Status
+                  </Link>
+                </li>
+                <li className="hover:text-white cursor-pointer transition-colors">Help Center</li>
+                <li className="hover:text-white cursor-pointer transition-colors">Privacy Policy</li>
+                <li className="hover:text-white cursor-pointer transition-colors">Terms of Service</li>
+              </ul>
+            </div>
 
           {/* Column 4: Connect */}
           <div className="space-y-3">
