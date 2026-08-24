@@ -46,8 +46,6 @@ export async function generateMetadata({
     const description =
       article.analysis?.summary ||
       "AI-powered news analysis, political framing breakdown, and sentiment metrics.";
-    const imageUrl = article.image_url;
-
     return {
       title,
       description,
@@ -58,13 +56,11 @@ export async function generateMetadata({
         siteName: "Pixca News",
         type: "article",
         publishedTime: article.published_at,
-        images: imageUrl ? [{ url: imageUrl, alt: article.title }] : undefined,
       },
       twitter: {
         card: "summary_large_image",
         title: `${title} — Pixca News`,
         description,
-        images: imageUrl ? [imageUrl] : undefined,
       },
     };
   } catch (error) {
