@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import { validateEmailFormat } from "@/lib/validation/email";
+import { verifyEmailDomainDns } from "@/lib/validation/dns";
 
 const subscribeSchema = z.object({
   email: z
     .string()
     .trim()
-    .email("Please enter a valid email address.")
     .max(255, "Email address is too long."),
 });
 
@@ -25,7 +26,35 @@ export async function POST(request: Request) {
       );
     }
 
-    const email = parsed.data.email.toLowerCase();
+    const rawEmail = parsed.data.email;
+    const validation = validateEmailFormat(rawEmail);
+
+    if (!validation.valid) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: validation.error || "Please enter a valid email address.",
+          suggestion: validation.suggestion,
+        },
+        { status: 400 }
+      );
+    }
+
+    // Server-side DNS verification
+    if (validation.domain) {
+      const dnsResult = await verifyEmailDomainDns(validation.domain);
+      if (!dnsResult.valid) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: dnsResult.error || "The email domain could not be verified.",
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    const email = (validation.normalizedEmail || rawEmail).toLowerCase();
 
     try {
       const supabase = getSupabaseAdminClient();
@@ -68,3 +97,4 @@ export async function POST(request: Request) {
     );
   }
 }
+

@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import { validateEmailFormat } from "@/lib/validation/email";
 
 type SubscribeStatus = "idle" | "submitting" | "success" | "error";
 
@@ -14,6 +15,7 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
   const [email, setEmail] = React.useState("");
   const [status, setStatus] = React.useState<SubscribeStatus>("idle");
   const [errorMessage, setErrorMessage] = React.useState("");
+  const [suggestion, setSuggestion] = React.useState<string | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   useGSAP(
@@ -44,20 +46,24 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
     e.preventDefault();
 
     const trimmedEmail = email.trim();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     posthog.capture("newsletter_subscribe_clicked", {
       has_email: trimmedEmail.length > 0,
     });
 
-    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+    const validation = validateEmailFormat(trimmedEmail);
+    if (!validation.valid) {
+      const msg = validation.error || "Please enter a valid email address.";
       setStatus("error");
-      setErrorMessage("Please enter a valid email address.");
+      setErrorMessage(msg);
+      setSuggestion(validation.suggestion || null);
+      toast.error(msg);
       return;
     }
 
     setStatus("submitting");
     setErrorMessage("");
+    setSuggestion(null);
 
     try {
       const res = await fetch("/api/newsletter", {
@@ -75,6 +81,9 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
           data?.error || data?.message || "Failed to subscribe. Please try again.";
         setStatus("error");
         setErrorMessage(message);
+        if (data?.suggestion) {
+          setSuggestion(data.suggestion);
+        }
         toast.error(message);
         return;
       }
@@ -91,10 +100,22 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
     }
   };
 
+  const handleApplySuggestion = (suggestedDomain: string) => {
+    const atIndex = email.indexOf("@");
+    const local = atIndex !== -1 ? email.slice(0, atIndex) : email;
+    if (local) {
+      setEmail(`${local}@${suggestedDomain}`);
+      setStatus("idle");
+      setErrorMessage("");
+      setSuggestion(null);
+    }
+  };
+
   const handleReset = () => {
     setEmail("");
     setStatus("idle");
     setErrorMessage("");
+    setSuggestion(null);
   };
 
   return (
@@ -125,6 +146,7 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
                 if (status === "error") {
                   setStatus("idle");
                   setErrorMessage("");
+                  setSuggestion(null);
                 }
               }}
               disabled={status === "submitting"}
@@ -154,9 +176,22 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
             </Button>
           </div>
           {status === "error" && errorMessage && (
-            <p className="text-[11px] font-semibold text-red-600 dark:text-red-400 pl-1">
-              {errorMessage}
-            </p>
+            <div
+              role="alert"
+              aria-live="polite"
+              className="flex flex-wrap items-center gap-1 text-[11px] font-semibold text-red-600 dark:text-red-400 pl-1"
+            >
+              <span>{errorMessage}</span>
+              {suggestion && (
+                <button
+                  type="button"
+                  onClick={() => handleApplySuggestion(suggestion)}
+                  className="underline hover:text-red-700 dark:hover:text-red-300 font-bold ml-1 cursor-pointer transition-colors"
+                >
+                  Use @{suggestion}
+                </button>
+              )}
+            </div>
           )}
         </form>
       )}
