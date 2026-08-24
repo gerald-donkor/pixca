@@ -18,7 +18,7 @@ interface MobileDrawerProps {
 
 const NAV_ITEMS = [
   { label: "Home", href: "/", icon: Compass },
-  { label: "For You", href: "/#for-you", icon: Sparkles, badge: "New" },
+  { label: "For You", href: "/for-you", icon: Sparkles, badge: "New" },
   { label: "Local News", href: "/#local", icon: MapPin },
   { label: "Blindspot Feed", href: "/blindspot", icon: Globe },
   { label: "Saved Articles", href: "/saved", icon: Bookmark },

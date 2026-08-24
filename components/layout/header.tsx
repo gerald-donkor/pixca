@@ -162,11 +162,16 @@ export function Header() {
               Home
             </Link>
             <Link
-              href="/#for-you"
-              className="header-anim-item text-text-secondary hover:text-text-primary cursor-pointer transition-colors flex items-center gap-1 pb-1"
+              href="/for-you"
+              className={cn(
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1",
+                pathname === "/for-you"
+                  ? "text-text-primary border-b-2 border-text-primary font-bold"
+                  : "text-text-secondary hover:text-text-primary"
+              )}
             >
-              For You
-              <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
+              <span>For You</span>
+              <span className="w-1.5 h-1.5 bg-red-600 rounded-full" />
             </Link>
             <Link
               href="/blindspot"
