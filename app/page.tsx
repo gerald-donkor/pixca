@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import * as React from "react"
 import { connection } from "next/server"
+import { JsonLd } from "@/components/seo/json-ld"
 import { SourcePillsBar } from "@/components/ui/source-pills-bar"
 import { FilterBar } from "@/components/ui/filter-bar"
 import { ArticleGrid } from "@/components/ui/article-grid"
@@ -83,8 +84,46 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       ? `${sourceParam} News`
       : "Top News"
 
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://pixca.vercel.app").replace(/\/+$/, "")
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Pixca News",
+    url: baseUrl,
+    description:
+      "Real-time AI framing, sentiment, and bias analysis across trusted media sources.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl}/?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  }
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsMediaOrganization",
+    name: "Pixca News",
+    url: baseUrl,
+    logo: `${baseUrl}/icon.svg`,
+    description:
+      "AI-powered news aggregator and balanced media analysis platform providing multi-perspective political framing and sentiment metrics.",
+    foundingDate: "2025",
+    knowsAbout: [
+      "News Analysis",
+      "Media Bias",
+      "Sentiment Analysis",
+      "Journalism",
+      "AI Media Monitoring",
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+      <JsonLd schema={[websiteSchema, organizationSchema]} />
       {/* Category / Source Pills Bar */}
       <SourcePillsBar
         sources={sources}

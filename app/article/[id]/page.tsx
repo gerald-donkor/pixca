@@ -4,6 +4,7 @@ import { ChevronLeft } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 import { getPostHogClient } from "@/lib/posthog-server"
+import { JsonLd } from "@/components/seo/json-ld"
 import { BiasMeter } from "@/components/ui/bias-meter"
 import { RelatedArticles } from "@/components/ui/related-articles"
 import { NewsletterSubscribe } from "@/components/ui/newsletter-subscribe"
@@ -153,8 +154,44 @@ export default async function ArticleDetailsPage({
   const paragraphs = splitIntoParagraphs(article.raw_text)
   const related = await loadRelatedArticles(article.id, analysis?.embedding ?? null)
 
+  const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://pixca.vercel.app").replace(/\/+$/, "")
+
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${baseUrl}/article/${article.id}`,
+    },
+    headline: article.title,
+    description:
+      analysis?.summary ||
+      "AI-powered news analysis, political framing breakdown, and sentiment metrics.",
+    image: article.image_url ? [article.image_url] : undefined,
+    datePublished: article.published_at,
+    dateModified: analysis?.created_at || article.published_at,
+    author: [
+      {
+        "@type": "Organization",
+        name: article.source.name,
+        url: article.source.listing_url || undefined,
+      },
+    ],
+    publisher: {
+      "@type": "NewsMediaOrganization",
+      name: "Pixca News",
+      url: baseUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/icon.svg`,
+      },
+    },
+    isAccessibleForFree: true,
+  }
+
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] pb-16">
+      <JsonLd schema={articleSchema} />
       {/* Reading Progress Indicator */}
       <ReadingProgress />
 
