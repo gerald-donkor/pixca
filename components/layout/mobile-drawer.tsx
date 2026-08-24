@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 interface MobileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenSubscribe?: () => void;
 }
 
 const NAV_ITEMS = [
@@ -26,7 +27,7 @@ const NAV_ITEMS = [
   { label: "Design System", href: "/design-system", icon: LayoutTemplate },
 ];
 
-export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
+export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerProps) {
   const pathname = usePathname();
   const { bookmarks } = useBookmarks();
   const { theme, setTheme } = useTheme();
@@ -281,8 +282,13 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
           </Show>
 
           <Button
+            type="button"
             variant="default"
-            className="w-full justify-center bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-xs font-bold h-9"
+            onClick={() => {
+              onClose();
+              onOpenSubscribe?.();
+            }}
+            className="w-full justify-center bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-xs font-bold h-9 cursor-pointer"
           >
             Subscribe to Pixca Pro
           </Button>

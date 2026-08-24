@@ -11,6 +11,7 @@ import { DynamicDate } from "@/components/layout/dynamic-date";
 import { EditionSelector } from "@/components/layout/edition-selector";
 import { LocationSelector } from "@/components/layout/location-selector";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
+import { SubscribeModal } from "@/components/ui/subscribe-modal";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ export function Header() {
   const { bookmarks } = useBookmarks();
   const { theme, setTheme } = useTheme();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [subscribeOpen, setSubscribeOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   // GSAP Choreographed Entrance Animation
@@ -54,7 +56,17 @@ export function Header() {
   return (
     <div ref={containerRef}>
       {/* MOBILE DRAWER */}
-      <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        onOpenSubscribe={() => setSubscribeOpen(true)}
+      />
+
+      {/* SUBSCRIBE MODAL */}
+      <SubscribeModal
+        open={subscribeOpen}
+        onOpenChange={setSubscribeOpen}
+      />
 
       {/* UTILITY BAR */}
       <div className="hidden md:block bg-[#0D0D0F] text-[#CCCCCC] text-[11px] py-1.5 px-6 border-b border-zinc-800">
@@ -206,8 +218,10 @@ export function Header() {
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="header-anim-item">
               <Button
+                type="button"
                 variant="default"
-                className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 rounded-md"
+                onClick={() => setSubscribeOpen(true)}
+                className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 rounded-md cursor-pointer"
               >
                 Subscribe
               </Button>
