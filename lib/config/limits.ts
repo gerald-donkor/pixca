@@ -148,3 +148,10 @@ export const DEFAULT_SCHEDULE_RUNS_LIMIT = 50;
 
 /** Upper bound the runs route will accept for `?limit=`. */
 export const MAX_SCHEDULE_RUNS_LIMIT = 200;
+
+/** Stored logs returned by `GET /api/logs` by default. */
+export const DEFAULT_LOGS_LIMIT = 50;
+
+/** Upper bound the logs route will accept for `?limit=`. */
+export const MAX_LOGS_LIMIT = 200;
+
