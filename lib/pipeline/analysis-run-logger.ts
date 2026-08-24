@@ -50,6 +50,12 @@ export const analysisLog = {
     );
   },
 
+  articleSafetyFallback(articleId: string): void {
+    console.info(
+      `${PREFIX} safety blocked for ${articleId} — saving neutral fallback analysis`
+    );
+  },
+
   articleFailed(articleId: string, reason: string, message: string): void {
     console.warn(`${PREFIX} failed ${articleId} (${reason}): ${message}`);
   },

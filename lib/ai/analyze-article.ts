@@ -203,3 +203,37 @@ function emptyToNull(value: string | null): string | null {
 
   return trimmed.length > 0 ? trimmed : null;
 }
+
+/**
+ * Generates a neutral fallback analysis record when upstream AI provider policy
+ * blocks generation for sensitive news content (e.g. crime or court reports).
+ * Drains the pending queue cleanly and avoids repetitive hourly failures.
+ */
+export function buildSafetyBlockedFallbackAnalysis(
+  article: AnalyzableArticle
+): ArticleAnalysisInsert {
+  const title = article.title.trim();
+  const summary = title
+    ? `${title} — Automated AI summary and framing analysis unavailable due to content policy.`
+    : "Automated AI summary and framing analysis unavailable due to content policy.";
+
+  return {
+    article_id: article.id,
+    summary,
+    sentiment_score: 0,
+    sentiment_label: "neutral",
+    bias_score: 0,
+    bias_label: "unclear",
+    left_percentage: 0,
+    center_percentage: 100,
+    right_percentage: 0,
+    confidence: 0.1,
+    framing_notes:
+      "Automated framing analysis omitted in accordance with AI provider sensitive content policies.",
+    loaded_terms: [],
+    disclaimer:
+      "Automated AI analysis unavailable for this report due to AI provider content policy.",
+    model: ANALYSIS_MODEL_ID,
+  };
+}
+

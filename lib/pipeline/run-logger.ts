@@ -97,7 +97,46 @@ export async function persistRunSummary(summary: ScrapeRunSummary): Promise<void
 
 export function toMessage(error: unknown): string {
   if (error instanceof Error) {
-    return error.message;
+    const err = error as Error & { details?: unknown; hint?: unknown; code?: unknown };
+    const parts = [err.message];
+    if (typeof err.details === "string" && err.details) parts.push(`details: ${err.details}`);
+    if (typeof err.hint === "string" && err.hint) parts.push(`hint: ${err.hint}`);
+    if ((typeof err.code === "string" || typeof err.code === "number") && err.code) {
+      parts.push(`code: ${err.code}`);
+    }
+    return parts.join(" — ");
+  }
+
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (typeof error === "object" && error !== null) {
+    const errObj = error as Record<string, unknown>;
+    const message = typeof errObj.message === "string" ? errObj.message : null;
+    const details = typeof errObj.details === "string" ? errObj.details : null;
+    const code =
+      typeof errObj.code === "string" || typeof errObj.code === "number"
+        ? String(errObj.code)
+        : null;
+    const hint = typeof errObj.hint === "string" ? errObj.hint : null;
+
+    if (message) {
+      const parts = [message];
+      if (details) parts.push(`details: ${details}`);
+      if (hint) parts.push(`hint: ${hint}`);
+      if (code) parts.push(`code: ${code}`);
+      return parts.join(" — ");
+    }
+
+    try {
+      const serialized = JSON.stringify(error);
+      if (serialized && serialized !== "{}") {
+        return serialized;
+      }
+    } catch {
+      // Ignore circular reference stringify errors
+    }
   }
 
   return "Unknown error";

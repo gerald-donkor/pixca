@@ -9,7 +9,7 @@ import "server-only";
 // Written as a plain module with no request coupling so the section 18 cron
 // route can import and reuse it unchanged.
 
-import { analyzeArticle } from "@/lib/ai/analyze-article";
+import { analyzeArticle, buildSafetyBlockedFallbackAnalysis } from "@/lib/ai/analyze-article";
 import { embedArticle } from "@/lib/ai/embed-article";
 import { ANALYSIS_MODEL_ID, EMBEDDING_MODEL_ID } from "@/lib/config/ai";
 import {
@@ -36,6 +36,7 @@ import {
   getPendingAnalysisArticles,
   type PendingAnalysisArticle,
 } from "@/lib/supabase/queries/articles";
+import type { ArticleAnalysisInsert } from "@/lib/supabase/types";
 
 export type RunAnalysisPipelineOptions = {
   /** Articles per batch. Batching exists only for timeout control (section 19). */
@@ -291,27 +292,36 @@ async function analyzeOne(
       raw_text: article.raw_text,
     });
 
-    if (!result.ok) {
-      if (result.reason === "rate_limited") {
-        stopForRateLimit(state, ANALYSIS_MODEL_ID);
-      }
+    let analysisInsert: ArticleAnalysisInsert;
 
-      recordFailure(state, article, result.reason, result.message);
-      return "failed";
+    if (!result.ok) {
+      if (result.reason === "safety_blocked") {
+        analysisLog.articleSafetyFallback(article.id);
+        analysisInsert = buildSafetyBlockedFallbackAnalysis(article);
+      } else {
+        if (result.reason === "rate_limited") {
+          stopForRateLimit(state, ANALYSIS_MODEL_ID);
+        }
+
+        recordFailure(state, article, result.reason, result.message);
+        return "failed";
+      }
+    } else {
+      analysisInsert = result.analysis;
     }
 
-    const analysis = await insertArticleAnalysis(result.analysis);
+    const analysis = await insertArticleAnalysis(analysisInsert);
 
     analysisLog.articleAnalyzed(
       article.id,
-      result.analysis.bias_label,
-      result.analysis.confidence
+      analysisInsert.bias_label,
+      analysisInsert.confidence
     );
 
     // The analysis row stays saved even if embedding fails, so the paid
     // analysis call is never wasted; `analyzed_at` stays null and the next run
     // finishes the job through the `embed_only` path.
-    const saved = await saveEmbedding(state, article, analysis.id, result.analysis.summary);
+    const saved = await saveEmbedding(state, article, analysis.id, analysisInsert.summary);
 
     if (!saved) {
       return "failed";
