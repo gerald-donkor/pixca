@@ -341,9 +341,9 @@ export function PricingCards() {
 
                 <p className="text-[10px] text-center text-[var(--text-secondary)]">
                   {currency === "GHS" && !isFree
-                    ? "Pay with MTN, Telecel, AirtelTigo or Card"
+                    ? "Pay locally with MTN MoMo, Telecel, AirtelTigo or Card"
                     : !isFree
-                    ? "Secure checkout with instant access"
+                    ? "Billed globally via Polar (Merchant of Record • VAT included)"
                     : "Instant access in 30 seconds"}
                 </p>
               </div>

@@ -13,17 +13,22 @@ const FAQS: FAQItem[] = [
   {
     question: "What payment methods are supported?",
     answer:
-      "We support both local African and international payment channels: Local Ghana Mobile Money (MTN MoMo, Telecel Cash, and AirtelTigo Money) in Ghanaian Cedis (GH₵), as well as global Credit/Debit Cards (Visa, Mastercard, American Express, Apple Pay) in USD ($) or GHS.",
+      "We support dual local and global payment channels: Global Credit/Debit Cards (Visa, Mastercard, American Express), Apple Pay, and Google Pay are processed securely via Polar (polar.sh), our official Merchant of Record with automated global VAT/tax compliance. Local Ghana Mobile Money (MTN MoMo, Telecel Cash, and AirtelTigo Money) is powered natively via Paystack.",
   },
   {
     question: "How does Mobile Money payment work?",
     answer:
-      "When you choose Mobile Money and enter your Ghana phone number, an instant USSD approval prompt will be sent directly to your phone. Simply enter your mobile money PIN to approve the transaction, and your Pixca Pro account will be activated immediately.",
+      "When you choose Mobile Money (GHS) and enter your Ghana phone number, an instant USSD approval prompt is pushed directly to your handset. Enter your Mobile Money PIN to approve the transaction, and your Pixca Pro subscription activates immediately.",
+  },
+  {
+    question: "How are international taxes and invoices handled by Polar?",
+    answer:
+      "As our Merchant of Record, Polar automatically calculates, collects, and files digital services sales tax and EU/UK VAT at checkout based on your billing address. Corporate customers can enter their VAT/tax ID for reverse-charge tax exemption, and downloadable PDF invoices and receipts are generated automatically.",
   },
   {
     question: "Can I switch between monthly and annual billing?",
     answer:
-      "Yes, you can toggle between monthly and annual billing at any time. Selecting annual billing automatically grants you an instant 20% discount across all paid subscription tiers.",
+      "Yes, you can toggle between monthly and annual billing at any time. Selecting annual billing automatically grants you an instant discount across all paid subscription tiers.",
   },
   {
     question: "Can I cancel my subscription anytime?",

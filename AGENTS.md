@@ -101,6 +101,7 @@ Use only these skills:
 - `.agents/skills/supabase`
 - `.agents/skills/oxylabs-web-scraper`
 - `.agents/skills/ai-sdk`
+- `.agents/skills/polar`
 - `.agents/skills/gsap-core`
 - `.agents/skills/gsap-react`
 - `.agents/skills/gsap-scrolltrigger`
@@ -117,6 +118,7 @@ Use them for:
 - `supabase`: schema, migrations, queries, service role usage, dedupe, logs, pgvector
 - `oxylabs-web-scraper`: Oxylabs Web Scraper API, Scheduler, scheduled jobs, scraping behavior
 - `ai-sdk`: Vercel AI SDK and Google Gemini provider usage, model calls, AI analysis output handling
+- `polar`: Polar.sh billing, subscriptions, products, checkouts, webhooks, customer portal, and Merchant of Record (MoR) tax compliance
 - `gsap-core` & `gsap-react`: UI animations, `@gsap/react` `useGSAP()` hook, tweens, staggers, and context cleanup
 - `gsap-scrolltrigger`: Scroll-driven animations, reading progress indicators, `ScrollTrigger.batch` for article grid reveal
 - `gsap-timeline`: Choreographed page entrances, drawer transitions, and micro-interactions

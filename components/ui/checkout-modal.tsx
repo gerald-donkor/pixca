@@ -155,7 +155,9 @@ export function CheckoutModal({
               <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
                 <span>Payment Channel</span>
                 <span className="font-semibold capitalize text-zinc-900 dark:text-zinc-100">
-                  {paymentMethod === "momo" ? `Mobile Money (${selectedNetwork.toUpperCase()})` : "Card / Paystack"}
+                  {paymentMethod === "momo"
+                    ? `Mobile Money (${selectedNetwork.toUpperCase()}) / Paystack`
+                    : "Polar (Merchant of Record / Global Card & Wallets)"}
                 </span>
               </div>
               <div className="flex justify-between text-zinc-500 dark:text-zinc-400">
@@ -203,7 +205,7 @@ export function CheckoutModal({
                 Complete your {planName} subscription
               </DialogTitle>
               <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-                Choose your preferred payment method. Local Ghana Mobile Money (GHS) and global cards supported.
+                Global cards & digital wallets processed securely via Polar (Merchant of Record). Local Ghana Mobile Money supported via Paystack.
               </DialogDescription>
             </DialogHeader>
 
@@ -234,7 +236,7 @@ export function CheckoutModal({
                 )}
               >
                 <CreditCard className="w-4 h-4 text-blue-500" />
-                <span>Card (USD / GHS)</span>
+                <span>Card & Wallets (Polar MoR)</span>
               </button>
             </div>
 
@@ -414,7 +416,11 @@ export function CheckoutModal({
                 </div>
                 <div className="flex items-center gap-1">
                   <Lock className="w-3 h-3 text-zinc-400" />
-                  <span>Secured by Paystack</span>
+                  <span>
+                    {paymentMethod === "card"
+                      ? "Secured by Polar (Merchant of Record)"
+                      : "Secured by Paystack (Ghana MoMo)"}
+                  </span>
                 </div>
                 <span>Cancel anytime</span>
               </div>

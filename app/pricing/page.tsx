@@ -155,7 +155,7 @@ export default function PricingPage() {
             "acceptedAnswer": {
               "@type": "Answer",
               "text":
-                "We support Ghana Mobile Money (MTN MoMo, Telecel Cash, AirtelTigo Money) in GHS (GH₵) and international Credit/Debit Cards (Visa, Mastercard, AMEX, Apple Pay) in USD ($).",
+                "We support dual local and global payment channels: Global Credit/Debit Cards, Apple Pay, and Google Pay are processed securely via Polar (Merchant of Record with automated global VAT/tax compliance). Local Ghana Mobile Money (MTN MoMo, Telecel Cash, and AirtelTigo Money) is powered natively via Paystack.",
             },
           },
           {
@@ -164,7 +164,16 @@ export default function PricingPage() {
             "acceptedAnswer": {
               "@type": "Answer",
               "text":
-                "When you choose Mobile Money and enter your Ghana phone number, an instant USSD approval prompt will be sent directly to your handset. Enter your PIN to approve, and your subscription activates immediately.",
+                "When you choose Mobile Money (GHS) and enter your Ghana phone number, an instant USSD approval prompt is pushed directly to your handset. Enter your Mobile Money PIN to approve the transaction, and your Pixca Pro subscription activates immediately.",
+            },
+          },
+          {
+            "@type": "Question",
+            "name": "How are international taxes and invoices handled by Polar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "As our Merchant of Record, Polar automatically calculates, collects, and files digital services sales tax and EU/UK VAT at checkout based on your billing address. Corporate customers can enter their VAT/tax ID for reverse-charge tax exemption, and downloadable PDF invoices and receipts are generated automatically.",
             },
           },
         ],
@@ -193,18 +202,18 @@ export default function PricingPage() {
           </p>
 
           {/* Payment Trust Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-2 text-[11px] text-[var(--text-secondary)] font-medium">
-            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
-              <Smartphone className="w-3.5 h-3.5 text-amber-500" />
-              <span>MTN MoMo • Telecel • AirtelTigo</span>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2 text-[11px] text-[var(--text-secondary)] font-medium">
             <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
               <CreditCard className="w-3.5 h-3.5 text-blue-500" />
-              <span>Visa • Mastercard • AMEX • Apple Pay</span>
+              <span>Polar (Global Cards, Apple Pay & MoR Tax)</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
+              <Smartphone className="w-3.5 h-3.5 text-amber-500" />
+              <span>MTN MoMo • Telecel • AirtelTigo (Paystack)</span>
             </div>
             <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>Secured by Paystack</span>
+              <span>256-Bit SSL Encrypted</span>
             </div>
           </div>
         </div>
