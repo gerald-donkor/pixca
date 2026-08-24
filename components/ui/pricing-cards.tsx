@@ -10,6 +10,14 @@ import { cn } from "@/lib/utils";
 export type Currency = "USD" | "GHS";
 export type BillingInterval = "monthly" | "annual";
 
+export function formatPrice(price: number, currencySymbol: string): string {
+  if (price === 0) return `${currencySymbol}0`;
+  return `${currencySymbol}${price.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
 interface TierPlan {
   id: string;
   name: string;
@@ -262,8 +270,7 @@ export function PricingCards() {
                 <div className="space-y-1 pb-4 border-b border-[var(--border)]">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-4xl sm:text-5xl font-black tracking-tight text-[var(--text-primary)]">
-                      {currencySymbol}
-                      {displayPrice.toLocaleString()}
+                      {formatPrice(displayPrice, currencySymbol)}
                     </span>
                     <span className="text-xs font-semibold text-[var(--text-secondary)]">
                       /{interval === "annual" && !isFree ? "year" : "month"}
@@ -273,13 +280,11 @@ export function PricingCards() {
                   {!isFree && interval === "annual" && (
                     <div className="flex items-center gap-2 pt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
                       <span>
-                        Equivalent to {currencySymbol}
-                        {pricing.monthlyEq.toFixed(2)}/mo
+                        Equivalent to {formatPrice(pricing.monthlyEq, currencySymbol)}/mo
                       </span>
                       <span>•</span>
                       <span>
-                        Save {currencySymbol}
-                        {pricing.save.toLocaleString()}/yr
+                        Save {formatPrice(pricing.save, currencySymbol)}/yr
                       </span>
                     </div>
                   )}

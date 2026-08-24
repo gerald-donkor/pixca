@@ -21,6 +21,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/components/ui/pricing-cards";
 import { cn } from "@/lib/utils";
 
 export interface CheckoutModalProps {
@@ -70,7 +71,7 @@ export function CheckoutModal({
   const name = nameInput !== null ? nameInput : (isLoaded && user?.fullName) || "";
 
   const currencySymbol = currency === "GHS" ? "GH₵" : "$";
-  const formattedPrice = `${currencySymbol}${price.toLocaleString()}`;
+  const formattedPrice = formatPrice(price, currencySymbol);
 
   const handleClose = (nextOpen: boolean) => {
     if (!nextOpen) {
