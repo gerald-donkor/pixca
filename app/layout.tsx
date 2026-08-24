@@ -47,6 +47,16 @@ export const metadata: Metadata = {
       "application/atom+xml": "/feed.xml",
     },
   },
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Pixca News",
+  },
 };
 
 export default function RootLayout({
