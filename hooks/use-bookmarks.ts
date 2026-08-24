@@ -118,10 +118,15 @@ export function useBookmarks() {
     saveBookmarks(next);
   }, []);
 
+  const clearBookmarks = React.useCallback(() => {
+    saveBookmarks([]);
+  }, []);
+
   return {
     bookmarks,
     isBookmarked,
     toggleBookmark,
     removeBookmark,
+    clearBookmarks,
   };
 }

@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
@@ -10,10 +11,13 @@ import { DynamicDate } from "@/components/layout/dynamic-date";
 import { EditionSelector } from "@/components/layout/edition-selector";
 import { LocationSelector } from "@/components/layout/location-selector";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
+import { useBookmarks } from "@/hooks/use-bookmarks";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 export function Header() {
+  const pathname = usePathname();
+  const { bookmarks } = useBookmarks();
   const { theme, setTheme } = useTheme();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -145,28 +149,48 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-6 text-sm font-semibold">
             <Link
               href="/"
-              className="header-anim-item text-text-primary cursor-pointer pb-1 border-b-2 border-text-primary"
+              className={cn(
+                "header-anim-item cursor-pointer pb-1 transition-colors",
+                pathname === "/"
+                  ? "text-text-primary border-b-2 border-text-primary font-bold"
+                  : "text-text-secondary hover:text-text-primary"
+              )}
             >
               Home
             </Link>
             <Link
               href="/#for-you"
-              className="header-anim-item text-text-secondary hover:text-text-primary cursor-pointer transition-colors flex items-center gap-1"
+              className="header-anim-item text-text-secondary hover:text-text-primary cursor-pointer transition-colors flex items-center gap-1 pb-1"
             >
               For You
               <span className="w-1.5 h-1.5 bg-red-600 rounded-full"></span>
             </Link>
             <Link
-              href="/#local"
-              className="header-anim-item text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
-            >
-              Local
-            </Link>
-            <Link
-              href="/#blindspot"
-              className="header-anim-item text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
+              href="/blindspot"
+              className={cn(
+                "header-anim-item cursor-pointer pb-1 transition-colors",
+                pathname === "/blindspot"
+                  ? "text-text-primary border-b-2 border-text-primary font-bold"
+                  : "text-text-secondary hover:text-text-primary"
+              )}
             >
               Blindspot
+            </Link>
+            <Link
+              href="/saved"
+              className={cn(
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5",
+                pathname === "/saved"
+                  ? "text-text-primary border-b-2 border-text-primary font-bold"
+                  : "text-text-secondary hover:text-text-primary"
+              )}
+            >
+              <span>Saved</span>
+              {bookmarks.length > 0 && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-full leading-none">
+                  {bookmarks.length}
+                </span>
+              )}
             </Link>
           </nav>
 

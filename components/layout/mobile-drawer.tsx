@@ -2,10 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, LayoutTemplate } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
+import { useBookmarks } from "@/hooks/use-bookmarks";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -18,12 +20,14 @@ const NAV_ITEMS = [
   { label: "Home", href: "/", icon: Compass },
   { label: "For You", href: "/#for-you", icon: Sparkles, badge: "New" },
   { label: "Local News", href: "/#local", icon: MapPin },
-  { label: "Blindspot Feed", href: "/#blindspot", icon: Globe },
+  { label: "Blindspot Feed", href: "/blindspot", icon: Globe },
   { label: "Saved Articles", href: "/saved", icon: Bookmark },
   { label: "Design System", href: "/design-system", icon: LayoutTemplate },
 ];
 
 export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
+  const pathname = usePathname();
+  const { bookmarks } = useBookmarks();
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = React.useState(isOpen);
 
@@ -163,20 +167,36 @@ export function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             </span>
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
+              const isActive = pathname === item.href;
+              const isSaved = item.href === "/saved";
+              const badge = isSaved && bookmarks.length > 0 ? String(bookmarks.length) : item.badge;
+
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-muted transition-colors"
+                  className={cn(
+                    "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-muted text-text-primary font-semibold"
+                      : "text-text-secondary hover:text-text-primary hover:bg-muted/50"
+                  )}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="w-4 h-4 text-text-muted" />
+                    <Icon className={cn("w-4 h-4", isActive ? "text-text-primary" : "text-text-muted")} />
                     <span>{item.label}</span>
                   </div>
-                  {item.badge && (
-                    <span className="text-[10px] font-bold px-1.5 py-0.2 bg-red-500/15 text-red-600 dark:text-red-400 rounded-full">
-                      {item.badge}
+                  {badge && (
+                    <span
+                      className={cn(
+                        "text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none",
+                        isSaved
+                          ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                          : "bg-red-500/15 text-red-600 dark:text-red-400"
+                      )}
+                    >
+                      {badge}
                     </span>
                   )}
                 </Link>
