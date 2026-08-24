@@ -3,6 +3,7 @@ import {
   DEFAULT_SCHEDULE_RUNS_LIMIT,
   MAX_SCHEDULE_RUNS_LIMIT,
 } from "@/lib/config/limits";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { listScheduleRuns } from "@/lib/supabase/queries/oxylabs";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       })),
     });
   } catch (error) {
-    console.error("[api/oxylabs/runs] failed to load runs:", toSafeMessage(error));
+    console.error("[api/oxylabs/runs] failed to load runs:", toMessage(error));
     return Response.json({ error: "Failed to load schedule runs." }, { status: 500 });
   }
 }
@@ -54,8 +55,4 @@ function parseLimit(raw: string | null): number | null {
   }
 
   return parsed;
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
 }

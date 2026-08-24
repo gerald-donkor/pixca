@@ -3,6 +3,7 @@ import { z } from "zod";
 import { requireAdminSecret } from "@/lib/api/admin-secret";
 import { MAX_ANALYSIS_BATCH_SIZE } from "@/lib/config/limits";
 import { runAnalysisPipeline } from "@/lib/pipeline/analysis";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { getPostHogClient } from "@/lib/posthog-server";
 
 export const dynamic = "force-dynamic";
@@ -67,10 +68,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
     return Response.json(summary);
   } catch (error) {
-    console.error(
-      "[api/analyze] run failed:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
+    console.error("[api/analyze] run failed:", toMessage(error));
     return Response.json({ error: "Analysis run failed." }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { DEFAULT_LOGS_LIMIT, MAX_LOGS_LIMIT } from "@/lib/config/limits";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { getRecentLogs } from "@/lib/supabase/queries/logs";
 import type { LogLevel } from "@/lib/supabase/types";
 
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       count: logs.length,
     });
   } catch (error) {
-    console.error("[api/logs] failed to load logs:", toSafeMessage(error));
+    console.error("[api/logs] failed to load logs:", toMessage(error));
     return Response.json({ error: "Failed to load logs." }, { status: 500 });
   }
 }
@@ -80,8 +81,4 @@ function parseLevel(raw: string | null): LogLevel | null {
   }
 
   return null;
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
 }

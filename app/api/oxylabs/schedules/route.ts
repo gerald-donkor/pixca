@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { requireAdminSecret } from "@/lib/api/admin-secret";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { syncSchedules } from "@/lib/pipeline/scheduler";
 import { listSchedules } from "@/lib/supabase/queries/oxylabs";
 
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest): Promise<Response> {
   try {
     return Response.json(await syncSchedules());
   } catch (error) {
-    console.error("[api/oxylabs/schedules] sync failed:", toSafeMessage(error));
+    console.error("[api/oxylabs/schedules] sync failed:", toMessage(error));
     return Response.json({ error: "Schedule sync failed." }, { status: 500 });
   }
 }
@@ -46,11 +47,7 @@ export async function GET(): Promise<Response> {
       })),
     });
   } catch (error) {
-    console.error("[api/oxylabs/schedules] failed to load schedules:", toSafeMessage(error));
+    console.error("[api/oxylabs/schedules] failed to load schedules:", toMessage(error));
     return Response.json({ error: "Failed to load schedules." }, { status: 500 });
   }
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
 }

@@ -6,6 +6,7 @@ import {
   MAX_ARTICLES_PER_SOURCE,
 } from "@/lib/config/limits";
 import { fetchPageHtml } from "@/lib/oxylabs/client";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { runScrapePipeline } from "@/lib/pipeline/scrape";
 import { sourceNeedsRender } from "@/lib/scraping/render-policy";
 import { getActiveSources } from "@/lib/supabase/queries/sources";
@@ -98,7 +99,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       unknownSourceNames: selection.unknownSourceNames,
     });
   } catch (error) {
-    console.error("[api/scrape] run failed:", error instanceof Error ? error.message : "Unknown error");
+    console.error("[api/scrape] run failed:", toMessage(error));
     return Response.json({ error: "Scrape run failed." }, { status: 500 });
   }
 }

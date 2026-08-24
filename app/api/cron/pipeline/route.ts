@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { requireCronSecret } from "@/lib/api/cron-secret";
 import { CRON_PIPELINE_BUDGET_MS } from "@/lib/config/limits";
 import { runAnalysisPipeline } from "@/lib/pipeline/analysis";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { cronLog } from "@/lib/pipeline/scheduler-logger";
 import { processScheduledResults } from "@/lib/pipeline/scheduler";
 import type { CronPipelineSummary } from "@/lib/pipeline/types";
@@ -54,7 +55,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   try {
     summary.scrape = await processScheduledResults();
   } catch (error) {
-    summary.scrapeError = toSafeMessage(error);
+    summary.scrapeError = toMessage(error);
     cronLog.stepOneFailed(summary.scrapeError);
   }
 
@@ -63,7 +64,7 @@ export async function GET(request: NextRequest): Promise<Response> {
   try {
     summary.analysis = await runAnalysisPipeline({ deadline });
   } catch (error) {
-    summary.analysisError = toSafeMessage(error);
+    summary.analysisError = toMessage(error);
     cronLog.stepTwoFailed(summary.analysisError);
   }
 
@@ -74,8 +75,4 @@ export async function GET(request: NextRequest): Promise<Response> {
   cronLog.completed(summary);
 
   return Response.json(summary);
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
 }

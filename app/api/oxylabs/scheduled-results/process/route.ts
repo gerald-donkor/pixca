@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { requireAdminSecret } from "@/lib/api/admin-secret";
 import { MAX_ARTICLES_PER_SOURCE } from "@/lib/config/limits";
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { processScheduledResults } from "@/lib/pipeline/scheduler";
 
 export const dynamic = "force-dynamic";
@@ -44,10 +45,7 @@ export async function POST(request: NextRequest): Promise<Response> {
   try {
     return Response.json(await processScheduledResults(parsed.data));
   } catch (error) {
-    console.error(
-      "[api/oxylabs/scheduled-results/process] run failed:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
+    console.error("[api/oxylabs/scheduled-results/process] run failed:", toMessage(error));
     return Response.json({ error: "Scheduled result processing failed." }, { status: 500 });
   }
 }

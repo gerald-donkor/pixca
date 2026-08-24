@@ -1,3 +1,4 @@
+import { toMessage } from "@/lib/pipeline/run-logger";
 import { getActiveSources } from "@/lib/supabase/queries/sources";
 
 export const dynamic = "force-dynamic";
@@ -22,11 +23,7 @@ export async function GET(): Promise<Response> {
       })),
     });
   } catch (error) {
-    console.error("[api/sources] failed to load sources:", toSafeMessage(error));
+    console.error("[api/sources] failed to load sources:", toMessage(error));
     return Response.json({ error: "Failed to load sources." }, { status: 500 });
   }
-}
-
-function toSafeMessage(error: unknown): string {
-  return error instanceof Error ? error.message : "Unknown error";
 }
