@@ -47,12 +47,38 @@ For every implementation request:
 5. Ask a focused question only if the task has meaningful ambiguity. Do not ask questions when reasonable assumptions can be made without affecting the implementation outcome.
 6. Create a detailed prompt file in `prompts/`.
 7. Ask: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
-8. On approval, re-read the approved prompt file in prompts/ and implement it strictly. Implement only after user approval. Entering "y" or "Y" = `Approved. Execute.`
-9. Run available checks.
-10. Commit changes to `main` using `.agents/skills/caveman-commit`.
-11. Share exact steps to test or run the completed feature.
+8. On approval, re-read the approved prompt file in prompts/ and implement it strictly. Implement only after user approval. Entering "y" or "Y" = `Approved. Execute.` Have `requesting-code-review` available before finishing implementation so the workflow for preparing a clean review request is ready.
+9. Run available checks (sections 21 and 22) and quote their real output (self-verification: format, lint, typecheck, build, and diff review). Fix any discovered issues before requesting review.
+10. **Run the two-stage code review loop — always, before recording or committing (§2.1):**
+    - **Stage 1 (`requesting-code-review`)**: Dispatch a reviewer subagent with precisely crafted context (requirements, git SHAs, what was built, checks run) to inspect the implementation and diff.
+    - **Stage 2 (`receiving-code-review`)**: Evaluate feedback with technical rigor against codebase reality. Verify before implementing; push back with technical reasoning if wrong; never performative agreement or blind implementation. Fix valid issues and re-verify.
+    - **Re-review**: Request follow-up review with `requesting-code-review` if feedback led to significant or architectural changes.
+11. Commit changes to `main` using `.agents/skills/caveman-commit`.
+12. Share exact steps to test or run the completed feature.
 
 Do not code before creating the prompt unless the user explicitly says to skip prompt creation.
+
+## 2.1 Code review workflow
+
+Every implementation undergoes a two-stage code review loop using the code-review skills vendored at `.agents/skills/`:
+
+```
+Implement → Self-verify / run checks → Request review (requesting-code-review) → Receive/evaluate review (receiving-code-review) → Fix valid issues & re-test → Re-review if significant → Final completion & commit
+```
+
+1. **`requesting-code-review` (`.agents/skills/requesting-code-review`) — used first.**
+   - Have this skill available before finishing implementation so the agent is prepared with the workflow for a good review request.
+   - **Self-verify first**: Complete implementation, inspect all changed files, run checks in Section 22 (`npm run typecheck`, `npm run lint`, `npm run build`), and review the final diff. Do not request review for code known to be incomplete or failing.
+   - **Dispatch a reviewer subagent**: Provide structured context — what was requested, what was implemented, files changed, architectural/design decisions, constraints, checks performed, and git SHAs (`BASE_SHA` / `HEAD_SHA`).
+   - Reviewing via a subagent preserves the coordinator context window and ensures the reviewer evaluates actual code and diff against requirements.
+
+2. **`receiving-code-review` (`.agents/skills/receiving-code-review`) — used on feedback.**
+   - **Verify before implementing**: Check reviewer claims against the actual codebase and requirements. Check if suggestions break existing functionality or violate YAGNI (e.g. unused features).
+   - **Forbidden responses**: Never give performative agreement ("You're absolutely right!", "Great point!"), gratitude expressions ("Thanks for catching that!"), or blind implementation. State the technical requirement, ask clarifying questions, or push back with reasoned technical evidence.
+   - **Handling unclear feedback**: If any item is unclear, **stop and ask** before implementing anything.
+   - **Implementation order**: Fix blocking issues first, then simple fixes, then complex refactors. Test each fix individually and verify no regressions.
+
+3. **Re-review**: If changes affect architecture, public APIs, shared components, data flow, security, or complex UI/interaction behavior, invoke `requesting-code-review` for a follow-up review.
 
 ## Interactive Shorthand & User Inputs
 
@@ -80,6 +106,8 @@ Use only these skills:
 - `.agents/skills/gsap-scrolltrigger`
 - `.agents/skills/gsap-timeline`
 - `.agents/skills/gsap-performance`
+- `.agents/skills/requesting-code-review`
+- `.agents/skills/receiving-code-review`
 - `.agents/skills/caveman-commit`
 
 Use them for:
@@ -93,6 +121,8 @@ Use them for:
 - `gsap-scrolltrigger`: Scroll-driven animations, reading progress indicators, `ScrollTrigger.batch` for article grid reveal
 - `gsap-timeline`: Choreographed page entrances, drawer transitions, and micro-interactions
 - `gsap-performance`: 60fps compositor optimization (transforms & autoAlpha), reducing layout thrashing, and respecting `prefers-reduced-motion`
+- `requesting-code-review`: completing tasks, implementing features, or preparing review requests to dispatch reviewer subagents (Section 2, 2.1)
+- `receiving-code-review`: receiving code review feedback, evaluating and acting on suggestions with technical rigor and codebase verification before implementing changes (Section 2, 2.1)
 - `caveman-commit`: generating terse conventional commit messages and committing changes to `main` after prompt execution
 
 Do not invent new skills.
@@ -770,8 +800,9 @@ When in doubt:
 7. Ask if it is good to execute (confirm with `y` or `Y`).
 8. Implement after confirmation.
 9. Run available checks.
-10. Commit to main using `.agents/skills/caveman-commit`.
-11. Share exact test steps.
+10. Run the two-stage code review loop (`requesting-code-review` and `receiving-code-review`).
+11. Commit to main using `.agents/skills/caveman-commit`.
+12. Share exact test steps.
 
 ---
 

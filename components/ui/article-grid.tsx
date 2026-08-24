@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { SearchX, RotateCcw } from "lucide-react"
 import { useRouter, usePathname } from "next/navigation"
-import { useGSAP, gsap, ScrollTrigger } from "@/lib/gsap"
+import { useGSAP, gsap } from "@/lib/gsap"
 import { NewsCard } from "@/components/ui/news-card"
 import { formatArticleDate } from "@/lib/ui/format"
 import type { ArticleWithSourceAndAnalysis } from "@/lib/supabase/queries/articles"
@@ -19,6 +19,8 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
   const pathname = usePathname()
   const gridRef = React.useRef<HTMLDivElement>(null)
 
+  const articlesKey = articles.map((a) => a.id).join(",")
+
   useGSAP(
     () => {
       if (!gridRef.current || articles.length === 0) return
@@ -26,35 +28,18 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
       const mm = gsap.matchMedia()
 
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Initial entrance reveal for visible cards
         gsap.fromTo(
           ".news-card-item",
-          { y: 24, autoAlpha: 0 },
+          { y: 16, autoAlpha: 0 },
           {
             y: 0,
             autoAlpha: 1,
-            duration: 0.45,
+            duration: 0.35,
             ease: "power2.out",
-            stagger: 0.05,
-            clearProps: "transform",
+            stagger: 0.04,
+            clearProps: "transform,opacity",
           }
         )
-
-        // Viewport reveals for cards entering on scroll
-        ScrollTrigger.batch(".news-card-item", {
-          interval: 0.1,
-          batchMax: 6,
-          onEnter: (batch) => {
-            gsap.to(batch, {
-              autoAlpha: 1,
-              y: 0,
-              stagger: 0.06,
-              overwrite: "auto",
-              duration: 0.4,
-            })
-          },
-          once: true,
-        })
       })
 
       mm.add("(prefers-reduced-motion: reduce)", () => {
@@ -65,7 +50,7 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
             autoAlpha: 1,
             duration: 0.2,
             stagger: 0.02,
-            clearProps: "all",
+            clearProps: "transform,opacity",
           }
         )
       })
@@ -74,7 +59,7 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
         mm.revert()
       }
     },
-    { scope: gridRef, dependencies: [articles] }
+    { scope: gridRef, dependencies: [articlesKey] }
   )
 
   const handleResetFilters = () => {
@@ -118,6 +103,7 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
         <div key={article.id} className="news-card-item h-full">
           <Link
             href={`/article/${article.id}`}
+            prefetch={false}
             className="block h-full transition-transform hover:-translate-y-0.5"
           >
             <NewsCard

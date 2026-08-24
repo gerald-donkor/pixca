@@ -54,9 +54,14 @@ export function FilterBar({
     }
 
     const timer = setTimeout(() => {
-      const params = new URLSearchParams(searchParams?.toString() ?? "")
+      const currentParam = (searchParams?.get("q") ?? "").trim()
       const trimmed = searchTerm.trim()
 
+      if (trimmed === currentParam) {
+        return
+      }
+
+      const params = new URLSearchParams(searchParams?.toString() ?? "")
       if (trimmed) {
         params.set("q", trimmed)
       } else {
