@@ -1,18 +1,14 @@
 import * as React from "react"
-import {
-  Info,
-  Bookmark,
-  Share2,
-  MoreHorizontal,
-  ChevronLeft
-} from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 import { getPostHogClient } from "@/lib/posthog-server"
-import { Button } from "@/components/ui/button"
 import { BiasMeter } from "@/components/ui/bias-meter"
 import { RelatedArticles } from "@/components/ui/related-articles"
 import { NewsletterSubscribe } from "@/components/ui/newsletter-subscribe"
+import { ReadingProgress } from "@/components/ui/reading-progress"
+import { ArticleActionBar } from "@/components/ui/article-action-bar"
+import { AiMetricExplainer } from "@/components/ui/ai-metric-explainer"
 import { getArticleWithAnalysis, getRelatedArticles } from "@/lib/supabase/queries/articles"
 import type { RelatedArticleRow } from "@/lib/supabase/types"
 import {
@@ -109,6 +105,9 @@ export default async function ArticleDetailsPage({
 
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] pb-16">
+      {/* Reading Progress Indicator */}
+      <ReadingProgress />
+
       {/* Top Back Navigation Bar */}
       <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-3 px-6 shadow-xs">
         <div className="container mx-auto max-w-[1400px] flex items-center">
@@ -149,19 +148,15 @@ export default async function ArticleDetailsPage({
                   Read original
                 </a>
               </div>
-              <div className="flex items-center gap-3">
-                <Button variant="ghost" className="text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white text-xs font-semibold gap-1.5 p-0 hover:bg-transparent">
-                  <Bookmark className="h-4 w-4" /> Save
-                </Button>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <Button variant="ghost" className="text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white text-xs font-semibold gap-1.5 p-0 hover:bg-transparent">
-                  <Share2 className="h-4 w-4" /> Share
-                </Button>
-                <span className="text-zinc-300 dark:text-zinc-700">|</span>
-                <button className="text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
-                  <MoreHorizontal className="h-4 w-4" />
-                </button>
-              </div>
+              <ArticleActionBar
+                article={{
+                  id: article.id,
+                  title: article.title,
+                  original_url: article.original_url,
+                  source_name: article.source.name,
+                  image_url: article.image_url,
+                }}
+              />
             </div>
 
             {/* Hero Image */}
@@ -177,7 +172,7 @@ export default async function ArticleDetailsPage({
                 <div className="flex justify-between items-center gap-3">
                   <span className="text-xs uppercase font-bold tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
                     Bias Distribution
-                    <Info className="h-3.5 w-3.5 text-zinc-400 dark:text-zinc-500 cursor-pointer" />
+                    <AiMetricExplainer type="bias-distribution" />
                   </span>
                   <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 text-right">
                     AI-estimated: {titleCase(analysis.bias_label)} • {formatConfidence(analysis.confidence)} confidence
@@ -222,7 +217,7 @@ export default async function ArticleDetailsPage({
                 <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
                   <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                     <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Bias Analysis</h3>
-                    <Info className="h-4 w-4 text-zinc-400 cursor-pointer" />
+                    <AiMetricExplainer type="bias-analysis" iconClassName="h-4 w-4" />
                   </div>
                   <div className="space-y-1">
                     <div className="text-xs font-bold text-zinc-400 uppercase tracking-wider">Overall Bias</div>
@@ -259,7 +254,7 @@ export default async function ArticleDetailsPage({
                 <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
                   <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                     <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">AI Summary</h3>
-                    <Info className="h-4 w-4 text-zinc-400 cursor-pointer" />
+                    <AiMetricExplainer type="ai-summary" iconClassName="h-4 w-4" />
                   </div>
                   <div className="text-[11px] font-bold text-zinc-400 flex flex-wrap items-center gap-1 leading-none">
                     Generated {formatArticleDate(analysis.created_at)} <span className="text-zinc-300 dark:text-zinc-700">•</span> {analysis.model}
@@ -292,7 +287,7 @@ export default async function ArticleDetailsPage({
               <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
                 <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                   <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Analysis Pending</h3>
-                  <Info className="h-4 w-4 text-zinc-400 cursor-pointer" />
+                  <AiMetricExplainer type="analysis-pending" iconClassName="h-4 w-4" />
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-semibold">
                   This article has not been analyzed yet. Sentiment and AI-estimated framing appear here once analysis has run.
