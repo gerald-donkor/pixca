@@ -16,14 +16,18 @@ function Toaster({ ...props }: ToasterProps) {
       toastOptions={{
         classNames: {
           toast:
-            "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg group-[.toaster]:rounded-xl font-sans text-sm",
-          description: "group-[.toast]:text-muted-foreground text-xs",
+            "group toast group-[.toaster]:!bg-white dark:group-[.toaster]:!bg-[#18181B] group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100 group-[.toaster]:border-zinc-200 dark:group-[.toaster]:border-zinc-800 group-[.toaster]:shadow-2xl group-[.toaster]:rounded-2xl font-sans text-sm p-4",
+          description: "group-[.toast]:text-zinc-500 dark:group-[.toast]:text-zinc-400 text-xs",
           actionButton:
-            "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground font-medium text-xs rounded-full px-3 py-1",
+            "group-[.toast]:bg-zinc-900 dark:group-[.toast]:bg-zinc-100 group-[.toast]:text-white dark:group-[.toast]:text-zinc-900 font-medium text-xs rounded-full px-3 py-1",
           cancelButton:
-            "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground font-medium text-xs rounded-full px-3 py-1",
-          error: "group-[.toaster]:!bg-destructive/10 group-[.toaster]:!text-destructive group-[.toaster]:!border-destructive/20",
-          success: "group-[.toaster]:!bg-[var(--bias-right)]/10 group-[.toaster]:!text-[var(--bias-right)] group-[.toaster]:!border-[var(--bias-right)]/20",
+            "group-[.toast]:bg-zinc-100 dark:group-[.toast]:bg-zinc-800 group-[.toast]:text-zinc-700 dark:group-[.toast]:text-zinc-300 font-medium text-xs rounded-full px-3 py-1",
+          error:
+            "group-[.toaster]:!border-red-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
+          success:
+            "group-[.toaster]:!border-emerald-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
+          info:
+            "group-[.toaster]:!border-blue-500/40 group-[.toaster]:!text-zinc-900 dark:group-[.toaster]:!text-zinc-100",
         },
       }}
       {...props}
