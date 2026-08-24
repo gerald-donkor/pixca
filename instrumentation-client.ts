@@ -10,17 +10,23 @@ if (!token && process.env.NODE_ENV !== "production") {
   );
 }
 
-if (token) {
+if (token && typeof window !== "undefined") {
+  const isDev = process.env.NODE_ENV === "development";
   posthog.init(token, {
-    api_host: "/ingest",
+    api_host: isDev
+      ? (process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "https://us.i.posthog.com")
+      : "/ingest",
     ui_host: "https://us.posthog.com",
     defaults: "2026-01-30",
-    capture_exceptions: process.env.NODE_ENV === "production",
-    debug: process.env.NODE_ENV === "development",
-    disable_session_recording: process.env.NODE_ENV === "development",
+    capture_exceptions: !isDev,
+    debug: false,
+    disable_session_recording: isDev,
+    advanced_disable_flags: isDev,
+    advanced_disable_decide: isDev,
+    disable_surveys: isDev,
+    autocapture: !isDev,
   });
 }
 
-
-
 export { posthog };
+

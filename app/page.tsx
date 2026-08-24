@@ -20,26 +20,36 @@ export default async function HomePage() {
   ])
 
   return (
-    <div className="min-h-screen bg-[#F6F6F6] text-[#0D0D0F]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
       {/* CATEGORY PILLS BAR */}
       {sources.length > 0 && (
-        <div className="bg-white border-b border-[var(--border)] py-3 px-6 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-3 px-6 shadow-xs overflow-hidden">
           <div className="container mx-auto max-w-[1400px] flex items-center gap-3">
             {/* Left Scroll Trigger */}
-            <button className="p-1 rounded-full border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 flex items-center justify-center shrink-0">
-              <ChevronLeft className="h-4 w-4 text-zinc-500" />
+            <button
+              type="button"
+              className="p-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
             </button>
 
             {/* Scrolling Sources */}
             <div className="flex flex-1 items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
               {sources.map((source) => (
-                <Chip key={source.id} label={source.name} className="shrink-0 text-[11px] font-bold py-1 px-3 bg-zinc-50 border border-zinc-200 hover:bg-zinc-100 transition-colors" />
+                <Chip
+                  key={source.id}
+                  label={source.name}
+                  className="shrink-0 text-xs font-semibold py-1.5 px-3.5 bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                />
               ))}
             </div>
 
             {/* Right Scroll Trigger */}
-            <button className="p-1 rounded-full border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50 flex items-center justify-center shrink-0">
-              <ChevronRight className="h-4 w-4 text-zinc-500" />
+            <button
+              type="button"
+              className="p-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xs hover:bg-zinc-100 dark:hover:bg-zinc-800 flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -48,14 +58,14 @@ export default async function HomePage() {
       {/* MAIN BODY CONTAINER */}
       <main className="container mx-auto max-w-[1400px] px-6 py-8 space-y-6">
         {/* Title */}
-        <h1 className="text-[28px] font-extrabold tracking-tight text-[#0D0D0F]">
+        <h1 className="text-[28px] font-extrabold tracking-tight text-[var(--text-primary)]">
           Top News
         </h1>
 
         {articles.length === 0 ? (
-          <div className="bg-white rounded-xl border border-[var(--border)] shadow-sm p-8 space-y-2">
-            <h2 className="text-lg font-extrabold text-[#0D0D0F]">No analyzed articles yet</h2>
-            <p className="text-xs text-zinc-500 font-semibold">
+          <div className="bg-card rounded-xl border border-[var(--border)] shadow-xs p-8 space-y-2">
+            <h2 className="text-lg font-extrabold text-[var(--text-primary)]">No analyzed articles yet</h2>
+            <p className="text-xs text-[var(--text-secondary)] font-semibold">
               Articles appear here once scraping and AI analysis have run.
             </p>
           </div>
@@ -82,7 +92,7 @@ export default async function HomePage() {
                   sentimentLabel={article.analysis?.sentiment_label}
                   framingLabel={article.analysis?.bias_label}
                   confidence={article.analysis?.confidence}
-                  className="bg-white rounded-xl border border-[var(--border)] shadow-sm h-full"
+                  className="bg-card rounded-xl border border-[var(--border)] shadow-xs h-full"
                 />
               </Link>
             ))}
