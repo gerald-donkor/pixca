@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -13,30 +13,48 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = "pixca-theme";
+const THEME_CHANGE_EVENT = "pixca-theme-change";
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(THEME_CHANGE_EVENT, callback);
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(THEME_CHANGE_EVENT, callback);
+  };
+}
+
+function getSnapshot(): Theme {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === "light" || stored === "dark" || stored === "system") {
+      return stored as Theme;
+    }
+  } catch {
+    // localStorage unavailable
+  }
+  return "system";
+}
+
+function getServerSnapshot(): Theme {
+  return "system";
+}
 
 export function ThemeProvider({
   children,
   defaultTheme = "system",
-  storageKey = STORAGE_KEY,
 }: {
   children: React.ReactNode;
   defaultTheme?: Theme;
-  storageKey?: string;
 }) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const stored = localStorage.getItem(storageKey);
-        if (stored === "light" || stored === "dark" || stored === "system") {
-          return stored;
-        }
-      } catch {
-        // localStorage unavailable
-      }
-    }
-    return defaultTheme;
-  });
+  const storedTheme = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot
+  );
 
+  const [fallbackTheme, setFallbackTheme] = useState<Theme | null>(null);
+  const theme = fallbackTheme ?? storedTheme ?? defaultTheme;
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
@@ -70,14 +88,17 @@ export function ThemeProvider({
     }
   }, [theme]);
 
-  const setTheme = (newTheme: Theme) => {
+  const setTheme = React.useCallback((newTheme: Theme) => {
     try {
-      localStorage.setItem(storageKey, newTheme);
+      localStorage.setItem(STORAGE_KEY, newTheme);
+      window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
+      window.dispatchEvent(new Event("storage"));
+      setFallbackTheme(null);
     } catch {
-      // ignore
+      // In-memory fallback if localStorage is disabled or throws
+      setFallbackTheme(newTheme);
     }
-    setThemeState(newTheme);
-  };
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, resolvedTheme }}>

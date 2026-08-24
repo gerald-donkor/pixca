@@ -27,6 +27,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={`${poppins.variable} h-full antialiased`}>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('pixca-theme') || 'system';
+                  var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (stored === 'dark' || (stored === 'system' && systemDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className="min-h-full flex flex-col font-sans bg-[var(--surface)] text-[var(--text-primary)] selection:bg-[var(--bias-right)]/10 selection:text-[var(--bias-right)]"
         suppressHydrationWarning
