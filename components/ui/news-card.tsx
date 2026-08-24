@@ -1,12 +1,18 @@
+"use client"
+
 import * as React from "react"
 import { Clock, Bookmark, Info } from "lucide-react"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { biasLabelColorClass, sentimentLabelColorClass } from "@/lib/ui/analysis-display"
 import { formatConfidence, titleCase } from "@/lib/ui/format"
 import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types"
 import { BiasMeter } from "./bias-meter"
+import { useBookmarks } from "@/hooks/use-bookmarks"
+import { gsap } from "@/lib/gsap"
 
 export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  articleId?: string
   title: string
   subtitle?: string
   category?: string
@@ -33,6 +39,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
   (
     {
       className,
+      articleId,
       title,
       subtitle,
       category,
@@ -56,6 +63,41 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
     const primaryMeta = sourceName ?? category
     const secondaryMeta = publishedLabel ?? location
     const hasAnalysisFooter = sentimentLabel !== undefined || framingLabel !== undefined
+
+    const { isBookmarked, toggleBookmark } = useBookmarks()
+    const isSaved = articleId ? isBookmarked(articleId) : false
+    const bookmarkIconRef = React.useRef<SVGSVGElement>(null)
+
+    const handleBookmarkClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (!articleId) return
+
+      const saved = toggleBookmark({
+        id: articleId,
+        title,
+        source_name: sourceName || category || "News Source",
+        image_url: imageUrl,
+      })
+
+      if (
+        bookmarkIconRef.current &&
+        (typeof window === "undefined" || !window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      ) {
+        gsap.fromTo(
+          bookmarkIconRef.current,
+          { scale: 1.35, transformOrigin: "50% 50%" },
+          { scale: 1, duration: 0.35, ease: "back.out(2)" }
+        )
+      }
+
+      if (saved) {
+        toast.success("Saved to bookmarks", { id: `bookmark-${articleId}` })
+      } else {
+        toast.info("Removed from bookmarks", { id: `bookmark-${articleId}` })
+      }
+    }
 
     return (
       <div
@@ -81,10 +123,29 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
               <span className="text-[13px] font-medium leading-[1.6]">Image Placeholder</span>
             </div>
           )}
-          {/* Overlay Info Icon */}
-          <button className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/60">
-            <Info className="h-3.5 w-3.5" />
-          </button>
+          {/* Overlay Bookmark or Info Action */}
+          {articleId ? (
+            <button
+              type="button"
+              onClick={handleBookmarkClick}
+              aria-label={isSaved ? "Remove bookmark" : "Save article bookmark"}
+              className={cn(
+                "absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm transition-all cursor-pointer z-10 shadow-sm",
+                isSaved
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "bg-black/50 hover:bg-black/80 text-white/90 hover:text-white"
+              )}
+            >
+              <Bookmark
+                ref={bookmarkIconRef}
+                className={cn("h-3.5 w-3.5 transition-colors", isSaved && "fill-current")}
+              />
+            </button>
+          ) : (
+            <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm pointer-events-none">
+              <Info className="h-3.5 w-3.5" />
+            </div>
+          )}
         </div>
 
         {/* Content Container */}

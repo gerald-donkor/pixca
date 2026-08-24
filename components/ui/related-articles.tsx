@@ -33,6 +33,7 @@ export function RelatedArticles({ articles }: { articles: RelatedArticleRow[] })
             className="block transition-transform hover:-translate-y-0.5"
           >
             <NewsCard
+              articleId={article.article_id}
               variant="vertical"
               title={article.title}
               imageUrl={article.image_url}

@@ -107,6 +107,7 @@ export function ArticleGrid({ articles, emptyMessage }: ArticleGridProps) {
             className="block h-full transition-transform hover:-translate-y-0.5"
           >
             <NewsCard
+              articleId={article.id}
               variant="vertical"
               title={article.title}
               imageUrl={article.image_url}
