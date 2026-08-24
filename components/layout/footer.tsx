@@ -17,16 +17,32 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Column 2: Company */}
-          <div className="space-y-3">
-            <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-500">Company</h4>
-            <ul className="space-y-2 text-xs text-zinc-400 font-medium">
-              <li className="hover:text-white cursor-pointer transition-colors">About</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Careers</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Press</li>
-              <li className="hover:text-white cursor-pointer transition-colors">Contact</li>
-            </ul>
-          </div>
+            {/* Column 2: Company */}
+            <div className="space-y-3">
+              <h4 className="text-xs uppercase font-bold tracking-wider text-zinc-500">Company & Intelligence</h4>
+              <ul className="space-y-2 text-xs text-zinc-400 font-medium">
+                <li>
+                  <Link href="/about" className="block hover:text-white cursor-pointer transition-colors">
+                    About & Methodology
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/blindspot" className="block hover:text-white cursor-pointer transition-colors">
+                    Blindspot Feed
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/saved" className="block hover:text-white cursor-pointer transition-colors">
+                    Saved Articles
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/rss.xml" className="block hover:text-white cursor-pointer transition-colors">
+                    RSS / Atom Syndication
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
             {/* Column 3: Help */}
             <div className="space-y-3">
