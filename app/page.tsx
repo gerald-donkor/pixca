@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import * as React from "react"
 import { connection } from "next/server"
 import { SourcePillsBar } from "@/components/ui/source-pills-bar"
@@ -7,6 +8,26 @@ import { HOMEPAGE_ARTICLES_LIMIT } from "@/lib/config/limits"
 import { getPublishedArticles } from "@/lib/supabase/queries/articles"
 import { getActiveSources } from "@/lib/supabase/queries/sources"
 import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types"
+
+export const metadata: Metadata = {
+  title: "Top News",
+  description:
+    "Real-time AI framing, sentiment, and bias analysis across trusted media sources.",
+  openGraph: {
+    title: "Top News — Pixca News",
+    description:
+      "Real-time AI framing, sentiment, and bias analysis across trusted media sources.",
+    url: "/",
+    type: "website",
+    siteName: "Pixca News",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Top News — Pixca News",
+    description:
+      "Real-time AI framing, sentiment, and bias analysis across trusted media sources.",
+  },
+};
 
 interface HomePageProps {
   searchParams: Promise<{

@@ -1,4 +1,5 @@
 import "server-only";
+import { cache } from "react";
 
 import { toVectorLiteral } from "@/lib/ai/embed-article";
 import { RELATED_ARTICLES_LIMIT } from "@/lib/config/limits";
@@ -99,23 +100,23 @@ export async function getPublishedArticles({
   return data as unknown as ArticleWithSourceAndAnalysis[];
 }
 
-export async function getArticleWithAnalysis(
-  id: string
-): Promise<ArticleWithSourceAndAnalysisDetail | null> {
-  const { data, error } = await getSupabaseAdminClient()
-    .from("articles")
-    .select(
-      `*, source:sources(*), analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS}, embedding)`
-    )
-    .eq("id", id)
-    .maybeSingle();
+export const getArticleWithAnalysis = cache(
+  async (id: string): Promise<ArticleWithSourceAndAnalysisDetail | null> => {
+    const { data, error } = await getSupabaseAdminClient()
+      .from("articles")
+      .select(
+        `*, source:sources(*), analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS}, embedding)`
+      )
+      .eq("id", id)
+      .maybeSingle();
 
-  if (error) {
-    throw error;
+    if (error) {
+      throw error;
+    }
+
+    return data;
   }
-
-  return data;
-}
+);
 
 export async function findExistingOriginalUrls(urls: string[]): Promise<Set<string>> {
   const existing = new Set<string>();

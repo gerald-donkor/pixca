@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import * as React from "react";
 import Link from "next/link";
 import { connection } from "next/server";
@@ -6,6 +7,26 @@ import { ArticleGrid } from "@/components/ui/article-grid";
 import { getPublishedArticles } from "@/lib/supabase/queries/articles";
 import type { BiasLabel } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "The Blindspot Feed",
+  description:
+    "Stories and perspectives disproportionately covered or framed across the political spectrum with AI intelligence.",
+  openGraph: {
+    title: "The Blindspot Feed — Pixca News",
+    description:
+      "Stories and perspectives disproportionately covered or framed across the political spectrum with AI intelligence.",
+    url: "/blindspot",
+    type: "website",
+    siteName: "Pixca News",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Blindspot Feed — Pixca News",
+    description:
+      "Stories and perspectives disproportionately covered or framed across the political spectrum with AI intelligence.",
+  },
+};
 
 interface BlindspotPageProps {
   searchParams: Promise<{

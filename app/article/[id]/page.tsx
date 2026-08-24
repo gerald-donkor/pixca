@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import * as React from "react"
 import { ChevronLeft } from "lucide-react"
 import { auth } from "@clerk/nextjs/server"
@@ -24,6 +25,55 @@ import {
   titleCase,
 } from "@/lib/ui/format"
 import Link from "next/link"
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const article = await getArticleWithAnalysis(id);
+    if (!article) {
+      return {
+        title: "Article Not Found",
+        description: "The requested news article could not be found.",
+      };
+    }
+
+    const title = article.title;
+    const description =
+      article.analysis?.summary ||
+      "AI-powered news analysis, political framing breakdown, and sentiment metrics.";
+    const imageUrl = article.image_url;
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title: `${title} — Pixca News`,
+        description,
+        url: `/article/${article.id}`,
+        siteName: "Pixca News",
+        type: "article",
+        publishedTime: article.published_at,
+        images: imageUrl ? [{ url: imageUrl, alt: article.title }] : undefined,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${title} — Pixca News`,
+        description,
+        images: imageUrl ? [imageUrl] : undefined,
+      },
+    };
+  } catch (error) {
+    console.error(`[generateMetadata] Failed to fetch article metadata for ${id}:`, error);
+    return {
+      title: "Article Details",
+      description: "AI-powered news analysis, political framing breakdown, and sentiment metrics.",
+    };
+  }
+}
 
 // Reusable progress bar row for sidebar widgets
 function SidebarProgressBar({

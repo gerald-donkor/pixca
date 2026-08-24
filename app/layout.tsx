@@ -15,9 +15,31 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://pixca.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Pixca News — Balanced news coverage, powered by AI",
-  description: "Get multiple viewpoints on top stories. Pixca is an AI-powered news aggregator.",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "Pixca News — Balanced news coverage, powered by AI",
+    template: "%s — Pixca News",
+  },
+  description:
+    "Get multiple viewpoints on top stories. Pixca is an AI-powered news aggregator analyzing framing, sentiment, and bias in real time.",
+  openGraph: {
+    title: "Pixca News — Balanced news coverage, powered by AI",
+    description:
+      "Get multiple viewpoints on top stories. Pixca is an AI-powered news aggregator analyzing framing, sentiment, and bias in real time.",
+    url: "/",
+    siteName: "Pixca News",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pixca News — Balanced news coverage, powered by AI",
+    description:
+      "Get multiple viewpoints on top stories. Pixca is an AI-powered news aggregator analyzing framing, sentiment, and bias in real time.",
+  },
 };
 
 export default function RootLayout({
