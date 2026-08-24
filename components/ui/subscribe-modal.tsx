@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Sparkles, Newspaper, SlidersHorizontal, Eye, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, Newspaper, SlidersHorizontal, Eye, ShieldCheck, ArrowRight } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -83,9 +84,19 @@ export function SubscribeModal({ open, onOpenChange }: SubscribeModalProps) {
         {/* Newsletter Subscription Form */}
         <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800/80 space-y-2">
           <NewsletterSubscribe className="w-full [&>form]:w-full [&>form>div]:w-full [&_input]:w-full [&_input]:md:w-auto" />
-          <div className="flex items-center justify-center gap-1.5 text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
-            <ShieldCheck className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
-            <span>No spam. Free forever. Unsubscribe anytime with a single click.</span>
+          <div className="flex items-center justify-between text-[10px] text-zinc-400 dark:text-zinc-500 font-medium">
+            <div className="flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+              <span>No spam. Free forever.</span>
+            </div>
+            <Link
+              href="/pricing"
+              onClick={() => onOpenChange(false)}
+              className="font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-0.5"
+            >
+              <span>Explore Pro & MoMo Plans</span>
+              <ArrowRight className="w-2.5 h-2.5" />
+            </Link>
           </div>
         </div>
       </DialogContent>

@@ -212,6 +212,20 @@ export function Header() {
                 </span>
               )}
             </Link>
+            <Link
+              href="/pricing"
+              className={cn(
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5",
+                pathname === "/pricing"
+                  ? "text-text-primary border-b-2 border-text-primary font-bold"
+                  : "text-text-secondary hover:text-text-primary"
+              )}
+            >
+              <span>Pricing</span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-sm bg-blue-500/15 text-blue-600 dark:text-blue-400 leading-none">
+                Pro
+              </span>
+            </Link>
           </nav>
 
           {/* Right Action Buttons */}

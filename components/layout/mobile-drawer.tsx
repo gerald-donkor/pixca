@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, LayoutTemplate, Activity } from "lucide-react";
+import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, LayoutTemplate, Activity, CreditCard } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
@@ -20,6 +20,7 @@ interface MobileDrawerProps {
 const NAV_ITEMS = [
   { label: "Home", href: "/", icon: Compass },
   { label: "For You", href: "/for-you", icon: Sparkles, badge: "New" },
+  { label: "Pricing & Plans", href: "/pricing", icon: CreditCard, badge: "Pro" },
   { label: "Local News", href: "/#local", icon: MapPin },
   { label: "Blindspot Feed", href: "/blindspot", icon: Globe },
   { label: "Saved Articles", href: "/saved", icon: Bookmark },
