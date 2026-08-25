@@ -27,12 +27,17 @@ export async function POST(req: Request) {
 
     const origin = req.headers.get("origin") || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 
+    const normalizedPlan = (planName || "").toLowerCase();
     const resolvedProductId =
       productId ||
-      (planName.toLowerCase().includes("enterprise")
+      (normalizedPlan.includes("enterprise")
         ? interval === "annual"
           ? process.env.POLAR_ENTERPRISE_ANNUAL_PRODUCT_ID
           : process.env.POLAR_ENTERPRISE_MONTHLY_PRODUCT_ID
+        : normalizedPlan.includes("starter")
+        ? interval === "annual"
+          ? process.env.POLAR_STARTER_ANNUAL_PRODUCT_ID
+          : process.env.POLAR_STARTER_MONTHLY_PRODUCT_ID
         : interval === "annual"
         ? process.env.POLAR_PRO_ANNUAL_PRODUCT_ID
         : process.env.POLAR_PRO_MONTHLY_PRODUCT_ID);

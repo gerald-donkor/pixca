@@ -48,7 +48,7 @@ export function CheckoutModal({
   planName = "Pixca Pro",
   currency = "USD",
   interval = "monthly",
-  price = 9.99,
+  price = 10.79,
 }: CheckoutModalProps) {
   const { user, isLoaded } = useUser();
 
@@ -176,7 +176,7 @@ export function CheckoutModal({
                 onClick={() => handleClose(false)}
                 className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 cursor-pointer"
               >
-                <span>Start Exploring Pro News</span>
+                <span>Start Exploring News</span>
                 <ArrowRight className="w-4 h-4 ml-1.5" />
               </Button>
               <p className="text-[11px] text-zinc-400 dark:text-zinc-500">

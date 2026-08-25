@@ -59,7 +59,7 @@ function StatusBannerContent() {
         <div className="flex items-center gap-2.5">
           <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span>
-            <strong>Subscription payment successful!</strong> Thank you for upgrading to Pixca Pro. Your account features are now active.
+            <strong>Subscription payment successful!</strong> Thank you for subscribing to Pixca. Your account features are now active.
           </span>
         </div>
       </div>
@@ -107,24 +107,45 @@ const PLANS: TierPlan[] = [
     actionType: "free",
   },
   {
+    id: "starter",
+    name: "Pixca Starter",
+    badge: "New",
+    description: "For engaged readers wanting extended sentiment depth, custom digests, and saved stories.",
+    highlight: false,
+    prices: {
+      USD: { monthly: 4.89, annual: 43.99, monthlyEq: 3.67, save: 14.69 },
+      GHS: { monthly: 64.99, annual: 579.99, monthlyEq: 48.33, save: 199.89 },
+    },
+    features: [
+      "Everything in Free Reader, plus:",
+      "Extended sentiment spectrum & confidence meters",
+      "Up to 25 saved article bookmarks",
+      "Weekly curated deep-dive editorial digest",
+      "Ad-free reading experience",
+      "Priority article loading & mobile notifications",
+    ],
+    ctaLabel: "Get Starter",
+    actionType: "checkout",
+  },
+  {
     id: "pro",
     name: "Pixca Pro",
     badge: "Most Popular",
     description: "For professionals, researchers, and journalists needing deep narrative intelligence.",
     highlight: true,
     prices: {
-      USD: { monthly: 9.99, annual: 89.99, monthlyEq: 7.5, save: 29.89 },
-      GHS: { monthly: 129.99, annual: 1199.99, monthlyEq: 100, save: 359.89 },
+      USD: { monthly: 10.79, annual: 96.99, monthlyEq: 8.08, save: 32.49 },
+      GHS: { monthly: 139.99, annual: 1249.99, monthlyEq: 104.17, save: 429.89 },
     },
     features: [
-      "Everything in Free Reader, plus:",
+      "Everything in Pixca Starter, plus:",
       "100% normalized Left / Center / Right percentage breakdown",
       "Mathematical bias calibration score (Right% − Left%) / 100",
       "AI-extracted loaded rhetoric & framing notes",
       "Unlimited pgvector 1536-dim semantic similarity search",
       "Real-time partisan blindspot alerts",
       "Unlimited article bookmarks & offline reading",
-      "Priority hourly scraping updates & ad-free experience",
+      "Priority hourly scraping updates",
     ],
     ctaLabel: "Upgrade to Pixca Pro",
     actionType: "checkout",
@@ -136,8 +157,8 @@ const PLANS: TierPlan[] = [
     description: "For newsrooms, institutions, and developers building on news intelligence.",
     highlight: false,
     prices: {
-      USD: { monthly: 29.99, annual: 289.99, monthlyEq: 24.17, save: 69.89 },
-      GHS: { monthly: 399.99, annual: 3799.99, monthlyEq: 316.67, save: 999.89 },
+      USD: { monthly: 24.99, annual: 239.99, monthlyEq: 20.0, save: 59.89 },
+      GHS: { monthly: 329.99, annual: 3199.99, monthlyEq: 266.67, save: 759.89 },
     },
     features: [
       "Everything in Pixca Pro, plus:",
@@ -166,7 +187,7 @@ export function PricingCards() {
     interval: BillingInterval;
   }>({
     name: "Pixca Pro",
-    price: 9.99,
+    price: 10.79,
     currency: "USD",
     interval: "monthly",
   });
@@ -275,14 +296,14 @@ export function PricingCards() {
           >
             <span>Annual</span>
             <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
-              Save 20%
+              Save up to 25%
             </span>
           </button>
         </div>
       </div>
 
       {/* Pricing Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         {PLANS.map((plan) => {
           const pricing = plan.prices[currency];
           const isFree = plan.id === "free";
@@ -296,7 +317,7 @@ export function PricingCards() {
             <div
               key={plan.id}
               className={cn(
-                "relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300",
+                "relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300",
                 plan.highlight
                   ? "bg-[var(--surface-elevated)] border-2 border-blue-500/80 shadow-2xl shadow-blue-500/10 lg:-translate-y-2"
                   : "bg-[var(--surface-elevated)] border border-[var(--border)] shadow-md hover:border-zinc-400 dark:hover:border-zinc-700"

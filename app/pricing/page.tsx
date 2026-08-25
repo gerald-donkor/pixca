@@ -38,39 +38,39 @@ const COMPARISON_SECTIONS = [
   {
     category: "Core News & Sentiment",
     rows: [
-      { name: "Hourly News Scraping (All Sources)", free: "Yes", pro: "Yes", enterprise: "Yes" },
-      { name: "Basic Sentiment Indicators (Pos/Neut/Neg)", free: "Yes", pro: "Yes", enterprise: "Yes" },
-      { name: "Daily Editorial Digests", free: "Yes", pro: "Yes", enterprise: "Yes" },
-      { name: "Dark, Light & System Theme Support", free: "Yes", pro: "Yes", enterprise: "Yes" },
+      { name: "Hourly News Scraping (All Sources)", free: "Yes", starter: "Yes", pro: "Yes", enterprise: "Yes" },
+      { name: "Basic Sentiment Indicators (Pos/Neut/Neg)", free: "Yes", starter: "Yes", pro: "Yes", enterprise: "Yes" },
+      { name: "Daily Editorial Digests", free: "Yes", starter: "Yes", pro: "Yes", enterprise: "Yes" },
+      { name: "Dark, Light & System Theme Support", free: "Yes", starter: "Yes", pro: "Yes", enterprise: "Yes" },
     ],
   },
   {
     category: "Advanced AI Analysis & Matrix",
     rows: [
-      { name: "100% Normalized Left/Center/Right Matrix", free: "Basic", pro: "Full %", enterprise: "Full %" },
-      { name: "Loaded Rhetoric & Terminology Extraction", free: "No", pro: "Yes", enterprise: "Yes" },
-      { name: "Mathematical Bias Calibration Score", free: "No", pro: "Yes", enterprise: "Yes" },
-      { name: "AI Editorial Framing Notes", free: "No", pro: "Yes", enterprise: "Yes" },
-      { name: "Partisan Blindspot Detection Feed", free: "Preview", pro: "Real-time", enterprise: "Real-time" },
+      { name: "100% Normalized Left/Center/Right Matrix", free: "Basic", starter: "Basic", pro: "Full %", enterprise: "Full %" },
+      { name: "Loaded Rhetoric & Terminology Extraction", free: "No", starter: "Preview", pro: "Yes", enterprise: "Yes" },
+      { name: "Mathematical Bias Calibration Score", free: "No", starter: "No", pro: "Yes", enterprise: "Yes" },
+      { name: "AI Editorial Framing Notes", free: "No", starter: "Summary", pro: "Yes", enterprise: "Yes" },
+      { name: "Partisan Blindspot Detection Feed", free: "Preview", starter: "Standard", pro: "Real-time", enterprise: "Real-time" },
     ],
   },
   {
     category: "Research, Alerts & Bookmarks",
     rows: [
-      { name: "pgvector 1536-dim Semantic Similarity", free: "3 per story", pro: "Unlimited", enterprise: "Unlimited" },
-      { name: "Saved Bookmarks Capacity", free: "5 articles", pro: "Unlimited", enterprise: "Unlimited" },
-      { name: "High-Priority Hourly Ingestion", free: "Standard", pro: "Priority", enterprise: "Instant" },
-      { name: "Personalized 'For You' Feed", free: "Yes", pro: "AI-Curated", enterprise: "AI-Curated" },
-      { name: "Export Bookmarks to JSON / CSV", free: "No", pro: "Yes", enterprise: "Yes" },
+      { name: "pgvector 1536-dim Semantic Similarity", free: "3 per story", starter: "10 per story", pro: "Unlimited", enterprise: "Unlimited" },
+      { name: "Saved Bookmarks Capacity", free: "5 articles", starter: "25 articles", pro: "Unlimited", enterprise: "Unlimited" },
+      { name: "High-Priority Hourly Ingestion", free: "Standard", starter: "Standard", pro: "Priority", enterprise: "Instant" },
+      { name: "Personalized 'For You' Feed", free: "Yes", starter: "Yes", pro: "AI-Curated", enterprise: "AI-Curated" },
+      { name: "Export Bookmarks to JSON / CSV", free: "No", starter: "No", pro: "Yes", enterprise: "Yes" },
     ],
   },
   {
     category: "Developer API & Team Features",
     rows: [
-      { name: "Developer API Access", free: "No", pro: "1,000 req/mo", enterprise: "100k req/mo" },
-      { name: "Webhook & RSS Feed Alerts", free: "Standard RSS", pro: "Custom Webhooks", enterprise: "Real-time Webhooks" },
-      { name: "Custom News Source Ingestion (Oxylabs)", free: "No", pro: "Request queue", enterprise: "Dedicated targets" },
-      { name: "Multi-Seat Organization Management", free: "No", pro: "1 Seat", enterprise: "Up to 10 Seats" },
+      { name: "Developer API Access", free: "No", starter: "No", pro: "1,000 req/mo", enterprise: "100k req/mo" },
+      { name: "Webhook & RSS Feed Alerts", free: "Standard RSS", starter: "Standard RSS", pro: "Custom Webhooks", enterprise: "Real-time Webhooks" },
+      { name: "Custom News Source Ingestion (Oxylabs)", free: "No", starter: "No", pro: "Request queue", enterprise: "Dedicated targets" },
+      { name: "Multi-Seat Organization Management", free: "No", starter: "No", pro: "1 Seat", enterprise: "Up to 10 Seats" },
     ],
   },
 ];
@@ -118,29 +118,43 @@ export default function PricingPage() {
           },
           {
             "@type": "Offer",
+            "name": "Pixca Starter (USD)",
+            "price": "4.89",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock",
+          },
+          {
+            "@type": "Offer",
+            "name": "Pixca Starter (GHS)",
+            "price": "64.99",
+            "priceCurrency": "GHS",
+            "availability": "https://schema.org/InStock",
+          },
+          {
+            "@type": "Offer",
             "name": "Pixca Pro (USD)",
-            "price": "9.99",
+            "price": "10.79",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock",
           },
           {
             "@type": "Offer",
             "name": "Pixca Pro (GHS)",
-            "price": "129.99",
+            "price": "139.99",
             "priceCurrency": "GHS",
             "availability": "https://schema.org/InStock",
           },
           {
             "@type": "Offer",
             "name": "Pixca Enterprise (USD)",
-            "price": "29.99",
+            "price": "24.99",
             "priceCurrency": "USD",
             "availability": "https://schema.org/InStock",
           },
           {
             "@type": "Offer",
             "name": "Pixca Enterprise (GHS)",
-            "price": "399.99",
+            "price": "329.99",
             "priceCurrency": "GHS",
             "availability": "https://schema.org/InStock",
           },
@@ -228,24 +242,27 @@ export default function PricingPage() {
               Full Feature Comparison Matrix
             </h2>
             <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
-              Detailed breakdown of features across Free, Pixca Pro, and Enterprise tiers.
+              Detailed breakdown of features across Free, Starter, Pixca Pro, and Enterprise tiers.
             </p>
           </div>
 
           <div className="overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] shadow-sm">
-            <table className="w-full text-left border-collapse min-w-[640px]">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="border-b border-[var(--border)] bg-zinc-50/50 dark:bg-zinc-900/50">
-                  <th className="p-4 sm:p-5 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] w-1/2">
+                  <th className="p-4 sm:p-5 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] w-5/12">
                     Features & Capabilities
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-1/6">
+                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
                     Free Reader
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-blue-600 dark:text-blue-400 bg-blue-500/5 w-1/6">
+                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
+                    Starter
+                  </th>
+                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-blue-600 dark:text-blue-400 bg-blue-500/5 w-[15%]">
                     Pixca Pro
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-1/6">
+                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
                     Enterprise
                   </th>
                 </tr>
@@ -256,7 +273,7 @@ export default function PricingPage() {
                     {/* Category Header Row */}
                     <tr className="bg-zinc-100/60 dark:bg-zinc-800/40 border-t border-b border-[var(--border)]">
                       <td
-                        colSpan={4}
+                        colSpan={5}
                         className="px-4 py-2.5 sm:px-5 sm:py-3 text-xs font-bold text-[var(--text-primary)] tracking-wide uppercase"
                       >
                         {section.category}
@@ -274,6 +291,9 @@ export default function PricingPage() {
                         </td>
                         <td className="p-4 sm:p-5 text-center">
                           <RenderCell value={row.free} />
+                        </td>
+                        <td className="p-4 sm:p-5 text-center">
+                          <RenderCell value={row.starter} />
                         </td>
                         <td className="p-4 sm:p-5 text-center bg-blue-500/5">
                           <RenderCell value={row.pro} />
