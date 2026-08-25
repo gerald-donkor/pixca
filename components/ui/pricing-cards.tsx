@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { CheckoutModal } from "@/components/ui/checkout-modal";
 import { SubscribeModal } from "@/components/ui/subscribe-modal";
 import { useSubscription } from "@/hooks/use-subscription";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 export type Currency = "USD" | "GHS";
@@ -21,6 +22,13 @@ export function formatPrice(price: number, currencySymbol: string): string {
     maximumFractionDigits: 2,
   })}`;
 }
+
+const planGlowStyles: Record<string, string> = {
+  free: "hover:border-emerald-500/80 dark:hover:border-emerald-400/80 hover:shadow-emerald-500/20 dark:hover:shadow-emerald-500/25",
+  starter: "hover:border-sky-500/80 dark:hover:border-sky-400/80 hover:shadow-sky-500/25 dark:hover:shadow-sky-500/30",
+  pro: "hover:border-blue-600/90 dark:hover:border-blue-500/90 hover:shadow-blue-600/30 dark:hover:shadow-blue-500/35",
+  enterprise: "hover:border-purple-600/80 dark:hover:border-purple-400/80 hover:shadow-purple-600/25 dark:hover:shadow-purple-500/30",
+};
 
 function StatusBannerContent({
   onSuccessRefetch,
@@ -228,9 +236,40 @@ const PLANS: TierPlan[] = [
 ];
 
 export function PricingCards() {
-  const { tier, isSubscribed, isLoading, refetch } = useSubscription();
+  const { tier, isSubscribed, isLoading, isSignedIn, refetch } = useSubscription();
   const [currency, setCurrency] = React.useState<Currency>("USD");
   const [interval, setInterval] = React.useState<BillingInterval>("monthly");
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.from(".pricing-card-item", {
+          autoAlpha: 0,
+          stagger: 0.05,
+          duration: 0.3,
+          ease: "power2.out",
+          clearProps: "all",
+        });
+      });
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.from(".pricing-card-item", {
+          y: 20,
+          autoAlpha: 0,
+          stagger: 0.08,
+          duration: 0.5,
+          ease: "power2.out",
+          clearProps: "all",
+        });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: containerRef }
+  );
 
   const [checkoutOpen, setCheckoutOpen] = React.useState(false);
   const [subscribeOpen, setSubscribeOpen] = React.useState(false);
@@ -269,7 +308,7 @@ export function PricingCards() {
   };
 
   return (
-    <div className="space-y-12">
+    <div ref={containerRef} className="space-y-12">
       {/* Checkout Modal */}
       <CheckoutModal
         open={checkoutOpen}
@@ -361,7 +400,7 @@ export function PricingCards() {
         {PLANS.map((plan) => {
           const pricing = plan.prices[currency];
           const isFree = plan.id === "free";
-          const isCurrentPlan = !isLoading && isSubscribed && tier === plan.id;
+          const isCurrentPlan = !isLoading && (isSignedIn ? tier === plan.id : false);
           const displayPrice = isFree
             ? 0
             : interval === "annual"
@@ -372,12 +411,13 @@ export function PricingCards() {
             <div
               key={plan.id}
               className={cn(
-                "relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300",
+                "pricing-card-item group relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transform-gpu transition-all duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.03] hover:shadow-2xl active:scale-[0.98] cursor-pointer",
+                planGlowStyles[plan.id],
                 isCurrentPlan
-                  ? "bg-[var(--surface-elevated)] border-2 border-emerald-500/80 shadow-2xl shadow-emerald-500/10 lg:-translate-y-1"
+                  ? "bg-white dark:bg-[#121215] border-2 border-emerald-500 shadow-xl shadow-emerald-500/15"
                   : plan.highlight
-                  ? "bg-[var(--surface-elevated)] border-2 border-blue-500/80 shadow-2xl shadow-blue-500/10 lg:-translate-y-2"
-                  : "bg-[var(--surface-elevated)] border border-[var(--border)] shadow-md hover:border-zinc-400 dark:hover:border-zinc-700"
+                  ? "bg-white dark:bg-[#121215] border-2 border-blue-500/90 shadow-xl shadow-blue-500/15"
+                  : "bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 shadow-md"
               )}
             >
               {/* Highlight / Current Plan Badge */}
@@ -400,21 +440,21 @@ export function PricingCards() {
               {/* Card Top Section */}
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h3 className="text-xl font-extrabold text-[var(--text-primary)] tracking-tight">
+                  <h3 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
                     {plan.name}
                   </h3>
-                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed min-h-[36px]">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed min-h-[36px]">
                     {plan.description}
                   </p>
                 </div>
 
                 {/* Price Display */}
-                <div className="space-y-1 pb-4 border-b border-[var(--border)]">
+                <div className="space-y-1 pb-4 border-b border-zinc-200 dark:border-zinc-800">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-[var(--text-primary)]">
+                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">
                       {formatPrice(displayPrice, currencySymbol)}
                     </span>
-                    <span className="text-xs font-semibold text-[var(--text-secondary)]">
+                    <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                       /{interval === "annual" && !isFree ? "year" : "month"}
                     </span>
                   </div>
@@ -432,7 +472,7 @@ export function PricingCards() {
                   )}
 
                   {isFree && (
-                    <p className="text-[11px] text-[var(--text-secondary)]">
+                    <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                       Free forever • No credit card required
                     </p>
                   )}
@@ -440,25 +480,29 @@ export function PricingCards() {
 
                 {/* Feature List */}
                 <div className="space-y-3">
-                  <span className="text-[11px] font-bold tracking-wider text-[var(--text-secondary)] uppercase">
+                  <span className="text-[11px] font-bold tracking-wider text-zinc-500 dark:text-zinc-400 uppercase">
                     What’s included
                   </span>
                   <ul className="space-y-2.5">
                     {plan.features.map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-[var(--text-secondary)]">
+                      <li key={i} className="flex items-start gap-2.5 text-xs text-zinc-700 dark:text-zinc-300">
                         <div
                           className={cn(
                             "w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
                             isCurrentPlan
                               ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                              : plan.highlight
+                              : plan.id === "starter"
+                              ? "bg-sky-500/15 text-sky-600 dark:text-sky-400"
+                              : plan.id === "pro"
                               ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                              : plan.id === "enterprise"
+                              ? "bg-purple-500/15 text-purple-600 dark:text-purple-400"
                               : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                           )}
                         >
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
-                        <span className={cn(i === 0 && (plan.highlight || isCurrentPlan) ? "font-bold text-[var(--text-primary)]" : "")}>
+                        <span className={cn(i === 0 && (plan.highlight || isCurrentPlan) ? "font-bold text-zinc-900 dark:text-zinc-100" : "")}>
                           {feat}
                         </span>
                       </li>
@@ -476,10 +520,10 @@ export function PricingCards() {
                   className={cn(
                     "w-full h-11 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2",
                     isCurrentPlan
-                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 cursor-default opacity-90"
+                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 cursor-default opacity-90 disabled:opacity-90"
                       : plan.highlight
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 cursor-pointer"
-                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white cursor-pointer"
+                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 cursor-pointer group-hover:scale-[1.01] transition-transform"
+                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white cursor-pointer group-hover:scale-[1.01] transition-transform"
                   )}
                 >
                   {isCurrentPlan ? (
@@ -490,12 +534,12 @@ export function PricingCards() {
                   ) : (
                     <>
                       <span>{plan.ctaLabel}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </Button>
 
-                <p className="text-[10px] text-center text-[var(--text-secondary)]">
+                <p className="text-[10px] text-center text-zinc-500 dark:text-zinc-400">
                   {isCurrentPlan
                     ? "Included in your current subscription"
                     : currency === "GHS" && !isFree
@@ -511,14 +555,14 @@ export function PricingCards() {
       </div>
 
       {/* Customer Self-Service Portal Access */}
-      <div className="flex flex-col sm:flex-row items-center justify-between p-5 sm:p-6 rounded-3xl bg-[var(--surface-elevated)] border border-[var(--border)] gap-4 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 gap-4 shadow-sm">
         <div className="flex items-center gap-3.5">
           <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="text-sm font-bold text-[var(--text-primary)]">
+              <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 Manage Existing Polar Subscription
               </h4>
               {isSubscribed && (
@@ -527,7 +571,7 @@ export function PricingCards() {
                 </span>
               )}
             </div>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
               {isSubscribed
                 ? `Manage your active Pixca ${tier.toUpperCase()} subscription, update billing details, switch payment methods, cancel, or download EU/UK VAT tax invoices.`
                 : "Update billing details, switch cards, cancel plans, or download EU/UK VAT tax invoices directly in the Customer Portal."}

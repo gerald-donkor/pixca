@@ -37,6 +37,7 @@ export function Header() {
           stagger: 0.02,
           duration: 0.3,
           ease: "power2.out",
+          clearProps: "transform,opacity",
         });
       });
 
@@ -47,6 +48,7 @@ export function Header() {
           stagger: 0.04,
           duration: 0.45,
           ease: "power2.out",
+          clearProps: "transform,opacity",
         });
       });
 
@@ -72,55 +74,46 @@ export function Header() {
 
       {/* UTILITY BAR */}
       <div className="hidden md:block bg-[#0D0D0F] text-[#CCCCCC] text-[11px] py-1.5 px-6 border-b border-zinc-800">
-        <div className="container mx-auto max-w-[1400px] flex flex-col md:row justify-between items-center gap-2">
+        <div className="container mx-auto max-w-[1400px] flex flex-col md:flex-row justify-between items-center gap-2">
           {/* Left Side */}
-          <div className="header-anim-item flex items-center gap-4">
-            <Link
-              href="/logs"
-              className="cursor-pointer hover:text-white transition-colors flex items-center gap-1.5"
+          <div className="header-anim-item flex items-center gap-1.5">
+            <span className="text-zinc-400 mr-1">Theme:</span>
+            <button
+              type="button"
+              onClick={() => setTheme("light")}
+              className={cn(
+                "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
+                theme === "light"
+                  ? "bg-zinc-800 text-white font-bold"
+                  : "text-zinc-400 hover:text-zinc-200"
+              )}
             >
-              <span aria-hidden="true" className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              System Status
-            </Link>
-            <div className="flex items-center gap-1.5 border-l border-zinc-800 pl-4">
-              <span className="text-zinc-400 mr-1">Theme:</span>
-              <button
-                type="button"
-                onClick={() => setTheme("light")}
-                className={cn(
-                  "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
-                  theme === "light"
-                    ? "bg-zinc-800 text-white font-bold"
-                    : "text-zinc-400 hover:text-zinc-200"
-                )}
-              >
-                Light
-              </button>
-              <button
-                type="button"
-                onClick={() => setTheme("dark")}
-                className={cn(
-                  "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
-                  theme === "dark"
-                    ? "bg-zinc-800 text-white font-bold"
-                    : "text-zinc-400 hover:text-zinc-200"
-                )}
-              >
-                Dark
-              </button>
-              <button
-                type="button"
-                onClick={() => setTheme("system")}
-                className={cn(
-                  "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
-                  theme === "system"
-                    ? "bg-zinc-800 text-white font-bold"
-                    : "text-zinc-400 hover:text-zinc-200"
-                )}
-              >
-                Auto
-              </button>
-            </div>
+              Light
+            </button>
+            <button
+              type="button"
+              onClick={() => setTheme("dark")}
+              className={cn(
+                "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
+                theme === "dark"
+                  ? "bg-zinc-800 text-white font-bold"
+                  : "text-zinc-400 hover:text-zinc-200"
+              )}
+            >
+              Dark
+            </button>
+            <button
+              type="button"
+              onClick={() => setTheme("system")}
+              className={cn(
+                "px-2 py-0.5 rounded text-[11px] font-medium transition-colors cursor-pointer",
+                theme === "system"
+                  ? "bg-zinc-800 text-white font-bold"
+                  : "text-zinc-400 hover:text-zinc-200"
+              )}
+            >
+              Auto
+            </button>
           </div>
 
           {/* Center Dynamic Date */}

@@ -24,6 +24,7 @@ export interface SubscriptionState {
   entitlements: TierEntitlements;
   isLoading: boolean;
   isSubscribed: boolean;
+  isSignedIn: boolean;
   refetch: () => Promise<void>;
 }
 
@@ -144,6 +145,7 @@ export function useSubscription(): SubscriptionState {
     entitlements: data.entitlements,
     isLoading: data.isLoading,
     isSubscribed,
+    isSignedIn: Boolean(isSignedIn),
     refetch: fetchSubscription,
   };
 }
