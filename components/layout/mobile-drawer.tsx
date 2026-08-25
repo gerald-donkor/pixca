@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, LayoutTemplate, Activity, CreditCard } from "lucide-react";
+import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, CreditCard } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
@@ -25,8 +25,6 @@ const NAV_ITEMS = [
   { label: "Local News", href: "/#local", icon: MapPin },
   { label: "Blindspot Feed", href: "/blindspot", icon: Globe },
   { label: "Saved Articles", href: "/saved", icon: Bookmark },
-  { label: "System Status", href: "/logs", icon: Activity, badge: "Live" },
-  { label: "Design System", href: "/design-system", icon: LayoutTemplate },
 ];
 
 export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerProps) {
