@@ -113,8 +113,18 @@ export function UpgradeModal({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-col gap-2 pt-2">
-          <Link href="/pricing" onClick={() => onOpenChange(false)} className="w-full">
+        <div
+          className="flex flex-col gap-2 pt-2"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Link
+            href="/pricing"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenChange(false);
+            }}
+            className="w-full"
+          >
             <Button
               type="button"
               className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white text-xs font-bold h-10 rounded-lg cursor-pointer flex items-center justify-center gap-2"
@@ -128,7 +138,11 @@ export function UpgradeModal({
           <Button
             type="button"
             variant="ghost"
-            onClick={() => onOpenChange(false)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onOpenChange(false);
+            }}
             className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 h-8 cursor-pointer"
           >
             Maybe Later
