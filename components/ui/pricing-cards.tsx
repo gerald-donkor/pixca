@@ -4,10 +4,11 @@ import * as React from "react";
 import { useSearchParams } from "next/navigation";
 
 
-import { Check, Sparkles, ArrowRight, CreditCard } from "lucide-react";
+import { Check, Sparkles, ArrowRight, CreditCard, X, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CheckoutModal } from "@/components/ui/checkout-modal";
 import { SubscribeModal } from "@/components/ui/subscribe-modal";
+import { useSubscription } from "@/hooks/use-subscription";
 import { cn } from "@/lib/utils";
 
 export type Currency = "USD" | "GHS";
@@ -21,47 +22,99 @@ export function formatPrice(price: number, currencySymbol: string): string {
   })}`;
 }
 
-function StatusBannerContent() {
+function StatusBannerContent({
+  onSuccessRefetch,
+}: {
+  onSuccessRefetch?: () => void;
+}) {
   const searchParams = useSearchParams();
   const status = searchParams.get("status");
+  const [dismissed, setDismissed] = React.useState(false);
 
-  if (!status) return null;
+  React.useEffect(() => {
+    if (status === "success" && onSuccessRefetch) {
+      onSuccessRefetch();
+    }
+  }, [status, onSuccessRefetch]);
+
+  if (!status || dismissed) return null;
+
+  const handleDismiss = () => {
+    setDismissed(true);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("status");
+      const search = url.searchParams.toString() ? `?${url.searchParams.toString()}` : "";
+      window.history.replaceState({}, "", `${url.pathname}${search}${url.hash}`);
+    }
+  };
 
   if (status === "no_active_subscription") {
     return (
-      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-3">
           <CreditCard className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
           <span>
             No active Polar subscription record found for your account. Please select a plan below to subscribe.
           </span>
         </div>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          aria-label="Dismiss banner"
+          className="p-1 rounded-lg text-amber-700 dark:text-amber-400 hover:bg-amber-500/20 transition-colors shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
     );
   }
 
   if (status === "simulated_portal") {
     return (
-      <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+      <div className="p-4 sm:p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
+        <div className="flex items-center gap-3">
           <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
           <span>
             <strong>Polar Dev Simulation Mode:</strong> In production with <code>POLAR_ACCESS_TOKEN</code> configured, you are redirected to the self-service Polar Customer Portal to manage subscriptions, payment methods, and invoices.
           </span>
         </div>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          aria-label="Dismiss banner"
+          className="p-1 rounded-lg text-blue-700 dark:text-blue-400 hover:bg-blue-500/20 transition-colors shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
     );
   }
 
   if (status === "success") {
     return (
-      <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-          <span>
-            <strong>Subscription payment successful!</strong> Thank you for subscribing to Pixca. Your account features are now active.
-          </span>
+      <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm flex items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+            <Check className="w-4 h-4 stroke-[3]" />
+          </div>
+          <div>
+            <p className="font-bold text-emerald-900 dark:text-emerald-100">
+              Subscription payment successful!
+            </p>
+            <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 mt-0.5">
+              Thank you for subscribing to Pixca. Your upgraded features and entitlements are now active.
+            </p>
+          </div>
         </div>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          aria-label="Dismiss notification"
+          className="p-1.5 rounded-lg text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition-colors shrink-0 cursor-pointer"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
     );
   }
@@ -175,6 +228,7 @@ const PLANS: TierPlan[] = [
 ];
 
 export function PricingCards() {
+  const { tier, isSubscribed, isLoading, refetch } = useSubscription();
   const [currency, setCurrency] = React.useState<Currency>("USD");
   const [interval, setInterval] = React.useState<BillingInterval>("monthly");
 
@@ -234,7 +288,7 @@ export function PricingCards() {
 
       {/* URL Status Feedback Banner */}
       <React.Suspense fallback={null}>
-        <StatusBannerContent />
+        <StatusBannerContent onSuccessRefetch={refetch} />
       </React.Suspense>
 
       {/* Control Toggles: Currency & Billing Interval */}
@@ -307,6 +361,7 @@ export function PricingCards() {
         {PLANS.map((plan) => {
           const pricing = plan.prices[currency];
           const isFree = plan.id === "free";
+          const isCurrentPlan = !isLoading && isSubscribed && tier === plan.id;
           const displayPrice = isFree
             ? 0
             : interval === "annual"
@@ -318,20 +373,29 @@ export function PricingCards() {
               key={plan.id}
               className={cn(
                 "relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300",
-                plan.highlight
+                isCurrentPlan
+                  ? "bg-[var(--surface-elevated)] border-2 border-emerald-500/80 shadow-2xl shadow-emerald-500/10 lg:-translate-y-1"
+                  : plan.highlight
                   ? "bg-[var(--surface-elevated)] border-2 border-blue-500/80 shadow-2xl shadow-blue-500/10 lg:-translate-y-2"
                   : "bg-[var(--surface-elevated)] border border-[var(--border)] shadow-md hover:border-zinc-400 dark:hover:border-zinc-700"
               )}
             >
-              {/* Highlight Badge */}
-              {plan.badge && (
+              {/* Highlight / Current Plan Badge */}
+              {isCurrentPlan ? (
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-600 text-white shadow-md">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    Current Plan
+                  </span>
+                </div>
+              ) : plan.badge ? (
                 <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md">
                     <Sparkles className="w-3 h-3" />
                     {plan.badge}
                   </span>
                 </div>
-              )}
+              ) : null}
 
               {/* Card Top Section */}
               <div className="space-y-6">
@@ -385,14 +449,16 @@ export function PricingCards() {
                         <div
                           className={cn(
                             "w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
-                            plan.highlight
+                            isCurrentPlan
+                              ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                              : plan.highlight
                               ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
                               : "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
                           )}
                         >
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
-                        <span className={cn(i === 0 && plan.highlight ? "font-bold text-[var(--text-primary)]" : "")}>
+                        <span className={cn(i === 0 && (plan.highlight || isCurrentPlan) ? "font-bold text-[var(--text-primary)]" : "")}>
                           {feat}
                         </span>
                       </li>
@@ -405,20 +471,34 @@ export function PricingCards() {
               <div className="pt-8 space-y-3">
                 <Button
                   type="button"
-                  onClick={() => handleSelectPlan(plan)}
+                  disabled={isCurrentPlan}
+                  onClick={() => !isCurrentPlan && handleSelectPlan(plan)}
                   className={cn(
-                    "w-full h-11 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-2",
-                    plan.highlight
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25"
-                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white"
+                    "w-full h-11 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2",
+                    isCurrentPlan
+                      ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 cursor-default opacity-90"
+                      : plan.highlight
+                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 cursor-pointer"
+                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white cursor-pointer"
                   )}
                 >
-                  <span>{plan.ctaLabel}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  {isCurrentPlan ? (
+                    <>
+                      <Check className="w-4 h-4 stroke-[3]" />
+                      <span>Current Active Plan</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{plan.ctaLabel}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </Button>
 
                 <p className="text-[10px] text-center text-[var(--text-secondary)]">
-                  {currency === "GHS" && !isFree
+                  {isCurrentPlan
+                    ? "Included in your current subscription"
+                    : currency === "GHS" && !isFree
                     ? "Pay locally with MTN MoMo, Telecel, AirtelTigo or Card"
                     : !isFree
                     ? "Billed globally via Polar (Merchant of Record • VAT included)"
@@ -437,11 +517,20 @@ export function PricingCards() {
             <CreditCard className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-[var(--text-primary)]">
-              Manage Existing Polar Subscription
-            </h4>
-            <p className="text-xs text-[var(--text-secondary)]">
-              Update billing details, switch cards, cancel plans, or download EU/UK VAT tax invoices directly in the Customer Portal.
+            <div className="flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[var(--text-primary)]">
+                Manage Existing Polar Subscription
+              </h4>
+              {isSubscribed && (
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wide">
+                  {tier} Active
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+              {isSubscribed
+                ? `Manage your active Pixca ${tier.toUpperCase()} subscription, update billing details, switch payment methods, cancel, or download EU/UK VAT tax invoices.`
+                : "Update billing details, switch cards, cancel plans, or download EU/UK VAT tax invoices directly in the Customer Portal."}
             </p>
           </div>
         </div>
