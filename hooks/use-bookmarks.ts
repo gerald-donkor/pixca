@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types";
 
 export interface BookmarkedArticle {
   id: string;
@@ -8,6 +9,11 @@ export interface BookmarkedArticle {
   source_name: string;
   image_url?: string;
   saved_at: string;
+  bias_label?: BiasLabel;
+  left_percentage?: number;
+  center_percentage?: number;
+  right_percentage?: number;
+  sentiment_label?: SentimentLabel;
 }
 
 const STORAGE_KEY = "pixca-bookmarks";
@@ -96,6 +102,11 @@ export function useBookmarks() {
         title: string;
         source_name: string;
         image_url?: string;
+        bias_label?: BiasLabel;
+        left_percentage?: number;
+        center_percentage?: number;
+        right_percentage?: number;
+        sentiment_label?: SentimentLabel;
       },
       options?: { maxLimit?: number }
     ): boolean => {
@@ -117,6 +128,11 @@ export function useBookmarks() {
           source_name: article.source_name,
           image_url: article.image_url,
           saved_at: new Date().toISOString(),
+          bias_label: article.bias_label,
+          left_percentage: article.left_percentage,
+          center_percentage: article.center_percentage,
+          right_percentage: article.right_percentage,
+          sentiment_label: article.sentiment_label,
         };
         const next = [nextItem, ...current];
         saveBookmarks(next);

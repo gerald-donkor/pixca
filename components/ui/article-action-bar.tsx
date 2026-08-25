@@ -15,6 +15,7 @@ import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useSubscription } from "@/hooks/use-subscription";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
+import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types";
 
 export interface ArticleActionBarProps {
   article: {
@@ -23,6 +24,11 @@ export interface ArticleActionBarProps {
     original_url: string;
     source_name: string;
     image_url?: string;
+    bias_label?: BiasLabel;
+    left_percentage?: number;
+    center_percentage?: number;
+    right_percentage?: number;
+    sentiment_label?: SentimentLabel;
   };
   className?: string;
 }
@@ -51,6 +57,11 @@ export function ArticleActionBar({ article, className }: ArticleActionBarProps) 
         title: article.title,
         source_name: article.source_name,
         image_url: article.image_url,
+        bias_label: article.bias_label,
+        left_percentage: article.left_percentage,
+        center_percentage: article.center_percentage,
+        right_percentage: article.right_percentage,
+        sentiment_label: article.sentiment_label,
       },
       { maxLimit: entitlements.maxBookmarks }
     );

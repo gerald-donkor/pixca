@@ -238,6 +238,11 @@ export default async function ArticleDetailsPage({
                   original_url: article.original_url,
                   source_name: article.source.name,
                   image_url: article.image_url,
+                  bias_label: analysis?.bias_label,
+                  left_percentage: analysis?.left_percentage,
+                  center_percentage: analysis?.center_percentage,
+                  right_percentage: analysis?.right_percentage,
+                  sentiment_label: analysis?.sentiment_label,
                 }}
               />
             </div>

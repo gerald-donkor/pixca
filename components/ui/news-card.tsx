@@ -92,6 +92,11 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
           title,
           source_name: sourceName || category || "News Source",
           image_url: imageUrl,
+          bias_label: framingLabel,
+          left_percentage: bias?.left,
+          center_percentage: bias?.center,
+          right_percentage: bias?.right,
+          sentiment_label: sentimentLabel,
         },
         { maxLimit: entitlements.maxBookmarks }
       )

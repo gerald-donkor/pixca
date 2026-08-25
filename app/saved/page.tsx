@@ -10,6 +10,7 @@ import {
   Compass,
   ArrowRight,
   Sparkles,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,22 +25,126 @@ import {
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useSubscription } from "@/hooks/use-subscription";
 import { UpgradeModal } from "@/components/ui/upgrade-modal";
+import { SavedDietMeter } from "@/components/ui/saved-diet-meter";
+import {
+  SavedFiltersBar,
+  type SavedBiasFilter,
+  type SavedSortOption,
+} from "@/components/ui/saved-filters-bar";
+import { BiasMeter } from "@/components/ui/bias-meter";
+import { biasLabelColorClass, sentimentLabelColorClass } from "@/lib/ui/analysis-display";
+import { formatArticleDate, titleCase } from "@/lib/ui/format";
 import { gsap, useGSAP } from "@/lib/gsap";
-import { formatArticleDate } from "@/lib/ui/format";
+import { cn } from "@/lib/utils";
 
 export default function SavedArticlesPage() {
   const { bookmarks, removeBookmark, clearBookmarks } = useBookmarks();
   const { entitlements } = useSubscription();
+
   const [clearDialogOpen, setClearDialogOpen] = React.useState(false);
   const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false);
   const [removingId, setRemovingId] = React.useState<string | null>(null);
+
+  // Filter & Search states
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [activeBias, setActiveBias] = React.useState<SavedBiasFilter>("all");
+  const [selectedSource, setSelectedSource] = React.useState("all");
+  const [sortOption, setSortOption] = React.useState<SavedSortOption>("newest");
+
   const containerRef = React.useRef<HTMLDivElement>(null);
   const cardRefs = React.useRef<Map<string, HTMLDivElement>>(new Map());
+
+  // Distinct sources list
+  const availableSources = React.useMemo(() => {
+    const set = new Set<string>();
+    for (const b of bookmarks) {
+      if (b.source_name) set.add(b.source_name);
+    }
+    return Array.from(set).sort();
+  }, [bookmarks]);
+
+  // Filtered and sorted bookmarks
+  const filteredBookmarks = React.useMemo(() => {
+    let result = [...bookmarks];
+
+    // 1. Search query filter
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      result = result.filter(
+        (b) =>
+          (b.title || "").toLowerCase().includes(q) ||
+          (b.source_name || "").toLowerCase().includes(q)
+      );
+    }
+
+    // 2. Perspective / Bias filter
+    if (activeBias !== "all") {
+      result = result.filter((b) => {
+        if (b.bias_label === activeBias) return true;
+        const left = b.left_percentage ?? 0;
+        const center = b.center_percentage ?? 0;
+        const right = b.right_percentage ?? 0;
+        if (activeBias === "left") {
+          return left > center && left > right;
+        }
+        if (activeBias === "center") {
+          return center >= left && center >= right;
+        }
+        if (activeBias === "right") {
+          return right > left && right > center;
+        }
+        return false;
+      });
+    }
+
+    // 3. Source filter
+    if (selectedSource !== "all") {
+      result = result.filter((b) => b.source_name === selectedSource);
+    }
+
+    // Helper to compute polarization score for sorting (with legacy fallback)
+    const getPolarization = (b: (typeof bookmarks)[0]) => {
+      if (b.left_percentage !== undefined && b.right_percentage !== undefined) {
+        return Math.abs(b.left_percentage - b.right_percentage);
+      }
+      if (b.bias_label === "left" || b.bias_label === "right") return 60;
+      return 0;
+    };
+
+    // 4. Sorting
+    result.sort((a, b) => {
+      if (sortOption === "newest") {
+        return new Date(b.saved_at).getTime() - new Date(a.saved_at).getTime();
+      }
+      if (sortOption === "oldest") {
+        return new Date(a.saved_at).getTime() - new Date(b.saved_at).getTime();
+      }
+      if (sortOption === "alphabetical") {
+        return (a.title || "").localeCompare(b.title || "");
+      }
+      if (sortOption === "balanced") {
+        return getPolarization(a) - getPolarization(b);
+      }
+      if (sortOption === "polarized") {
+        return getPolarization(b) - getPolarization(a);
+      }
+      return 0;
+    });
+
+    return result;
+  }, [bookmarks, searchQuery, activeBias, selectedSource, sortOption]);
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setActiveBias("all");
+    setSelectedSource("all");
+    setSortOption("newest");
+  };
 
   // GSAP Choreographed Entrance Animation
   useGSAP(
     () => {
-      if (!containerRef.current || bookmarks.length === 0) return;
+      if (!containerRef.current || filteredBookmarks.length === 0) return;
 
       const mm = gsap.matchMedia();
 
@@ -73,7 +178,10 @@ export default function SavedArticlesPage() {
 
       return () => mm.revert();
     },
-    { scope: containerRef, dependencies: [bookmarks.length] }
+    {
+      scope: containerRef,
+      dependencies: [filteredBookmarks.length, sortOption, activeBias, selectedSource],
+    }
   );
 
   const handleRemove = (id: string, title: string) => {
@@ -188,7 +296,7 @@ export default function SavedArticlesPage() {
           </div>
         </div>
 
-        {/* Empty State */}
+        {/* Empty State when no bookmarks at all */}
         {bookmarks.length === 0 ? (
           <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-12 text-center space-y-6 max-w-lg mx-auto my-12">
             <div className="mx-auto w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 shadow-inner">
@@ -206,7 +314,7 @@ export default function SavedArticlesPage() {
               <Link href="/">
                 <Button
                   variant="default"
-                  className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 px-5 rounded-lg shadow-sm"
+                  className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 px-5 rounded-lg shadow-sm cursor-pointer"
                 >
                   <Compass className="w-4 h-4 mr-2" />
                   Discover Top Stories
@@ -216,83 +324,193 @@ export default function SavedArticlesPage() {
             </div>
           </div>
         ) : (
-          /* Bookmarked Articles Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {bookmarks.map((item) => (
-              <div
-                key={item.id}
-                ref={(el) => {
-                  if (el) cardRefs.current.set(item.id, el);
-                  else cardRefs.current.delete(item.id);
-                }}
-                className="saved-card-item h-full flex flex-col bg-card rounded-xl border border-[var(--border)] shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700"
-              >
-                {/* Thumbnail Image Container */}
-                <Link
-                  href={`/article/${item.id}`}
-                  className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden block group"
-                >
-                  {item.image_url ? (
-                    <Image
-                      src={item.image_url}
-                      alt={item.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                      <Sparkles className="w-8 h-8 opacity-40" />
-                    </div>
-                  )}
-                  {/* Source Pill */}
-                  <div className="absolute top-3 left-3">
-                    <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/75 backdrop-blur-xs text-white rounded-md">
-                      {item.source_name}
-                    </span>
-                  </div>
-                </Link>
+          <div className="space-y-8">
+            {/* Personal Reading Diet & Perspective Balance Meter */}
+            <SavedDietMeter bookmarks={bookmarks} />
 
-                {/* Content Section */}
-                <div className="p-5 flex flex-col justify-between flex-1 gap-4">
-                  <div className="space-y-2">
-                    <div className="text-[11px] text-[var(--text-secondary)] font-medium">
-                      {item.saved_at ? `Saved ${formatArticleDate(item.saved_at)}` : "Saved recently"}
-                    </div>
-                    <Link
-                      href={`/article/${item.id}`}
-                      className="block group"
-                    >
-                      <h2 className="text-base font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
-                        {item.title}
-                      </h2>
-                    </Link>
-                  </div>
+            {/* Interactive Filters Bar */}
+            <SavedFiltersBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              activeBias={activeBias}
+              onBiasChange={setActiveBias}
+              availableSources={availableSources}
+              selectedSource={selectedSource}
+              onSourceChange={setSelectedSource}
+              sortOption={sortOption}
+              onSortChange={setSortOption}
+              totalCount={bookmarks.length}
+              filteredCount={filteredBookmarks.length}
+              onResetFilters={handleResetFilters}
+            />
 
-                  {/* Actions Footer */}
-                  <div className="pt-3 border-t border-[var(--border)] flex items-center justify-between">
-                    <Link
-                      href={`/article/${item.id}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      <span>Read Analysis</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => handleRemove(item.id, item.title)}
-                      disabled={removingId === item.id}
-                      aria-label="Remove from saved articles"
-                      className="p-1.5 rounded-md text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer disabled:opacity-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+            {/* Filtered Empty State */}
+            {filteredBookmarks.length === 0 ? (
+              <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-10 text-center space-y-4 max-w-md mx-auto my-8">
+                <div className="mx-auto w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500">
+                  <RotateCcw className="h-6 w-6" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-base font-bold text-[var(--text-primary)]">
+                    No matching saved articles
+                  </h3>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                    No articles match your active search keyword or perspective filter criteria.
+                  </p>
+                </div>
+                <div>
+                  <Button
+                    variant="outline"
+                    onClick={handleResetFilters}
+                    className="text-xs font-semibold h-9 px-4 rounded-lg cursor-pointer"
+                  >
+                    Reset all filters
+                  </Button>
                 </div>
               </div>
-            ))}
+            ) : (
+              /* Bookmarked Articles Grid */
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredBookmarks.map((item) => {
+                  const hasBias =
+                    item.left_percentage !== undefined &&
+                    item.center_percentage !== undefined &&
+                    item.right_percentage !== undefined;
+
+                  return (
+                    <div
+                      key={item.id}
+                      ref={(el) => {
+                        if (el) cardRefs.current.set(item.id, el);
+                        else cardRefs.current.delete(item.id);
+                      }}
+                      className="saved-card-item h-full flex flex-col bg-card rounded-xl border border-[var(--border)] shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700"
+                    >
+                      {/* Thumbnail Image Container */}
+                      <Link
+                        href={`/article/${item.id}`}
+                        className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden block group"
+                      >
+                        {item.image_url ? (
+                          <Image
+                            src={item.image_url}
+                            alt={item.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-zinc-400">
+                            <Sparkles className="w-8 h-8 opacity-40" />
+                          </div>
+                        )}
+                        {/* Source Pill */}
+                        <div className="absolute top-3 left-3">
+                          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/75 backdrop-blur-xs text-white rounded-md">
+                            {item.source_name}
+                          </span>
+                        </div>
+                        {/* Perspective Lean Pill if available */}
+                        {item.bias_label && (
+                          <div className="absolute top-3 right-3">
+                            <span
+                              className={cn(
+                                "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs rounded-md shadow-xs",
+                                item.bias_label === "left"
+                                  ? "bg-blue-600/90 text-white"
+                                  : item.bias_label === "right"
+                                  ? "bg-red-600/90 text-white"
+                                  : "bg-zinc-700/90 text-white"
+                              )}
+                            >
+                              {item.bias_label}
+                            </span>
+                          </div>
+                        )}
+                      </Link>
+
+                      {/* Content Section */}
+                      <div className="p-5 flex flex-col justify-between flex-1 gap-4">
+                        <div className="space-y-2.5">
+                          <div className="text-[11px] text-[var(--text-secondary)] font-medium">
+                            {item.saved_at
+                              ? `Saved ${formatArticleDate(item.saved_at)}`
+                              : "Saved recently"}
+                          </div>
+                          <Link href={`/article/${item.id}`} className="block group">
+                            <h2 className="text-base font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
+                              {item.title}
+                            </h2>
+                          </Link>
+
+                          {/* Bias Meter if percentages available */}
+                          {hasBias && (
+                            <div className="pt-1">
+                              <BiasMeter
+                                leftValue={item.left_percentage!}
+                                centerValue={item.center_percentage!}
+                                rightValue={item.right_percentage!}
+                                showLabels={false}
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Actions & Perspective Footer */}
+                        <div className="pt-3 border-t border-[var(--border)] flex flex-col gap-2">
+                          <div className="flex items-center justify-between gap-2">
+                            {/* Analysis metadata badges */}
+                            <div className="flex items-center gap-2 text-caption">
+                              {item.sentiment_label && (
+                                <span
+                                  className={cn(
+                                    "text-[11px] font-semibold",
+                                    sentimentLabelColorClass(item.sentiment_label)
+                                  )}
+                                >
+                                  {titleCase(item.sentiment_label)}
+                                </span>
+                              )}
+                              {item.bias_label && (
+                                <span
+                                  className={cn(
+                                    "text-[11px] font-semibold",
+                                    biasLabelColorClass(item.bias_label)
+                                  )}
+                                >
+                                  {titleCase(item.bias_label)}
+                                </span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <Link
+                                href={`/article/${item.id}`}
+                                className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                <span>Read Analysis</span>
+                                <ExternalLink className="w-3.5 h-3.5" />
+                              </Link>
+
+                              <button
+                                type="button"
+                                onClick={() => handleRemove(item.id, item.title)}
+                                disabled={removingId === item.id}
+                                aria-label="Remove from saved articles"
+                                className="p-1.5 rounded-md text-zinc-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer disabled:opacity-50"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
       </main>
