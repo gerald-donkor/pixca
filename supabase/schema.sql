@@ -252,3 +252,30 @@ comment on table public.newsletter_subscribers is 'service_role only -- no anon/
 
 alter table public.newsletter_subscribers enable row level security;
 
+-- 9. user_subscriptions ---------------------------------------------------
+
+create table if not exists public.user_subscriptions (
+  id uuid primary key default gen_random_uuid(),
+  user_id text not null unique,
+  polar_customer_id text not null,
+  polar_subscription_id text,
+  status text not null default 'active',
+  current_period_end timestamptz,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+comment on table public.user_subscriptions is 'service_role only -- stores user billing and subscription state linked to Clerk user_id.';
+
+alter table public.user_subscriptions enable row level security;
+
+create index if not exists user_subscriptions_user_id_idx on public.user_subscriptions (user_id);
+create index if not exists user_subscriptions_polar_customer_id_idx on public.user_subscriptions (polar_customer_id);
+
+create trigger set_user_subscriptions_updated_at
+  before update on public.user_subscriptions
+  for each row
+  execute function public.set_updated_at();
+
+
+

@@ -232,6 +232,30 @@ export type Database = {
         Update: Partial<Database["public"]["Tables"]["newsletter_subscribers"]["Insert"]>;
         Relationships: [];
       };
+      user_subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          polar_customer_id: string;
+          polar_subscription_id: string | null;
+          status: string;
+          current_period_end: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          polar_customer_id: string;
+          polar_subscription_id?: string | null;
+          status?: string;
+          current_period_end?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["user_subscriptions"]["Insert"]>;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -276,4 +300,9 @@ export type OxylabsScheduleRunUpdate = Database["public"]["Tables"]["oxylabs_sch
 export type NewsletterSubscriber = Database["public"]["Tables"]["newsletter_subscribers"]["Row"];
 export type NewsletterSubscriberInsert = Database["public"]["Tables"]["newsletter_subscribers"]["Insert"];
 export type NewsletterSubscriberUpdate = Database["public"]["Tables"]["newsletter_subscribers"]["Update"];
+
+export type UserSubscription = Database["public"]["Tables"]["user_subscriptions"]["Row"];
+export type UserSubscriptionInsert = Database["public"]["Tables"]["user_subscriptions"]["Insert"];
+export type UserSubscriptionUpdate = Database["public"]["Tables"]["user_subscriptions"]["Update"];
+
 

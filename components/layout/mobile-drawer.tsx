@@ -269,15 +269,27 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
         {/* Bottom Section / Auth */}
         <div className="pt-6 border-t border-border flex flex-col gap-3">
           <Show when="signed-in">
-            <div className="flex items-center justify-between p-2 rounded-lg bg-muted">
-              <div className="flex items-center gap-2">
-                <UserButton />
-                <span className="text-xs font-medium text-text-primary">
-                  My Account
-                </span>
+            <div className="flex flex-col gap-2 p-2 rounded-lg bg-muted">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <UserButton />
+                  <span className="text-xs font-medium text-text-primary">
+                    My Account
+                  </span>
+                </div>
               </div>
+              <a
+                href="/api/portal/polar"
+                onClick={onClose}
+                className="flex items-center gap-2 px-2 py-1.5 text-xs text-text-secondary hover:text-text-primary hover:bg-card rounded-md transition-colors font-medium cursor-pointer"
+              >
+                <CreditCard className="w-3.5 h-3.5" />
+                <span>Manage Billing (Polar)</span>
+              </a>
             </div>
           </Show>
+
+
 
           <Show when="signed-out">
             <Link href="/sign-in" onClick={onClose} className="w-full">

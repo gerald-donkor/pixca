@@ -11,3 +11,18 @@ export const polar = new Polar({
 export function isPolarConfigured(): boolean {
   return Boolean(process.env.POLAR_ACCESS_TOKEN && process.env.POLAR_ACCESS_TOKEN.trim() !== "");
 }
+
+/**
+ * Create a customer portal session URL for a customer ID.
+ */
+export async function createCustomerPortalSession(
+  customerId: string,
+  returnUrl?: string
+): Promise<string> {
+  const session = await polar.customerSessions.create({
+    customerId,
+    returnUrl: returnUrl || `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pricing`,
+  });
+  return session.customerPortalUrl;
+}
+

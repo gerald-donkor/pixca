@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Check, Sparkles, ArrowRight } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+
+
+import { Check, Sparkles, ArrowRight, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CheckoutModal } from "@/components/ui/checkout-modal";
 import { SubscribeModal } from "@/components/ui/subscribe-modal";
@@ -17,6 +20,55 @@ export function formatPrice(price: number, currencySymbol: string): string {
     maximumFractionDigits: 2,
   })}`;
 }
+
+function StatusBannerContent() {
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
+
+  if (!status) return null;
+
+  if (status === "no_active_subscription") {
+    return (
+      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <CreditCard className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+          <span>
+            No active Polar subscription record found for your account. Please select a plan below to subscribe.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "simulated_portal") {
+    return (
+      <div className="p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
+          <span>
+            <strong>Polar Dev Simulation Mode:</strong> In production with <code>POLAR_ACCESS_TOKEN</code> configured, you are redirected to the self-service Polar Customer Portal to manage subscriptions, payment methods, and invoices.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === "success") {
+    return (
+      <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <span>
+            <strong>Subscription payment successful!</strong> Thank you for upgrading to Pixca Pro. Your account features are now active.
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 
 interface TierPlan {
   id: string;
@@ -158,6 +210,11 @@ export function PricingCards() {
         open={subscribeOpen}
         onOpenChange={setSubscribeOpen}
       />
+
+      {/* URL Status Feedback Banner */}
+      <React.Suspense fallback={null}>
+        <StatusBannerContent />
+      </React.Suspense>
 
       {/* Control Toggles: Currency & Billing Interval */}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-2">
@@ -351,6 +408,31 @@ export function PricingCards() {
           );
         })}
       </div>
+
+      {/* Customer Self-Service Portal Access */}
+      <div className="flex flex-col sm:flex-row items-center justify-between p-5 sm:p-6 rounded-3xl bg-[var(--surface-elevated)] border border-[var(--border)] gap-4 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <CreditCard className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-[var(--text-primary)]">
+              Manage Existing Polar Subscription
+            </h4>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Update billing details, switch cards, cancel plans, or download EU/UK VAT tax invoices directly in the Customer Portal.
+            </p>
+          </div>
+        </div>
+        <a
+          href="/api/portal/polar"
+          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 transition-all shrink-0 cursor-pointer border border-zinc-200 dark:border-zinc-700 shadow-xs"
+        >
+          <span>Open Customer Portal</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </a>
+      </div>
     </div>
   );
 }
+
