@@ -4,7 +4,9 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { Eye, ShieldAlert, Sparkles, Scale } from "lucide-react";
 import { ArticleGrid } from "@/components/ui/article-grid";
-import { getPublishedArticles } from "@/lib/supabase/queries/articles";
+import { BlindspotSpectrumSummary } from "@/components/ui/blindspot-spectrum-summary";
+import { BlindspotDivergenceCard } from "@/components/ui/blindspot-divergence-card";
+import { getPublishedArticles, type ArticleWithSourceAndAnalysis } from "@/lib/supabase/queries/articles";
 import type { BiasLabel } from "@/lib/supabase/types";
 import { cn } from "@/lib/utils";
 
@@ -68,11 +70,76 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
         )
       : fetchedArticles;
 
+  // Find top divergent Left/Right pair for side-by-side comparison
+  const leftArticles = articles.filter(
+    (a) => a.analysis && (a.analysis.bias_label === "left" || a.analysis.left_percentage >= 45)
+  );
+  const rightArticles = articles.filter(
+    (a) => a.analysis && (a.analysis.bias_label === "right" || a.analysis.right_percentage >= 45)
+  );
+
+  let featuredPair: {
+    left: ArticleWithSourceAndAnalysis;
+    right: ArticleWithSourceAndAnalysis;
+    topic: string;
+  } | null = null;
+
+  if (leftArticles.length > 0 && rightArticles.length > 0) {
+    const STOP_WORDS = new Set([
+      "the", "a", "an", "and", "or", "in", "on", "at", "to", "for", "of", "with", "by", "from",
+      "up", "about", "into", "over", "after", "is", "are", "was", "were", "be", "been", "being",
+      "have", "has", "had", "do", "does", "did", "but", "if", "because", "as", "until",
+      "while", "against", "between", "through", "during", "before", "above", "below",
+      "it", "its", "they", "them", "their", "this", "that", "these", "those", "what", "which",
+      "who", "whom", "whose", "why", "how", "all", "any", "both", "each", "few", "more", "most",
+      "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too",
+      "very", "can", "will", "just", "should", "now", "says", "said", "new", "amid"
+    ]);
+
+    const getKeywords = (title: string) =>
+      title
+        .toLowerCase()
+        .replace(/[^\w\s]/g, "")
+        .split(/\s+/)
+        .filter((w) => w.length > 3 && !STOP_WORDS.has(w));
+
+    let bestScore = -1;
+    let bestLeft = leftArticles[0];
+    let bestRight = rightArticles[0];
+    let bestMatchedKeyword = "";
+
+    for (const left of leftArticles) {
+      const leftWords = new Set(getKeywords(left.title));
+      for (const right of rightArticles) {
+        const rightWords = getKeywords(right.title);
+        const matches = rightWords.filter((w) => leftWords.has(w));
+        const score = matches.length;
+        if (score > bestScore) {
+          bestScore = score;
+          bestLeft = left;
+          bestRight = right;
+          if (matches.length > 0) {
+            bestMatchedKeyword = matches[0].charAt(0).toUpperCase() + matches[0].slice(1);
+          }
+        }
+      }
+    }
+
+    featuredPair = {
+      left: bestLeft,
+      right: bestRight,
+      topic:
+        bestScore > 0 && bestMatchedKeyword
+          ? `Perspective Divergence: ${bestMatchedKeyword} Coverage`
+          : "Perspective Divergence: High-Contrast Editorial Framing",
+    };
+  }
+
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
       <main className="container mx-auto max-w-[1400px] px-6 py-8 space-y-8">
         {/* Blindspot Explanatory Header Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-6 sm:p-8 border border-zinc-800 shadow-xl">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-6 sm:p-8 border border-zinc-800 shadow-xl">
           <div className="relative z-10 space-y-4 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-400 text-xs font-semibold">
               <Eye className="w-3.5 h-3.5" />
@@ -120,6 +187,21 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute bottom-0 right-24 -mb-16 w-60 h-60 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
         </div>
+
+        {/* Aggregated Spectrum Distribution Summary */}
+        <BlindspotSpectrumSummary
+          articles={articles}
+          activeBias={activeBias}
+        />
+
+        {/* Featured Perspective Divergence Card */}
+        {featuredPair && activeBias === "all" && (
+          <BlindspotDivergenceCard
+            leftArticle={featuredPair.left}
+            rightArticle={featuredPair.right}
+            topicTitle={featuredPair.topic}
+          />
+        )}
 
         {/* Filter Tabs & Stories Count */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[var(--border)]">
