@@ -4,6 +4,41 @@ import {
   updateUserSubscriptionStatus,
 } from "@/lib/supabase/queries/subscriptions";
 
+function resolveSubscriptionTier(
+  productId?: string | null,
+  planMetadata?: string | null
+): "starter" | "pro" | "enterprise" {
+  if (productId) {
+    if (
+      productId === process.env.POLAR_STARTER_MONTHLY_PRODUCT_ID ||
+      productId === process.env.POLAR_STARTER_ANNUAL_PRODUCT_ID
+    ) {
+      return "starter";
+    }
+    if (
+      productId === process.env.POLAR_ENTERPRISE_MONTHLY_PRODUCT_ID ||
+      productId === process.env.POLAR_ENTERPRISE_ANNUAL_PRODUCT_ID
+    ) {
+      return "enterprise";
+    }
+    if (
+      productId === process.env.POLAR_PRO_MONTHLY_PRODUCT_ID ||
+      productId === process.env.POLAR_PRO_ANNUAL_PRODUCT_ID
+    ) {
+      return "pro";
+    }
+  }
+
+  if (planMetadata) {
+    const lower = planMetadata.toLowerCase();
+    if (lower.includes("enterprise")) return "enterprise";
+    if (lower.includes("starter")) return "starter";
+    if (lower.includes("pro")) return "pro";
+  }
+
+  return "pro";
+}
+
 export const POST = Webhooks({
   webhookSecret: process.env.POLAR_WEBHOOK_SECRET || "",
 
@@ -17,17 +52,26 @@ export const POST = Webhooks({
 
     if (externalUserId) {
       try {
+        const tier = resolveSubscriptionTier(
+          sub.productId,
+          sub.metadata?.plan as string | undefined
+        );
+
         await upsertUserSubscription({
           user_id: externalUserId,
           polar_customer_id: sub.customerId,
           polar_subscription_id: sub.id,
+          tier,
+          product_id: sub.productId || null,
           status: sub.status,
           current_period_end: sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toISOString() : null,
         });
-        console.log(`[Polar Webhook] Synced active subscription for user ${externalUserId}`);
+        console.log(`[Polar Webhook] Synced active subscription (${tier}) for user ${externalUserId}`);
       } catch (err) {
         console.error("[Polar Webhook] Failed to upsert subscription in Supabase:", err);
       }
+    } else {
+      console.warn(`[Polar Webhook] Subscription Active received without externalUserId/clerk_user_id: ${sub.id}`);
     }
   },
 
@@ -41,20 +85,28 @@ export const POST = Webhooks({
 
     if (externalUserId) {
       try {
+        const tier = resolveSubscriptionTier(
+          sub.productId,
+          sub.metadata?.plan as string | undefined
+        );
+
         await upsertUserSubscription({
           user_id: externalUserId,
           polar_customer_id: sub.customerId,
           polar_subscription_id: sub.id,
+          tier,
+          product_id: sub.productId || null,
           status: sub.status,
           current_period_end: sub.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toISOString() : null,
         });
-        console.log(`[Polar Webhook] Synced updated subscription for user ${externalUserId}`);
+        console.log(`[Polar Webhook] Synced updated subscription (${tier}) for user ${externalUserId}`);
       } catch (err) {
         console.error("[Polar Webhook] Failed to upsert subscription update in Supabase:", err);
       }
+    } else {
+      console.warn(`[Polar Webhook] Subscription Updated received without externalUserId/clerk_user_id: ${sub.id}`);
     }
   },
-
 
   onSubscriptionRevoked: async (subscription) => {
     const sub = subscription.data;
@@ -71,6 +123,8 @@ export const POST = Webhooks({
       } catch (err) {
         console.error("[Polar Webhook] Failed to update subscription status:", err);
       }
+    } else {
+      console.warn(`[Polar Webhook] Subscription Revoked received without externalUserId: ${sub.id}`);
     }
   },
 
@@ -89,6 +143,8 @@ export const POST = Webhooks({
       } catch (err) {
         console.error("[Polar Webhook] Failed to update subscription status:", err);
       }
+    } else {
+      console.warn(`[Polar Webhook] Subscription Canceled received without externalUserId: ${sub.id}`);
     }
   },
 

@@ -9,6 +9,8 @@ import { formatConfidence, titleCase } from "@/lib/ui/format"
 import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types"
 import { BiasMeter } from "./bias-meter"
 import { useBookmarks } from "@/hooks/use-bookmarks"
+import { useSubscription } from "@/hooks/use-subscription"
+import { UpgradeModal } from "@/components/ui/upgrade-modal"
 import { gsap } from "@/lib/gsap"
 
 export interface NewsCardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -64,7 +66,9 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
     const secondaryMeta = publishedLabel ?? location
     const hasAnalysisFooter = sentimentLabel !== undefined || framingLabel !== undefined
 
-    const { isBookmarked, toggleBookmark } = useBookmarks()
+    const { bookmarks, isBookmarked, toggleBookmark } = useBookmarks()
+    const { entitlements } = useSubscription()
+    const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false)
     const isSaved = articleId ? isBookmarked(articleId) : false
     const bookmarkIconRef = React.useRef<SVGSVGElement>(null)
 
@@ -74,12 +78,23 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
 
       if (!articleId) return
 
-      const saved = toggleBookmark({
-        id: articleId,
-        title,
-        source_name: sourceName || category || "News Source",
-        image_url: imageUrl,
-      })
+      if (!isSaved && bookmarks.length >= entitlements.maxBookmarks) {
+        setUpgradeModalOpen(true)
+        toast.error(`Bookmark limit reached (${entitlements.maxBookmarks} max for ${entitlements.badgeLabel})`, {
+          description: "Upgrade your plan to unlock more saved articles.",
+        })
+        return
+      }
+
+      const saved = toggleBookmark(
+        {
+          id: articleId,
+          title,
+          source_name: sourceName || category || "News Source",
+          image_url: imageUrl,
+        },
+        { maxLimit: entitlements.maxBookmarks }
+      )
 
       if (
         bookmarkIconRef.current &&
@@ -225,6 +240,14 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
             )}
           </div>
         </div>
+
+        <UpgradeModal
+          open={upgradeModalOpen}
+          onOpenChange={setUpgradeModalOpen}
+          currentCount={bookmarks.length}
+          maxLimit={entitlements.maxBookmarks}
+          reason="bookmarks"
+        />
       </div>
     )
   }

@@ -22,12 +22,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useSubscription } from "@/hooks/use-subscription";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { formatArticleDate } from "@/lib/ui/format";
 
 export default function SavedArticlesPage() {
   const { bookmarks, removeBookmark, clearBookmarks } = useBookmarks();
+  const { entitlements } = useSubscription();
   const [clearDialogOpen, setClearDialogOpen] = React.useState(false);
+  const [upgradeModalOpen, setUpgradeModalOpen] = React.useState(false);
   const [removingId, setRemovingId] = React.useState<string | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const cardRefs = React.useRef<Map<string, HTMLDivElement>>(new Map());
@@ -113,6 +117,11 @@ export default function SavedArticlesPage() {
     toast.success("All saved articles cleared");
   };
 
+  const isAtLimit =
+    entitlements.tier !== "pro" &&
+    entitlements.tier !== "enterprise" &&
+    bookmarks.length >= entitlements.maxBookmarks;
+
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
       <main
@@ -122,7 +131,7 @@ export default function SavedArticlesPage() {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--border)]">
           <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
+            <div className="flex flex-wrap items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                 <Bookmark className="w-4 h-4 fill-current" />
               </div>
@@ -134,14 +143,39 @@ export default function SavedArticlesPage() {
                   {bookmarks.length} {bookmarks.length === 1 ? "article" : "articles"}
                 </span>
               )}
+              {/* Plan Quota Badge */}
+              {entitlements.tier === "free" ? (
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full">
+                  Free: {bookmarks.length} / 5
+                </span>
+              ) : entitlements.tier === "starter" ? (
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full">
+                  Starter: {bookmarks.length} / 25
+                </span>
+              ) : (
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-full">
+                  Pro: Unlimited
+                </span>
+              )}
             </div>
             <p className="text-xs text-[var(--text-secondary)] font-medium">
               Your personal library of bookmarked stories and intelligence analyses
             </p>
           </div>
 
-          {bookmarks.length > 0 && (
-            <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
+            {isAtLimit && (
+              <Button
+                variant="default"
+                onClick={() => setUpgradeModalOpen(true)}
+                className="text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 h-9 px-3.5 rounded-lg shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Upgrade for Unlimited
+              </Button>
+            )}
+
+            {bookmarks.length > 0 && (
               <Button
                 variant="outline"
                 onClick={() => setClearDialogOpen(true)}
@@ -150,8 +184,8 @@ export default function SavedArticlesPage() {
                 <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                 Clear all
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Empty State */}
@@ -290,6 +324,15 @@ export default function SavedArticlesPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        open={upgradeModalOpen}
+        onOpenChange={setUpgradeModalOpen}
+        currentCount={bookmarks.length}
+        maxLimit={entitlements.maxBookmarks}
+        reason="bookmarks"
+      />
     </div>
   );
 }

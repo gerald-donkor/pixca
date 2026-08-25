@@ -8,6 +8,7 @@ import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useSubscription } from "@/hooks/use-subscription";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
 export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerProps) {
   const pathname = usePathname();
   const { bookmarks } = useBookmarks();
+  const { tier } = useSubscription();
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = React.useState(isOpen);
 
@@ -277,6 +279,27 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
                     My Account
                   </span>
                 </div>
+                {tier === "starter" ? (
+                  <span className="px-2 py-0.5 text-[9px] font-extrabold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider">
+                    Starter
+                  </span>
+                ) : tier === "pro" ? (
+                  <span className="px-2 py-0.5 text-[9px] font-extrabold rounded-full bg-gradient-to-r from-blue-600/15 to-indigo-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 uppercase tracking-wider">
+                    Pro
+                  </span>
+                ) : tier === "enterprise" ? (
+                  <span className="px-2 py-0.5 text-[9px] font-extrabold rounded-full bg-gradient-to-r from-purple-600/15 to-amber-600/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 uppercase tracking-wider">
+                    Enterprise
+                  </span>
+                ) : (
+                  <Link
+                    href="/pricing"
+                    onClick={onClose}
+                    className="px-2 py-0.5 text-[9px] font-bold rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
+                  >
+                    Upgrade
+                  </Link>
+                )}
               </div>
               <a
                 href="/api/portal/polar"

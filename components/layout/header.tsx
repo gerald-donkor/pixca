@@ -13,12 +13,14 @@ import { LocationSelector } from "@/components/layout/location-selector";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
 import { SubscribeModal } from "@/components/ui/subscribe-modal";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useSubscription } from "@/hooks/use-subscription";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const pathname = usePathname();
   const { bookmarks } = useBookmarks();
+  const { tier } = useSubscription();
   const { theme, setTheme } = useTheme();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [subscribeOpen, setSubscribeOpen] = React.useState(false);
@@ -252,7 +254,42 @@ export function Header() {
                 </Link>
               </Show>
               <Show when="signed-in">
-                <UserButton />
+                <div className="flex items-center gap-2">
+                  {tier === "starter" ? (
+                    <Link
+                      href="/pricing"
+                      className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider hover:bg-emerald-500/25 transition-colors"
+                      title="Pixca Starter Active"
+                    >
+                      Starter
+                    </Link>
+                  ) : tier === "pro" ? (
+                    <Link
+                      href="/pricing"
+                      className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-gradient-to-r from-blue-600/15 to-indigo-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 uppercase tracking-wider hover:from-blue-600/25 hover:to-indigo-600/25 transition-all"
+                      title="Pixca Pro Active"
+                    >
+                      Pro
+                    </Link>
+                  ) : tier === "enterprise" ? (
+                    <Link
+                      href="/pricing"
+                      className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-gradient-to-r from-purple-600/15 to-amber-600/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 uppercase tracking-wider hover:from-purple-600/25 hover:to-amber-600/25 transition-all"
+                      title="Pixca Enterprise Active"
+                    >
+                      Enterprise
+                    </Link>
+                  ) : (
+                    <Link
+                      href="/pricing"
+                      className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                      title="Upgrade to Pro"
+                    >
+                      Upgrade
+                    </Link>
+                  )}
+                  <UserButton />
+                </div>
               </Show>
             </div>
           </div>

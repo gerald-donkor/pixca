@@ -9,8 +9,10 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { ShareModal } from "@/components/ui/share-modal";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 import { toast } from "sonner";
 import { useBookmarks } from "@/hooks/use-bookmarks";
+import { useSubscription } from "@/hooks/use-subscription";
 import { gsap } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -26,19 +28,32 @@ export interface ArticleActionBarProps {
 }
 
 export function ArticleActionBar({ article, className }: ArticleActionBarProps) {
-  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { bookmarks, isBookmarked, toggleBookmark } = useBookmarks();
+  const { entitlements } = useSubscription();
   const bookmarked = isBookmarked(article.id);
   const iconRef = React.useRef<SVGSVGElement>(null);
   const [popoverOpen, setPopoverOpen] = React.useState(false);
   const [shareOpen, setShareOpen] = React.useState(false);
+  const [upgradeOpen, setUpgradeOpen] = React.useState(false);
 
   const handleSave = () => {
-    const isSaved = toggleBookmark({
-      id: article.id,
-      title: article.title,
-      source_name: article.source_name,
-      image_url: article.image_url,
-    });
+    if (!bookmarked && bookmarks.length >= entitlements.maxBookmarks) {
+      setUpgradeOpen(true);
+      toast.error(`Bookmark limit reached (${entitlements.maxBookmarks} max for ${entitlements.badgeLabel})`, {
+        description: "Upgrade your plan to unlock more saved articles.",
+      });
+      return;
+    }
+
+    const isSaved = toggleBookmark(
+      {
+        id: article.id,
+        title: article.title,
+        source_name: article.source_name,
+        image_url: article.image_url,
+      },
+      { maxLimit: entitlements.maxBookmarks }
+    );
 
     if (
       iconRef.current &&
@@ -162,6 +177,14 @@ export function ArticleActionBar({ article, className }: ArticleActionBarProps) 
         open={shareOpen}
         onOpenChange={setShareOpen}
         article={article}
+      />
+
+      <UpgradeModal
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        currentCount={bookmarks.length}
+        maxLimit={entitlements.maxBookmarks}
+        reason="bookmarks"
       />
     </>
   );

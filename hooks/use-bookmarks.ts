@@ -82,13 +82,23 @@ export function useBookmarks() {
     [bookmarks]
   );
 
+  const canAddMore = React.useCallback(
+    (maxLimit: number = Infinity) => {
+      return bookmarks.length < maxLimit;
+    },
+    [bookmarks.length]
+  );
+
   const toggleBookmark = React.useCallback(
-    (article: {
-      id: string;
-      title: string;
-      source_name: string;
-      image_url?: string;
-    }): boolean => {
+    (
+      article: {
+        id: string;
+        title: string;
+        source_name: string;
+        image_url?: string;
+      },
+      options?: { maxLimit?: number }
+    ): boolean => {
       const current = getSnapshot();
       const exists = current.some((b) => b.id === article.id);
 
@@ -97,6 +107,10 @@ export function useBookmarks() {
         saveBookmarks(next);
         return false;
       } else {
+        if (options?.maxLimit !== undefined && current.length >= options.maxLimit) {
+          return false;
+        }
+
         const nextItem: BookmarkedArticle = {
           id: article.id,
           title: article.title,
@@ -125,6 +139,7 @@ export function useBookmarks() {
   return {
     bookmarks,
     isBookmarked,
+    canAddMore,
     toggleBookmark,
     removeBookmark,
     clearBookmarks,

@@ -238,6 +238,8 @@ export type Database = {
           user_id: string;
           polar_customer_id: string;
           polar_subscription_id: string | null;
+          tier: string;
+          product_id: string | null;
           status: string;
           current_period_end: string | null;
           created_at: string;
@@ -248,6 +250,8 @@ export type Database = {
           user_id: string;
           polar_customer_id: string;
           polar_subscription_id?: string | null;
+          tier?: string;
+          product_id?: string | null;
           status?: string;
           current_period_end?: string | null;
           created_at?: string;
@@ -304,5 +308,21 @@ export type NewsletterSubscriberUpdate = Database["public"]["Tables"]["newslette
 export type UserSubscription = Database["public"]["Tables"]["user_subscriptions"]["Row"];
 export type UserSubscriptionInsert = Database["public"]["Tables"]["user_subscriptions"]["Insert"];
 export type UserSubscriptionUpdate = Database["public"]["Tables"]["user_subscriptions"]["Update"];
+
+export type SubscriptionTier = "free" | "starter" | "pro" | "enterprise";
+
+export interface TierEntitlements {
+  tier: SubscriptionTier;
+  name: string;
+  badgeLabel: string;
+  maxBookmarks: number;
+  unlimitedpgVectorSearch: boolean;
+  loadedRhetoricExtraction: boolean;
+  fullBiasCalibration: boolean;
+  blindspotFeed: boolean;
+  developerApiAccess: boolean;
+  exportData: boolean;
+}
+
 
 

@@ -259,6 +259,8 @@ create table if not exists public.user_subscriptions (
   user_id text not null unique,
   polar_customer_id text not null,
   polar_subscription_id text,
+  tier text not null default 'free',
+  product_id text,
   status text not null default 'active',
   current_period_end timestamptz,
   created_at timestamptz not null default now(),
@@ -271,6 +273,7 @@ alter table public.user_subscriptions enable row level security;
 
 create index if not exists user_subscriptions_user_id_idx on public.user_subscriptions (user_id);
 create index if not exists user_subscriptions_polar_customer_id_idx on public.user_subscriptions (polar_customer_id);
+create index if not exists user_subscriptions_tier_idx on public.user_subscriptions (tier);
 
 create trigger set_user_subscriptions_updated_at
   before update on public.user_subscriptions
