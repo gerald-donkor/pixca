@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
@@ -12,8 +12,10 @@ import { EditionSelector } from "@/components/layout/edition-selector";
 import { LocationSelector } from "@/components/layout/location-selector";
 import { MobileDrawer } from "@/components/layout/mobile-drawer";
 import { SubscribeModal } from "@/components/ui/subscribe-modal";
+import { CommandPalette } from "@/components/ui/command-palette";
 import { useBookmarks } from "@/hooks/use-bookmarks";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useCommandPalette } from "@/hooks/use-command-palette";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +24,14 @@ export function Header() {
   const { bookmarks } = useBookmarks();
   const { tier } = useSubscription();
   const { theme, setTheme } = useTheme();
+  const {
+    isOpen: paletteOpen,
+    open: openPalette,
+    close: closePalette,
+    recentSearches,
+    addRecentSearch,
+    clearRecentSearches,
+  } = useCommandPalette();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [subscribeOpen, setSubscribeOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -64,12 +74,22 @@ export function Header() {
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         onOpenSubscribe={() => setSubscribeOpen(true)}
+        onOpenSearch={openPalette}
       />
 
       {/* SUBSCRIBE MODAL */}
       <SubscribeModal
         open={subscribeOpen}
         onOpenChange={setSubscribeOpen}
+      />
+
+      {/* COMMAND PALETTE & GLOBAL SEARCH */}
+      <CommandPalette
+        isOpen={paletteOpen}
+        onClose={closePalette}
+        recentSearches={recentSearches}
+        addRecentSearch={addRecentSearch}
+        clearRecentSearches={clearRecentSearches}
       />
 
       {/* UTILITY BAR */}
@@ -225,6 +245,30 @@ export function Header() {
 
           {/* Right Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Search Trigger Button */}
+            <div className="header-anim-item">
+              <button
+                type="button"
+                onClick={openPalette}
+                aria-label="Search news, publishers, or perspectives (⌘K)"
+                className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800/90 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer text-xs font-medium h-8 sm:h-9"
+              >
+                <Search className="h-3.5 w-3.5" />
+                <span className="text-[11px] hidden lg:inline">Search news...</span>
+                <kbd className="text-[9px] font-mono font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 px-1 py-0.2 rounded text-zinc-400 dark:text-zinc-500">
+                  ⌘K
+                </kbd>
+              </button>
+              <button
+                type="button"
+                onClick={openPalette}
+                aria-label="Search news"
+                className="sm:hidden p-2 rounded-md text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <Search className="h-4 w-4" />
+              </button>
+            </div>
+
             <div className="header-anim-item">
               <Button
                 type="button"

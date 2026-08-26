@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, CreditCard } from "lucide-react";
+import { X, Sun, Moon, Laptop, Globe, MapPin, Bookmark, Compass, Sparkles, CreditCard, Search } from "lucide-react";
 import { Show, UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/layout/theme-provider";
@@ -16,6 +16,7 @@ interface MobileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenSubscribe?: () => void;
+  onOpenSearch?: () => void;
 }
 
 const NAV_ITEMS = [
@@ -27,7 +28,7 @@ const NAV_ITEMS = [
   { label: "Saved Articles", href: "/saved", icon: Bookmark },
 ];
 
-export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerProps) {
+export function MobileDrawer({ isOpen, onClose, onOpenSubscribe, onOpenSearch }: MobileDrawerProps) {
   const pathname = usePathname();
   const { bookmarks } = useBookmarks();
   const { tier } = useSubscription();
@@ -170,6 +171,22 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe }: MobileDrawerP
               <X className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Quick Search Action */}
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onOpenSearch?.();
+            }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-muted/70 hover:bg-muted text-text-secondary hover:text-text-primary transition-colors cursor-pointer text-left w-full border border-border/60"
+          >
+            <Search className="w-4 h-4 text-text-muted" />
+            <span className="flex-1 text-xs">Search news & sources...</span>
+            <kbd className="text-[10px] font-mono font-medium bg-card px-1.5 py-0.5 rounded border border-border text-text-muted">
+              ⌘K
+            </kbd>
+          </button>
 
           {/* Navigation Items */}
           <nav className="flex flex-col gap-1">
