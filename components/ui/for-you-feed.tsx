@@ -170,9 +170,9 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
     if (activeTopic) {
       const targetWord = activeTopic.toLowerCase();
       pool = pool.filter((a) => {
-        const titleLower = a.title.toLowerCase();
+        const titleLower = a.title?.toLowerCase() || "";
         const summaryLower = a.analysis?.summary?.toLowerCase() || "";
-        const sourceLower = a.source.name.toLowerCase();
+        const sourceLower = a.source?.name?.toLowerCase() || "";
         return (
           titleLower.includes(targetWord) ||
           summaryLower.includes(targetWord) ||
@@ -245,12 +245,12 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
         let scoreB = 0;
 
         // Source match
-        if (bookmarkedSourceSet.has(a.source.name.toLowerCase())) scoreA += 60;
-        if (bookmarkedSourceSet.has(b.source.name.toLowerCase())) scoreB += 60;
+        if (a.source?.name && bookmarkedSourceSet.has(a.source.name.toLowerCase())) scoreA += 60;
+        if (b.source?.name && bookmarkedSourceSet.has(b.source.name.toLowerCase())) scoreB += 60;
 
         // Keyword overlap
-        const wordsA = extractKeywords(a.title);
-        const wordsB = extractKeywords(b.title);
+        const wordsA = a.title ? extractKeywords(a.title) : [];
+        const wordsB = b.title ? extractKeywords(b.title) : [];
 
         wordsA.forEach((w) => {
           if (keywordFrequencyMap.has(w)) scoreA += (keywordFrequencyMap.get(w) || 0) * 15;
@@ -276,12 +276,12 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
       let scoreB = 0;
 
       // Source match (25%)
-      if (bookmarkedSourceSet.has(a.source.name.toLowerCase())) scoreA += 30;
-      if (bookmarkedSourceSet.has(b.source.name.toLowerCase())) scoreB += 30;
+      if (a.source?.name && bookmarkedSourceSet.has(a.source.name.toLowerCase())) scoreA += 30;
+      if (b.source?.name && bookmarkedSourceSet.has(b.source.name.toLowerCase())) scoreB += 30;
 
       // Keyword match (35%)
-      const wordsA = extractKeywords(a.title);
-      const wordsB = extractKeywords(b.title);
+      const wordsA = a.title ? extractKeywords(a.title) : [];
+      const wordsB = b.title ? extractKeywords(b.title) : [];
 
       wordsA.forEach((w) => {
         if (keywordFrequencyMap.has(w)) scoreA += (keywordFrequencyMap.get(w) || 0) * 10;
@@ -447,7 +447,7 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
                     variant="vertical"
                     title={article.title}
                     imageUrl={article.image_url}
-                    sourceName={article.source.name}
+                    sourceName={article.source?.name || "Unknown Source"}
                     publishedLabel={formatArticleDate(article.published_at)}
                     bias={
                       article.analysis

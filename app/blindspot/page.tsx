@@ -52,11 +52,17 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
     queryBiasLabel = "right";
   }
 
-  const fetchedArticles = await getPublishedArticles({
-    limit: 40,
-    offset: 0,
-    biasLabel: queryBiasLabel,
-  });
+  let fetchedArticles: ArticleWithSourceAndAnalysis[] = [];
+  try {
+    fetchedArticles = await getPublishedArticles({
+      limit: 40,
+      offset: 0,
+      biasLabel: queryBiasLabel,
+    });
+  } catch (err) {
+    console.error("[BlindspotPage getPublishedArticles failed]:", err);
+    fetchedArticles = [];
+  }
 
   // If "all" is selected, filter strictly to stories with meaningful bias or framing divergence (left, right, or mixed)
   const articles =

@@ -61,50 +61,56 @@ export async function getPublishedArticles({
   sentimentLabel,
   query,
 }: GetPublishedArticlesOptions): Promise<ArticleWithSourceAndAnalysis[]> {
-  const sourceJoin = sourceName && !sourceId ? "source:sources!inner(*)" : "source:sources(*)";
-  const analysisJoin =
-    biasLabel || sentimentLabel
-      ? `analysis:article_analyses!inner(${ARTICLE_ANALYSIS_COLUMNS})`
-      : `analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS})`;
+  try {
+    const sourceJoin = sourceName && !sourceId ? "source:sources!inner(*)" : "source:sources(*)";
+    const analysisJoin =
+      biasLabel || sentimentLabel
+        ? `analysis:article_analyses!inner(${ARTICLE_ANALYSIS_COLUMNS})`
+        : `analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS})`;
 
-  let queryBuilder = getSupabaseAdminClient()
-    .from("articles")
-    .select(`*, ${sourceJoin}, ${analysisJoin}`)
-    .not("analyzed_at", "is", null);
+    let queryBuilder = getSupabaseAdminClient()
+      .from("articles")
+      .select(`*, ${sourceJoin}, ${analysisJoin}`)
+      .not("analyzed_at", "is", null);
 
-  if (sourceId) {
-    if (!isValidUuid(sourceId)) {
+    if (sourceId) {
+      if (!isValidUuid(sourceId)) {
+        return [];
+      }
+      queryBuilder = queryBuilder.eq("source_id", sourceId);
+    } else if (sourceName) {
+      queryBuilder = queryBuilder.ilike("source.name", sourceName);
+    }
+
+    if (biasLabel) {
+      queryBuilder = queryBuilder.eq("analysis.bias_label", biasLabel);
+    }
+
+    if (sentimentLabel) {
+      queryBuilder = queryBuilder.eq("analysis.sentiment_label", sentimentLabel);
+    }
+
+    if (query && query.trim()) {
+      queryBuilder = queryBuilder.ilike("title", `%${query.trim()}%`);
+    }
+
+    const { data, error } = await queryBuilder
+      .order("published_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      if (error.code === "22P02") {
+        return [];
+      }
+      console.error("[getPublishedArticles error]:", error);
       return [];
     }
-    queryBuilder = queryBuilder.eq("source_id", sourceId);
-  } else if (sourceName) {
-    queryBuilder = queryBuilder.ilike("source.name", sourceName);
+
+    return (data as unknown as ArticleWithSourceAndAnalysis[]) ?? [];
+  } catch (err) {
+    console.error("[getPublishedArticles failed]:", err);
+    return [];
   }
-
-  if (biasLabel) {
-    queryBuilder = queryBuilder.eq("analysis.bias_label", biasLabel);
-  }
-
-  if (sentimentLabel) {
-    queryBuilder = queryBuilder.eq("analysis.sentiment_label", sentimentLabel);
-  }
-
-  if (query && query.trim()) {
-    queryBuilder = queryBuilder.ilike("title", `%${query.trim()}%`);
-  }
-
-  const { data, error } = await queryBuilder
-    .order("published_at", { ascending: false })
-    .range(offset, offset + limit - 1);
-
-  if (error) {
-    if (error.code === "22P02") {
-      return [];
-    }
-    throw error;
-  }
-
-  return data as unknown as ArticleWithSourceAndAnalysis[];
 }
 
 export const getArticleWithAnalysis = cache(
@@ -113,22 +119,28 @@ export const getArticleWithAnalysis = cache(
       return null;
     }
 
-    const { data, error } = await getSupabaseAdminClient()
-      .from("articles")
-      .select(
-        `*, source:sources(*), analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS}, embedding)`
-      )
-      .eq("id", id)
-      .maybeSingle();
+    try {
+      const { data, error } = await getSupabaseAdminClient()
+        .from("articles")
+        .select(
+          `*, source:sources(*), analysis:article_analyses(${ARTICLE_ANALYSIS_COLUMNS}, embedding)`
+        )
+        .eq("id", id)
+        .maybeSingle();
 
-    if (error) {
-      if (error.code === "22P02" || error.code === "PGRST116") {
+      if (error) {
+        if (error.code === "22P02" || error.code === "PGRST116") {
+          return null;
+        }
+        console.error("[getArticleWithAnalysis error]:", error);
         return null;
       }
-      throw error;
-    }
 
-    return data;
+      return data;
+    } catch (err) {
+      console.error("[getArticleWithAnalysis failed]:", err);
+      return null;
+    }
   }
 );
 
@@ -315,18 +327,24 @@ export async function getRelatedArticles(
     return [];
   }
 
-  const { data, error } = await getSupabaseAdminClient().rpc("match_related_articles", {
-    p_article_id: articleId,
-    p_embedding: toVectorLiteral(embedding),
-    p_match_count: RELATED_ARTICLES_LIMIT,
-  });
+  try {
+    const { data, error } = await getSupabaseAdminClient().rpc("match_related_articles", {
+      p_article_id: articleId,
+      p_embedding: toVectorLiteral(embedding),
+      p_match_count: RELATED_ARTICLES_LIMIT,
+    });
 
-  if (error) {
-    if (error.code === "22P02") {
+    if (error) {
+      if (error.code === "22P02") {
+        return [];
+      }
+      console.error("[getRelatedArticles error]:", error);
       return [];
     }
-    throw error;
-  }
 
-  return data ?? [];
+    return data ?? [];
+  } catch (err) {
+    console.error("[getRelatedArticles failed]:", err);
+    return [];
+  }
 }

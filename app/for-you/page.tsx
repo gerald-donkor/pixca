@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { Sparkles, ShieldCheck, Cpu, Compass } from "lucide-react";
 import { ForYouFeed } from "@/components/ui/for-you-feed";
 import { JsonLd } from "@/components/seo/json-ld";
-import { getPublishedArticles } from "@/lib/supabase/queries/articles";
+import { getPublishedArticles, type ArticleWithSourceAndAnalysis } from "@/lib/supabase/queries/articles";
 
 export const metadata: Metadata = {
   title: "For You — Curated News Intelligence",
@@ -30,10 +30,16 @@ export default async function ForYouPage() {
   // Read-at-request-time for fresh published articles
   await connection();
 
-  const articles = await getPublishedArticles({
-    limit: 80,
-    offset: 0,
-  });
+  let articles: ArticleWithSourceAndAnalysis[] = [];
+  try {
+    articles = await getPublishedArticles({
+      limit: 80,
+      offset: 0,
+    });
+  } catch (err) {
+    console.error("[ForYouPage getPublishedArticles failed]:", err);
+    articles = [];
+  }
 
   const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || "https://pixca.vercel.app").replace(/\/+$/, "");
 

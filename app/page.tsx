@@ -6,9 +6,9 @@ import { SourcePillsBar } from "@/components/ui/source-pills-bar"
 import { FilterBar } from "@/components/ui/filter-bar"
 import { ArticleGrid } from "@/components/ui/article-grid"
 import { HOMEPAGE_ARTICLES_LIMIT } from "@/lib/config/limits"
-import { getPublishedArticles } from "@/lib/supabase/queries/articles"
+import { getPublishedArticles, type ArticleWithSourceAndAnalysis } from "@/lib/supabase/queries/articles"
 import { getActiveSources } from "@/lib/supabase/queries/sources"
-import type { BiasLabel, SentimentLabel } from "@/lib/supabase/types"
+import type { BiasLabel, SentimentLabel, Source } from "@/lib/supabase/types"
 
 export const metadata: Metadata = {
   title: "Top News",
@@ -58,7 +58,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     ? (params.sentiment?.toLowerCase() as SentimentLabel)
     : undefined
 
-  const sources = await getActiveSources()
+  let sources: Source[] = []
+  try {
+    sources = await getActiveSources()
+  } catch (err) {
+    console.error("[HomePage getActiveSources failed]:", err)
+    sources = []
+  }
 
   const matchedSource = sourceParam
     ? sources.find(
@@ -68,15 +74,21 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       )
     : undefined
 
-  const articles = await getPublishedArticles({
-    limit: HOMEPAGE_ARTICLES_LIMIT,
-    offset: 0,
-    sourceId: matchedSource?.id,
-    sourceName: !matchedSource && sourceParam ? sourceParam : undefined,
-    biasLabel: biasParam,
-    sentimentLabel: sentimentParam,
-    query: queryParam,
-  })
+  let articles: ArticleWithSourceAndAnalysis[] = []
+  try {
+    articles = await getPublishedArticles({
+      limit: HOMEPAGE_ARTICLES_LIMIT,
+      offset: 0,
+      sourceId: matchedSource?.id,
+      sourceName: !matchedSource && sourceParam ? sourceParam : undefined,
+      biasLabel: biasParam,
+      sentimentLabel: sentimentParam,
+      query: queryParam,
+    })
+  } catch (err) {
+    console.error("[HomePage getPublishedArticles failed]:", err)
+    articles = []
+  }
 
   const headingTitle = matchedSource
     ? `${matchedSource.name} News`
