@@ -284,7 +284,7 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe, onOpenSearch }:
         </div>
 
         {/* Bottom Section / Auth */}
-        <div className="pt-6 border-t border-border flex flex-col gap-3">
+        <div className="pt-6 border-t border-border flex flex-col gap-3" suppressHydrationWarning>
           <Show when="signed-in">
             <div className="flex flex-col gap-2 p-2 rounded-lg bg-muted">
               <div className="flex items-center justify-between">
@@ -326,8 +326,6 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe, onOpenSearch }:
               </a>
             </div>
           </Show>
-
-
 
           <Show when="signed-out">
             <Link href="/sign-in" onClick={onClose} className="w-full">
