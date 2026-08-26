@@ -104,8 +104,8 @@ export function ForYouAffinitySummary({
 
     // Dominant Lean Classification
     let dominantLean = "Balanced Exploration";
-    let dominantColor = "text-emerald-600 dark:text-emerald-400";
-    let dominantBg = "bg-emerald-500/10 border-emerald-500/20";
+    let dominantColor = "text-purple-600 dark:text-purple-400";
+    let dominantBg = "bg-purple-500/10 border-purple-500/20";
     let biasKey: "left" | "right" | "center" | "balanced" = "balanced";
 
     if (avgCenter >= 55) {
@@ -241,13 +241,13 @@ export function ForYouAffinitySummary({
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-base font-bold text-[var(--text-primary)]">
                 Adaptive Reading Profile
               </h2>
               <span
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-bold border",
+                  "px-2 py-0.5 rounded-full text-[10px] font-bold border whitespace-nowrap shrink-0",
                   stats.dominantBg,
                   stats.dominantColor
                 )}
