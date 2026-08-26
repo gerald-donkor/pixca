@@ -292,7 +292,26 @@ export default async function ArticleDetailsPage({
             </div>
 
             {/* Related Articles by pgvector cosine similarity */}
-            <RelatedArticles articles={related} />
+            <RelatedArticles
+              articles={related}
+              currentArticle={{
+                id: article.id,
+                title: article.title,
+                sourceName: article.source.name,
+                publishedAt: article.published_at,
+                imageUrl: article.image_url,
+                biasLabel: analysis?.bias_label,
+                leftPercentage: analysis?.left_percentage,
+                centerPercentage: analysis?.center_percentage,
+                rightPercentage: analysis?.right_percentage,
+                sentimentLabel: analysis?.sentiment_label,
+                sentimentScore: analysis?.sentiment_score,
+                confidence: analysis?.confidence,
+                summary: analysis?.summary,
+                framingNotes: analysis?.framing_notes,
+                loadedTerms: analysis?.loaded_terms,
+              }}
+            />
 
           </div>
 
