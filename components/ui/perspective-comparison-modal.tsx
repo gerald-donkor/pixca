@@ -56,6 +56,24 @@ export interface PerspectiveComparisonModalProps {
   targetArticle: RelatedArticleRow | null;
 }
 
+function useIsDesktop(query = "(min-width: 768px)") {
+  const subscribe = React.useCallback(
+    (callback: () => void) => {
+      if (typeof window === "undefined") return () => {};
+      const mql = window.matchMedia(query);
+      mql.addEventListener("change", callback);
+      return () => mql.removeEventListener("change", callback);
+    },
+    [query]
+  );
+
+  return React.useSyncExternalStore(
+    subscribe,
+    () => (typeof window !== "undefined" ? window.matchMedia(query).matches : true),
+    () => true
+  );
+}
+
 export function PerspectiveComparisonModal({
   open,
   onOpenChange,
@@ -63,6 +81,7 @@ export function PerspectiveComparisonModal({
   targetArticle,
 }: PerspectiveComparisonModalProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
   const [copied, setCopied] = React.useState(false);
   const [mobileTab, setMobileTab] = React.useState<"split" | "primary" | "target">("split");
 
@@ -400,7 +419,13 @@ export function PerspectiveComparisonModal({
               <div className="pt-2">
                 <Link
                   href={`/article/${targetArticle.article_id}`}
-                  onClick={() => onOpenChange(false)}
+                  target={isDesktop ? "_blank" : undefined}
+                  rel={isDesktop ? "noopener noreferrer" : undefined}
+                  onClick={() => {
+                    if (!isDesktop) {
+                      onOpenChange(false);
+                    }
+                  }}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
                 >
                   <span>Read Full Coverage</span>
