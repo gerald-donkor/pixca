@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowRightLeft,
   ExternalLink,
@@ -80,6 +81,7 @@ export function PerspectiveComparisonModal({
   primaryArticle,
   targetArticle,
 }: PerspectiveComparisonModalProps) {
+  const router = useRouter();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const isDesktop = useIsDesktop();
   const [copied, setCopied] = React.useState(false);
@@ -421,9 +423,17 @@ export function PerspectiveComparisonModal({
                   href={`/article/${targetArticle.article_id}`}
                   target={isDesktop ? "_blank" : undefined}
                   rel={isDesktop ? "noopener noreferrer" : undefined}
-                  onClick={() => {
+                  onClick={(e) => {
                     if (!isDesktop) {
+                      e.preventDefault();
+                      if (document.activeElement instanceof HTMLElement) {
+                        document.activeElement.blur();
+                      }
                       onOpenChange(false);
+                      if (typeof window !== "undefined") {
+                        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+                      }
+                      router.push(`/article/${targetArticle.article_id}`, { scroll: true });
                     }
                   }}
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"

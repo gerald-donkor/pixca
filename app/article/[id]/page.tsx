@@ -9,6 +9,7 @@ import { BiasMeter } from "@/components/ui/bias-meter"
 import { RelatedArticles } from "@/components/ui/related-articles"
 import { NewsletterSubscribe } from "@/components/ui/newsletter-subscribe"
 import { ReadingProgress } from "@/components/ui/reading-progress"
+import { ArticleScrollReset } from "@/components/ui/article-scroll-reset"
 import { ArticleActionBar } from "@/components/ui/article-action-bar"
 import { AiMetricExplainer } from "@/components/ui/ai-metric-explainer"
 import { getArticleWithAnalysis, getRelatedArticles } from "@/lib/supabase/queries/articles"
@@ -187,6 +188,7 @@ export default async function ArticleDetailsPage({
 
   return (
     <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] pb-16">
+      <ArticleScrollReset articleId={article.id} />
       <JsonLd schema={articleSchema} />
       {/* Reading Progress Indicator */}
       <ReadingProgress />
