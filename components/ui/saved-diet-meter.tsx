@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Scale, Sparkles, Newspaper } from "lucide-react";
+import { Scale, Sparkles, Newspaper, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ReadingDietShareModal } from "@/components/ui/reading-diet-share-modal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import type { BookmarkedArticle } from "@/hooks/use-bookmarks";
@@ -13,6 +15,7 @@ export interface SavedDietMeterProps {
 
 export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [shareModalOpen, setShareModalOpen] = React.useState(false);
 
   // Compute aggregated reading diet perspective statistics
   const stats = React.useMemo(() => {
@@ -117,6 +120,19 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
       dominantBg = "bg-red-500/10 border-red-500/20";
     }
 
+    // Compute Echo-Chamber Resilience Index (0 to 100%)
+    const maxSkew = Math.max(avgLeft, avgCenter, avgRight);
+    let resilienceScore = Math.max(10, Math.round(100 - (maxSkew - 33.3) * 1.5));
+    if (sourcesSet.size >= 4) resilienceScore = Math.min(100, resilienceScore + 10);
+    if (sourcesSet.size <= 1 && bookmarks.length >= 3) resilienceScore = Math.max(20, resilienceScore - 15);
+
+    let resilienceLabel = "Echo-Chamber Shielded";
+    if (resilienceScore < 50) {
+      resilienceLabel = "Echo-Chamber Risk";
+    } else if (resilienceScore < 75) {
+      resilienceLabel = "Moderate Diversity";
+    }
+
     return {
       totalBookmarks: bookmarks.length,
       analyzedCount: validCount,
@@ -131,6 +147,8 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
       dominantLean,
       dominantColor,
       dominantBg,
+      resilienceScore,
+      resilienceLabel,
     };
   }, [bookmarks]);
 
@@ -213,20 +231,33 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
           </div>
         </div>
 
-        {/* Dominant Lean Indicator */}
-        <div
-          className={cn(
-            "flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-xl border text-xs font-semibold shadow-2xs",
-            stats.dominantBg
-          )}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium">
-            Reading Diet:
-          </span>
-          <span className={cn("font-bold", stats.dominantColor)}>
-            {stats.dominantLean}
-          </span>
+        {/* Actions & Dominant Lean Indicator */}
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          <div
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold shadow-2xs",
+              stats.dominantBg
+            )}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium">
+              Reading Diet:
+            </span>
+            <span className={cn("font-bold", stats.dominantColor)}>
+              {stats.dominantLean}
+            </span>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShareModalOpen(true)}
+            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Share Diet</span>
+          </Button>
         </div>
       </div>
 
@@ -367,6 +398,13 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
           </div>
         </div>
       </div>
+
+      {/* Reading Diet Export & Share Modal */}
+      <ReadingDietShareModal
+        open={shareModalOpen}
+        onOpenChange={setShareModalOpen}
+        stats={stats}
+      />
     </div>
   );
 }

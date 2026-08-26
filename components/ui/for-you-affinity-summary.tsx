@@ -1,7 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Sparkles, Compass, ShieldAlert, ShieldCheck, Scale, Bookmark, Tag } from "lucide-react";
+import { Sparkles, Compass, ShieldAlert, ShieldCheck, Scale, Bookmark, Tag, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ReadingDietShareModal } from "@/components/ui/reading-diet-share-modal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import type { BookmarkedArticle } from "@/hooks/use-bookmarks";
@@ -18,6 +20,7 @@ export function ForYouAffinitySummary({
   className,
 }: ForYouAffinitySummaryProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [shareModalOpen, setShareModalOpen] = React.useState(false);
 
   // Compute User Affinity, Perspective Balance, and Echo-Chamber Index
   const stats = React.useMemo(() => {
@@ -263,8 +266,8 @@ export function ForYouAffinitySummary({
           </div>
         </div>
 
-        {/* Echo-Chamber Shield Indicator */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
+        {/* Actions & Echo-Chamber Shield Indicator */}
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
           <div
             className={cn(
               "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold",
@@ -276,6 +279,17 @@ export function ForYouAffinitySummary({
             <span>{stats.resilienceLabel}</span>
             <span className="opacity-60 text-[10px]">({stats.resilienceScore}%)</span>
           </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setShareModalOpen(true)}
+            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <span>Share Profile</span>
+          </Button>
         </div>
       </div>
 
@@ -378,6 +392,23 @@ export function ForYouAffinitySummary({
           </div>
         </div>
       </div>
+
+      {/* Reading Diet Export & Share Modal */}
+      <ReadingDietShareModal
+        open={shareModalOpen}
+        onOpenChange={setShareModalOpen}
+        stats={{
+          totalBookmarks: stats.totalBookmarks,
+          uniqueSourcesCount: stats.uniqueSourcesCount,
+          leftPct: stats.leftPct,
+          centerPct: stats.centerPct,
+          rightPct: stats.rightPct,
+          dominantLean: stats.dominantLean,
+          resilienceScore: stats.resilienceScore,
+          resilienceLabel: stats.resilienceLabel,
+          topTopics,
+        }}
+      />
     </div>
   );
 }
