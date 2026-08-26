@@ -31,7 +31,7 @@ export default async function ForYouPage() {
   await connection();
 
   const articles = await getPublishedArticles({
-    limit: 60,
+    limit: 80,
     offset: 0,
   });
 
