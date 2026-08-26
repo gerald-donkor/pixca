@@ -439,7 +439,14 @@ export function CommandPalette({
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-bold truncate">{item.title}</span>
                           {item.badge && (
-                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-sm bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                            <span
+                              className={cn(
+                                "text-[9px] font-bold px-1.5 py-0.2 rounded-sm",
+                                item.badge === "New"
+                                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                                  : "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                              )}
+                            >
                               {item.badge}
                             </span>
                           )}

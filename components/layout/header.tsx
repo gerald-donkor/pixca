@@ -205,7 +205,7 @@ export function Header() {
               )}
             >
               <span>For You</span>
-              <span className="w-1.5 h-1.5 bg-red-600 rounded-full" />
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
             </Link>
             <Link
               href="/blindspot"

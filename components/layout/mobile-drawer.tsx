@@ -219,11 +219,11 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe, onOpenSearch }:
                     <span
                       className={cn(
                         "text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none",
-                        isSaved
+                        isSaved || badge === "Pro"
                           ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
-                          : badge === "Live"
+                          : badge === "Live" || badge === "New"
                           ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                          : "bg-red-500/15 text-red-600 dark:text-red-400"
+                          : "bg-zinc-500/15 text-zinc-600 dark:text-zinc-400"
                       )}
                     >
                       {badge}
