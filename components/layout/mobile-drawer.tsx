@@ -146,19 +146,19 @@ export function MobileDrawer({ isOpen, onClose, onOpenSubscribe, onOpenSearch }:
       {/* Drawer Panel */}
       <div
         ref={panelRef}
-        className="relative z-10 w-[320px] max-w-[85vw] h-full bg-card border-r border-border flex flex-col justify-between overflow-y-auto p-6 shadow-2xl"
+        className="relative z-10 w-[280px] sm:w-[320px] max-w-[85vw] h-full bg-card border-r border-border flex flex-col justify-between overflow-y-auto p-4 sm:p-6 shadow-2xl"
       >
         {/* Top Section */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4 sm:gap-6">
           {/* Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-border">
+          <div className="flex items-center justify-between pb-3 sm:pb-4 border-b border-border">
             <Link
               href="/"
               onClick={onClose}
-              className="text-xl font-extrabold tracking-tight select-none text-text-primary"
+              className="text-lg sm:text-xl font-extrabold tracking-tight select-none text-text-primary"
             >
               Pixca
-              <span className="text-[10px] font-bold px-1.5 py-0.5 ml-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-sm align-middle">
+              <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 ml-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-sm align-middle">
                 News
               </span>
             </Link>

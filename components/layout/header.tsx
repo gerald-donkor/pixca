@@ -100,10 +100,10 @@ export function Header() {
       />
 
       {/* UTILITY BAR */}
-      <div className="hidden md:block bg-[#0D0D0F] text-[#CCCCCC] text-[11px] py-1.5 px-6 border-b border-zinc-800">
-        <div className="container mx-auto max-w-[1400px] flex flex-col md:flex-row justify-between items-center gap-2">
+      <div className="hidden md:block bg-[#0D0D0F] text-[#CCCCCC] text-[11px] py-1.5 px-4 sm:px-6 border-b border-zinc-800">
+        <div className="container mx-auto max-w-[1400px] flex justify-between items-center gap-2 min-w-0 max-w-full overflow-hidden">
           {/* Left Side */}
-          <div className="header-anim-item flex items-center gap-1.5">
+          <div className="header-anim-item flex items-center gap-1.5 shrink-0">
             <span className="text-zinc-400 mr-1">Theme:</span>
             <button
               type="button"
@@ -144,14 +144,14 @@ export function Header() {
           </div>
 
           {/* Center Dynamic Date */}
-          <DynamicDate className="header-anim-item font-medium tracking-wide" />
+          <DynamicDate className="header-anim-item font-medium tracking-wide hidden lg:block text-center truncate shrink" />
 
           {/* Right Side Selectors */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 shrink-0">
             <div className="header-anim-item">
               <LocationSelector />
             </div>
-            <div className="header-anim-item border-l border-zinc-800 pl-4">
+            <div className="header-anim-item border-l border-zinc-800 pl-2 sm:pl-4">
               <EditionSelector />
             </div>
           </div>
@@ -160,34 +160,35 @@ export function Header() {
 
       {/* NAVBAR */}
       <header className="sticky top-0 z-40 bg-white dark:bg-[#121215] border-b border-border shadow-xs">
-        <div className="container mx-auto max-w-[1400px] px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between">
+        <div className="container mx-auto max-w-[1400px] px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between min-w-0 max-w-full gap-2 sm:gap-4">
           {/* Left Menu + Logo */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0 min-w-0">
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
               aria-label="Open navigation menu"
-              className="header-anim-item p-1.5 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0 text-text-primary cursor-pointer"
+              aria-expanded={drawerOpen}
+              className="header-anim-item p-2 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors shrink-0 text-text-primary cursor-pointer"
             >
               <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
             <Link
               href="/"
-              className="header-anim-item text-xl sm:text-2xl font-extrabold tracking-tight select-none text-text-primary"
+              className="header-anim-item text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight select-none text-text-primary shrink-0 flex items-center"
             >
               Pixca
-              <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 ml-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-sm align-middle">
+              <span className="text-[8px] sm:text-[9px] md:text-[10px] font-bold px-1 sm:px-1.5 py-0.5 ml-1 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-sm align-middle">
                 News
               </span>
             </Link>
           </div>
 
           {/* Center Nav Links */}
-          <nav className="hidden md:flex items-center gap-6 text-sm font-semibold">
+          <nav className="hidden md:flex items-center gap-2.5 md:gap-3.5 lg:gap-5 xl:gap-6 text-xs lg:text-sm font-semibold shrink min-w-0">
             <Link
               href="/"
               className={cn(
-                "header-anim-item cursor-pointer pb-1 transition-colors",
+                "header-anim-item cursor-pointer pb-1 transition-colors shrink-0",
                 pathname === "/"
                   ? "text-text-primary border-b-2 border-text-primary font-bold"
                   : "text-text-secondary hover:text-text-primary"
@@ -198,7 +199,7 @@ export function Header() {
             <Link
               href="/for-you"
               className={cn(
-                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1",
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1 shrink-0",
                 pathname === "/for-you"
                   ? "text-text-primary border-b-2 border-text-primary font-bold"
                   : "text-text-secondary hover:text-text-primary"
@@ -210,7 +211,7 @@ export function Header() {
             <Link
               href="/blindspot"
               className={cn(
-                "header-anim-item cursor-pointer pb-1 transition-colors",
+                "header-anim-item cursor-pointer pb-1 transition-colors shrink-0",
                 pathname === "/blindspot"
                   ? "text-text-primary border-b-2 border-text-primary font-bold"
                   : "text-text-secondary hover:text-text-primary"
@@ -221,7 +222,7 @@ export function Header() {
             <Link
               href="/saved"
               className={cn(
-                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5",
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5 shrink-0",
                 pathname === "/saved"
                   ? "text-text-primary border-b-2 border-text-primary font-bold"
                   : "text-text-secondary hover:text-text-primary"
@@ -237,7 +238,7 @@ export function Header() {
             <Link
               href="/pricing"
               className={cn(
-                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5",
+                "header-anim-item cursor-pointer pb-1 transition-colors flex items-center gap-1.5 shrink-0",
                 pathname === "/pricing"
                   ? "text-text-primary border-b-2 border-text-primary font-bold"
                   : "text-text-secondary hover:text-text-primary"
@@ -251,62 +252,79 @@ export function Header() {
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 lg:gap-3 shrink-0 min-w-0">
             {/* Search Trigger Button */}
             <div className="header-anim-item">
+              {/* Desktop search bar */}
               <button
                 type="button"
                 onClick={openPalette}
                 aria-label="Search news, publishers, or perspectives (⌘K)"
-                className="hidden sm:flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800/90 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer text-xs font-medium h-8 sm:h-9"
+                className="hidden lg:flex items-center gap-2 px-2.5 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800/90 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer text-xs font-medium h-8 sm:h-9 shrink-0"
               >
                 <Search className="h-3.5 w-3.5" />
-                <span className="text-[11px] hidden lg:inline">Search news...</span>
+                <span className="text-[11px]">Search news...</span>
                 <kbd className="text-[9px] font-mono font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 px-1 py-0.2 rounded text-zinc-400 dark:text-zinc-500">
                   ⌘K
                 </kbd>
               </button>
+              {/* Tablet compact search button */}
+              <button
+                type="button"
+                onClick={openPalette}
+                aria-label="Search news (⌘K)"
+                className="hidden sm:flex lg:hidden items-center gap-1.5 px-2 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800/90 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/80 dark:hover:bg-zinc-700/80 border border-zinc-200/80 dark:border-zinc-700/80 transition-colors cursor-pointer text-xs font-medium h-8 sm:h-9 shrink-0"
+              >
+                <Search className="h-3.5 w-3.5" />
+                <kbd className="text-[9px] font-mono font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 px-1 py-0.2 rounded text-zinc-400 dark:text-zinc-500">
+                  ⌘K
+                </kbd>
+              </button>
+              {/* Mobile icon search button */}
               <button
                 type="button"
                 onClick={openPalette}
                 aria-label="Search news"
-                className="sm:hidden p-2 rounded-md text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="sm:hidden p-2 rounded-md text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer shrink-0"
               >
                 <Search className="h-4 w-4" />
               </button>
             </div>
 
+            {/* Subscribe CTA Button - Visible on tablet & desktop */}
             <div className="header-anim-item">
               <Button
                 type="button"
                 variant="default"
                 onClick={() => setSubscribeOpen(true)}
-                className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 rounded-md cursor-pointer"
+                className="hidden sm:inline-flex bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-4 rounded-md cursor-pointer shrink-0"
               >
                 Subscribe
               </Button>
             </div>
-            <div className="header-anim-item" suppressHydrationWarning>
+
+            {/* Auth Section */}
+            <div className="header-anim-item shrink-0" suppressHydrationWarning>
               {!mounted ? (
-                <div className="h-8 sm:h-9 w-16 sm:w-20 rounded-md bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-8 sm:h-9 w-14 sm:w-20 rounded-md bg-zinc-100 dark:bg-zinc-800 animate-pulse" />
               ) : (
                 <>
                   <Show when="signed-out">
                     <Link href="/sign-in">
                       <Button
                         variant="outline"
-                        className="border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700 font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 rounded-md"
+                        className="border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700 font-bold text-[10px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-4 rounded-md shrink-0"
                       >
                         Sign In
                       </Button>
                     </Link>
                   </Show>
                   <Show when="signed-in">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                       {tier === "starter" ? (
                         <Link
                           href="/pricing"
-                          className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider hover:bg-emerald-500/25 transition-colors"
+                          className="hidden sm:inline-flex px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-extrabold rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider hover:bg-emerald-500/25 transition-colors"
                           title="Pixca Starter Active"
                         >
                           Starter
@@ -314,7 +332,7 @@ export function Header() {
                       ) : tier === "pro" ? (
                         <Link
                           href="/pricing"
-                          className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-gradient-to-r from-blue-600/15 to-indigo-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 uppercase tracking-wider hover:from-blue-600/25 hover:to-indigo-600/25 transition-all"
+                          className="hidden sm:inline-flex px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-extrabold rounded-full bg-gradient-to-r from-blue-600/15 to-indigo-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 uppercase tracking-wider hover:from-blue-600/25 hover:to-indigo-600/25 transition-all"
                           title="Pixca Pro Active"
                         >
                           Pro
@@ -322,7 +340,7 @@ export function Header() {
                       ) : tier === "enterprise" ? (
                         <Link
                           href="/pricing"
-                          className="px-2 py-0.5 text-[10px] font-extrabold rounded-full bg-gradient-to-r from-purple-600/15 to-amber-600/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 uppercase tracking-wider hover:from-purple-600/25 hover:to-amber-600/25 transition-all"
+                          className="hidden sm:inline-flex px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-extrabold rounded-full bg-gradient-to-r from-purple-600/15 to-amber-600/15 text-purple-600 dark:text-purple-400 border border-purple-500/30 uppercase tracking-wider hover:from-purple-600/25 hover:to-amber-600/25 transition-all"
                           title="Pixca Enterprise Active"
                         >
                           Enterprise
@@ -330,7 +348,7 @@ export function Header() {
                       ) : (
                         <Link
                           href="/pricing"
-                          className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                          className="hidden sm:inline-flex px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
                           title="Upgrade to Pro"
                         >
                           Upgrade

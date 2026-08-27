@@ -6,6 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --breakpoint-xs: 30rem;
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-surface: var(--surface);
