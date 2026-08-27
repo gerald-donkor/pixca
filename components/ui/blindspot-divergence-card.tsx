@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import {
   ArrowRight,
+  ArrowRightLeft,
   Columns2,
   Sparkles,
   Flame,
@@ -11,6 +12,11 @@ import {
   Quote,
 } from "lucide-react";
 import { BiasMeter } from "@/components/ui/bias-meter";
+import {
+  PerspectiveComparisonModal,
+  type PrimaryArticleComparisonData,
+  type TargetArticleComparisonData,
+} from "@/components/ui/perspective-comparison-modal";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 import { sentimentLabelColorClass } from "@/lib/ui/analysis-display";
@@ -31,6 +37,7 @@ export function BlindspotDivergenceCard({
   const [activeTab, setActiveTab] = React.useState<"side-by-side" | "framing-matrix">(
     "side-by-side"
   );
+  const [compareModalOpen, setCompareModalOpen] = React.useState(false);
 
   useGSAP(
     () => {
@@ -48,6 +55,54 @@ export function BlindspotDivergenceCard({
 
   const leftAnalysis = leftArticle.analysis;
   const rightAnalysis = rightArticle.analysis;
+
+  const primaryComparisonData: PrimaryArticleComparisonData = {
+    id: leftArticle.id,
+    title: leftArticle.title,
+    sourceName: leftArticle.source.name,
+    publishedAt: leftArticle.published_at,
+    imageUrl: leftArticle.image_url,
+    biasLabel: leftAnalysis?.bias_label,
+    leftPercentage: leftAnalysis?.left_percentage,
+    centerPercentage: leftAnalysis?.center_percentage,
+    rightPercentage: leftAnalysis?.right_percentage,
+    sentimentLabel: leftAnalysis?.sentiment_label,
+    sentimentScore: leftAnalysis?.sentiment_score,
+    confidence: leftAnalysis?.confidence,
+    summary: leftAnalysis?.summary,
+    framingNotes: leftAnalysis?.framing_notes,
+    loadedTerms: leftAnalysis?.loaded_terms ?? undefined,
+  };
+
+  const targetComparisonData: TargetArticleComparisonData = {
+    id: rightArticle.id,
+    article_id: rightArticle.id,
+    title: rightArticle.title,
+    sourceName: rightArticle.source.name,
+    source_name: rightArticle.source.name,
+    publishedAt: rightArticle.published_at,
+    published_at: rightArticle.published_at,
+    imageUrl: rightArticle.image_url,
+    image_url: rightArticle.image_url,
+    biasLabel: rightAnalysis?.bias_label,
+    bias_label: rightAnalysis?.bias_label,
+    leftPercentage: rightAnalysis?.left_percentage,
+    left_percentage: rightAnalysis?.left_percentage,
+    centerPercentage: rightAnalysis?.center_percentage,
+    center_percentage: rightAnalysis?.center_percentage,
+    rightPercentage: rightAnalysis?.right_percentage,
+    right_percentage: rightAnalysis?.right_percentage,
+    sentimentLabel: rightAnalysis?.sentiment_label,
+    sentiment_label: rightAnalysis?.sentiment_label,
+    sentimentScore: rightAnalysis?.sentiment_score,
+    sentiment_score: rightAnalysis?.sentiment_score,
+    confidence: rightAnalysis?.confidence,
+    summary: rightAnalysis?.summary,
+    framingNotes: rightAnalysis?.framing_notes,
+    framing_notes: rightAnalysis?.framing_notes,
+    loadedTerms: rightAnalysis?.loaded_terms ?? undefined,
+    loaded_terms: rightAnalysis?.loaded_terms ?? undefined,
+  };
 
   return (
     <div
@@ -72,34 +127,45 @@ export function BlindspotDivergenceCard({
           </p>
         </div>
 
-        {/* View Toggle Mode */}
-        <div className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 self-start sm:self-auto shrink-0 shadow-xs">
+        {/* View Toggle Mode & Modal Action */}
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto shrink-0">
           <button
             type="button"
-            onClick={() => setActiveTab("side-by-side")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
-              activeTab === "side-by-side"
-                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
-                : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            )}
+            onClick={() => setCompareModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
           >
-            <Columns2 className="w-3.5 h-3.5" />
-            <span>Side by Side</span>
+            <ArrowRightLeft className="w-3.5 h-3.5" />
+            <span>Compare in Modal</span>
           </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab("framing-matrix")}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
-              activeTab === "framing-matrix"
-                ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
-                : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            )}
-          >
-            <Quote className="w-3.5 h-3.5" />
-            <span>Framing & Rhetoric</span>
-          </button>
+
+          <div className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0 shadow-xs">
+            <button
+              type="button"
+              onClick={() => setActiveTab("side-by-side")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                activeTab === "side-by-side"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                  : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+              )}
+            >
+              <Columns2 className="w-3.5 h-3.5" />
+              <span>Side by Side</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("framing-matrix")}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                activeTab === "framing-matrix"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
+                  : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+              )}
+            >
+              <Quote className="w-3.5 h-3.5" />
+              <span>Framing & Rhetoric</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -332,6 +398,14 @@ export function BlindspotDivergenceCard({
           </div>
         </div>
       )}
+
+      {/* Perspective Comparison Modal */}
+      <PerspectiveComparisonModal
+        open={compareModalOpen}
+        onOpenChange={setCompareModalOpen}
+        primaryArticle={primaryComparisonData}
+        targetArticle={targetComparisonData}
+      />
     </div>
   );
 }

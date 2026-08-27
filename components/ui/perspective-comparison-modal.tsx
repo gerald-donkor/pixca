@@ -50,11 +50,42 @@ export interface PrimaryArticleComparisonData {
   loadedTerms?: string[];
 }
 
+export interface TargetArticleComparisonData {
+  id?: string;
+  article_id?: string;
+  title: string;
+  source_name?: string;
+  sourceName?: string;
+  published_at?: string;
+  publishedAt?: string;
+  image_url?: string;
+  imageUrl?: string;
+  bias_label?: BiasLabel;
+  biasLabel?: BiasLabel;
+  left_percentage?: number;
+  leftPercentage?: number;
+  center_percentage?: number;
+  centerPercentage?: number;
+  right_percentage?: number;
+  rightPercentage?: number;
+  sentiment_label?: SentimentLabel;
+  sentimentLabel?: SentimentLabel;
+  sentiment_score?: number;
+  sentimentScore?: number;
+  confidence?: number;
+  similarity?: number;
+  summary?: string;
+  framing_notes?: string | null;
+  framingNotes?: string | null;
+  loaded_terms?: string[];
+  loadedTerms?: string[];
+}
+
 export interface PerspectiveComparisonModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   primaryArticle: PrimaryArticleComparisonData;
-  targetArticle: RelatedArticleRow | null;
+  targetArticle: TargetArticleComparisonData | RelatedArticleRow | null;
 }
 
 function useIsDesktop(query = "(min-width: 768px)") {
@@ -99,9 +130,80 @@ export function PerspectiveComparisonModal({
   const primaryRight = primaryArticle.rightPercentage ?? 0;
   const primaryCenter = primaryArticle.centerPercentage ?? 0;
 
-  const targetLeft = targetArticle?.left_percentage ?? 0;
-  const targetRight = targetArticle?.right_percentage ?? 0;
-  const targetCenter = targetArticle?.center_percentage ?? 0;
+  const targetId = targetArticle
+    ? "article_id" in targetArticle && targetArticle.article_id
+      ? targetArticle.article_id
+      : "id" in targetArticle && targetArticle.id
+        ? targetArticle.id
+        : ""
+    : "";
+  const targetTitle = targetArticle?.title ?? "";
+  const targetSourceName = targetArticle
+    ? "source_name" in targetArticle && targetArticle.source_name
+      ? targetArticle.source_name
+      : "sourceName" in targetArticle && targetArticle.sourceName
+        ? targetArticle.sourceName
+        : "Unknown"
+    : "Unknown";
+  const targetPublishedAt = targetArticle
+    ? "published_at" in targetArticle && targetArticle.published_at
+      ? targetArticle.published_at
+      : "publishedAt" in targetArticle && targetArticle.publishedAt
+        ? targetArticle.publishedAt
+        : undefined
+    : undefined;
+  const targetLeft = targetArticle
+    ? "left_percentage" in targetArticle && targetArticle.left_percentage !== undefined
+      ? targetArticle.left_percentage
+      : "leftPercentage" in targetArticle && targetArticle.leftPercentage !== undefined
+        ? targetArticle.leftPercentage
+        : 0
+    : 0;
+  const targetRight = targetArticle
+    ? "right_percentage" in targetArticle && targetArticle.right_percentage !== undefined
+      ? targetArticle.right_percentage
+      : "rightPercentage" in targetArticle && targetArticle.rightPercentage !== undefined
+        ? targetArticle.rightPercentage
+        : 0
+    : 0;
+  const targetCenter = targetArticle
+    ? "center_percentage" in targetArticle && targetArticle.center_percentage !== undefined
+      ? targetArticle.center_percentage
+      : "centerPercentage" in targetArticle && targetArticle.centerPercentage !== undefined
+        ? targetArticle.centerPercentage
+        : 0
+    : 0;
+  const targetBiasLabel: BiasLabel = targetArticle
+    ? "bias_label" in targetArticle && targetArticle.bias_label
+      ? targetArticle.bias_label
+      : "biasLabel" in targetArticle && targetArticle.biasLabel
+        ? targetArticle.biasLabel
+        : "unclear"
+    : "unclear";
+  const targetSentiment: SentimentLabel = targetArticle
+    ? "sentiment_label" in targetArticle && targetArticle.sentiment_label
+      ? targetArticle.sentiment_label
+      : "sentimentLabel" in targetArticle && targetArticle.sentimentLabel
+        ? targetArticle.sentimentLabel
+        : "neutral"
+    : "neutral";
+  const targetSentimentScore = targetArticle
+    ? "sentiment_score" in targetArticle && targetArticle.sentiment_score !== undefined
+      ? targetArticle.sentiment_score
+      : "sentimentScore" in targetArticle && targetArticle.sentimentScore !== undefined
+        ? targetArticle.sentimentScore
+        : undefined
+    : undefined;
+  const targetConfidence = targetArticle && "confidence" in targetArticle ? targetArticle.confidence : undefined;
+  const targetSimilarity = targetArticle && "similarity" in targetArticle ? targetArticle.similarity : undefined;
+  const targetSummary = targetArticle && "summary" in targetArticle ? targetArticle.summary : undefined;
+  const targetLoadedTerms = targetArticle
+    ? "loaded_terms" in targetArticle && targetArticle.loaded_terms
+      ? targetArticle.loaded_terms
+      : "loadedTerms" in targetArticle && targetArticle.loadedTerms
+        ? targetArticle.loadedTerms
+        : undefined
+    : undefined;
 
   // Compute framing bias shift (-100 to 100)
   const primaryLean = primaryRight - primaryLeft;
@@ -110,7 +212,6 @@ export function PerspectiveComparisonModal({
 
   // Sentiment alignment
   const primarySentiment = primaryArticle.sentimentLabel || "neutral";
-  const targetSentiment = targetArticle?.sentiment_label || "neutral";
   const sentimentContrasting =
     (primarySentiment === "positive" && targetSentiment === "negative") ||
     (primarySentiment === "negative" && targetSentiment === "positive");
@@ -163,7 +264,7 @@ export function PerspectiveComparisonModal({
   const handleCopyLink = async () => {
     if (!targetArticle) return;
     const url = typeof window !== "undefined" ? window.location.href : "";
-    const comparisonText = `Perspective Comparison on Pixca:\n\n1️⃣ ${primaryArticle.sourceName}: "${primaryArticle.title}" (${titleCase(primaryArticle.biasLabel || "unclear")})\n2️⃣ ${targetArticle.source_name}: "${targetArticle.title}" (${titleCase(targetArticle.bias_label)})\n\nFraming Divergence: ${Math.round(divergenceDelta)}%\n\nView details: ${url}`;
+    const comparisonText = `Perspective Comparison on Pixca:\n\n1️⃣ ${primaryArticle.sourceName}: "${primaryArticle.title}" (${titleCase(primaryArticle.biasLabel || "unclear")})\n2️⃣ ${targetSourceName}: "${targetTitle}" (${titleCase(targetBiasLabel)})\n\nFraming Divergence: ${Math.round(divergenceDelta)}%\n\nView details: ${url}`;
 
     try {
       if (navigator?.clipboard) {
@@ -220,9 +321,9 @@ export function PerspectiveComparisonModal({
                 {primaryArticle.biasLabel || "unclear"}
               </span>
               <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 mx-1 shrink-0" />
-              <span className="font-bold text-zinc-800 dark:text-zinc-200">{targetArticle.source_name}</span>
-              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800", biasLabelColorClass(targetArticle.bias_label))}>
-                {targetArticle.bias_label}
+              <span className="font-bold text-zinc-800 dark:text-zinc-200">{targetSourceName}</span>
+              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800", biasLabelColorClass(targetBiasLabel))}>
+                {targetBiasLabel}
               </span>
             </div>
 
@@ -236,7 +337,11 @@ export function PerspectiveComparisonModal({
                   <Sparkles className="h-3.5 w-3.5 text-emerald-500" /> Similar Sentiment
                 </span>
               )}
-              <span>Similarity: {Math.round(targetArticle.similarity * 100)}%</span>
+              <span>
+                {targetSimilarity !== undefined
+                  ? `Similarity: ${Math.round(targetSimilarity * 100)}%`
+                  : `Divergence Delta: ${Math.round(divergenceDelta)}%`}
+              </span>
             </div>
           </div>
 
@@ -273,7 +378,7 @@ export function PerspectiveComparisonModal({
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
               )}
             >
-              {targetArticle.source_name}
+              {targetSourceName}
             </button>
           </div>
 
@@ -356,6 +461,33 @@ export function PerspectiveComparisonModal({
                   </div>
                 )}
               </div>
+
+              {primaryArticle.id && (
+                <div className="pt-2">
+                  <Link
+                    href={`/article/${primaryArticle.id}`}
+                    target={isDesktop ? "_blank" : undefined}
+                    rel={isDesktop ? "noopener noreferrer" : undefined}
+                    onClick={(e) => {
+                      if (!isDesktop) {
+                        e.preventDefault();
+                        if (document.activeElement instanceof HTMLElement) {
+                          document.activeElement.blur();
+                        }
+                        onOpenChange(false);
+                        if (typeof window !== "undefined") {
+                          window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+                        }
+                        router.push(`/article/${primaryArticle.id}`, { scroll: true });
+                      }
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                  >
+                    <span>Read Full Coverage</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Column 2: Target Related Article */}
@@ -368,20 +500,22 @@ export function PerspectiveComparisonModal({
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500">
-                    Related Coverage • {targetArticle.source_name}
+                    {targetSimilarity !== undefined ? "Related Coverage" : "Comparative Coverage"} • {targetSourceName}
                   </span>
-                  <span className={cn("text-xs font-extrabold uppercase", biasLabelColorClass(targetArticle.bias_label))}>
-                    {titleCase(targetArticle.bias_label)}
+                  <span className={cn("text-xs font-extrabold uppercase", biasLabelColorClass(targetBiasLabel))}>
+                    {titleCase(targetBiasLabel)}
                   </span>
                 </div>
 
                 <h3 className="text-base font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug">
-                  {targetArticle.title}
+                  {targetTitle}
                 </h3>
 
-                <div className="text-[11px] font-semibold text-zinc-400">
-                  {formatArticleDate(targetArticle.published_at)}
-                </div>
+                {targetPublishedAt && (
+                  <div className="text-[11px] font-semibold text-zinc-400">
+                    {formatArticleDate(targetPublishedAt)}
+                  </div>
+                )}
 
                 {/* Bias Meter */}
                 <div className="space-y-1.5 pt-2">
@@ -400,48 +534,88 @@ export function PerspectiveComparisonModal({
                 <div className="flex items-center justify-between py-2 border-y border-zinc-200/60 dark:border-zinc-800 text-xs font-bold">
                   <span className="text-zinc-500">Sentiment</span>
                   <span className={sentimentLabelColorClass(targetSentiment)}>
-                    {titleCase(targetSentiment)}
+                    {titleCase(targetSentiment)} {targetSentimentScore !== undefined ? `(${targetSentimentScore.toFixed(2)})` : ""}
                   </span>
                 </div>
 
+                {/* Summary Snippet */}
+                {targetSummary && (
+                  <div className="space-y-1 pt-1">
+                    <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider">AI Summary</span>
+                    <p className="text-xs text-zinc-700 dark:text-zinc-300 line-clamp-4 leading-relaxed">
+                      {targetSummary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Loaded Terms */}
+                {targetLoadedTerms && targetLoadedTerms.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1">
+                      <Flame className="h-3 w-3 text-orange-500" /> Loaded terms
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {targetLoadedTerms.map((term) => (
+                        <span
+                          key={term}
+                          className="rounded-full bg-zinc-200/70 dark:bg-zinc-800 px-2 py-0.5 text-[10px] font-bold text-zinc-700 dark:text-zinc-300"
+                        >
+                          {term}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Confidence & Match info */}
                 <div className="p-3 bg-zinc-100/70 dark:bg-zinc-800/50 rounded-lg text-xs space-y-1">
-                  <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400 font-semibold">
-                    <span>AI Confidence</span>
-                    <span className="font-bold text-zinc-800 dark:text-zinc-200">{formatConfidence(targetArticle.confidence)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400 font-semibold">
-                    <span>Semantic Similarity</span>
-                    <span className="font-bold text-zinc-800 dark:text-zinc-200">{formatPercent(targetArticle.similarity * 100)}</span>
-                  </div>
+                  {targetConfidence !== undefined && (
+                    <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400 font-semibold">
+                      <span>AI Confidence</span>
+                      <span className="font-bold text-zinc-800 dark:text-zinc-200">{formatConfidence(targetConfidence)}</span>
+                    </div>
+                  )}
+                  {targetSimilarity !== undefined ? (
+                    <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400 font-semibold">
+                      <span>Semantic Similarity</span>
+                      <span className="font-bold text-zinc-800 dark:text-zinc-200">{formatPercent(targetSimilarity * 100)}</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center text-zinc-600 dark:text-zinc-400 font-semibold">
+                      <span>Framing Divergence</span>
+                      <span className="font-bold text-zinc-800 dark:text-zinc-200">{Math.round(divergenceDelta)}%</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Direct Read Action */}
-              <div className="pt-2">
-                <Link
-                  href={`/article/${targetArticle.article_id}`}
-                  target={isDesktop ? "_blank" : undefined}
-                  rel={isDesktop ? "noopener noreferrer" : undefined}
-                  onClick={(e) => {
-                    if (!isDesktop) {
-                      e.preventDefault();
-                      if (document.activeElement instanceof HTMLElement) {
-                        document.activeElement.blur();
+              {targetId && (
+                <div className="pt-2">
+                  <Link
+                    href={`/article/${targetId}`}
+                    target={isDesktop ? "_blank" : undefined}
+                    rel={isDesktop ? "noopener noreferrer" : undefined}
+                    onClick={(e) => {
+                      if (!isDesktop) {
+                        e.preventDefault();
+                        if (document.activeElement instanceof HTMLElement) {
+                          document.activeElement.blur();
+                        }
+                        onOpenChange(false);
+                        if (typeof window !== "undefined") {
+                          window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+                        }
+                        router.push(`/article/${targetId}`, { scroll: true });
                       }
-                      onOpenChange(false);
-                      if (typeof window !== "undefined") {
-                        window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
-                      }
-                      router.push(`/article/${targetArticle.article_id}`, { scroll: true });
-                    }
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
-                >
-                  <span>Read Full Coverage</span>
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </Link>
-              </div>
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+                  >
+                    <span>Read Full Coverage</span>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
 
