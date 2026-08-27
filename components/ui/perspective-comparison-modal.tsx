@@ -117,6 +117,15 @@ export function PerspectiveComparisonModal({
   const isDesktop = useIsDesktop();
   const [copied, setCopied] = React.useState(false);
   const [mobileTab, setMobileTab] = React.useState<"split" | "primary" | "target">("split");
+  const copyTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
@@ -257,6 +266,10 @@ export function PerspectiveComparisonModal({
           }
         );
       });
+      mm.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(".compare-card-col", { autoAlpha: 1, y: 0, scale: 1 });
+        gsap.set(".compare-delta-metric", { autoAlpha: 1, scale: 1 });
+      });
     },
     { scope: containerRef, dependencies: [open, targetArticle] }
   );
@@ -264,14 +277,19 @@ export function PerspectiveComparisonModal({
   const handleCopyLink = async () => {
     if (!targetArticle) return;
     const url = typeof window !== "undefined" ? window.location.href : "";
-    const comparisonText = `Perspective Comparison on Pixca:\n\n1️⃣ ${primaryArticle.sourceName}: "${primaryArticle.title}" (${titleCase(primaryArticle.biasLabel || "unclear")})\n2️⃣ ${targetSourceName}: "${targetTitle}" (${titleCase(targetBiasLabel)})\n\nFraming Divergence: ${Math.round(divergenceDelta)}%\n\nView details: ${url}`;
+    const comparisonText = `Perspective Comparison on Pixca:\n\n1. ${primaryArticle.sourceName}: "${primaryArticle.title}" (${titleCase(primaryArticle.biasLabel || "unclear")})\n2. ${targetSourceName}: "${targetTitle}" (${titleCase(targetBiasLabel)})\n\nFraming Divergence: ${Math.round(divergenceDelta)}%\n\nView details: ${url}`;
 
     try {
       if (navigator?.clipboard) {
         await navigator.clipboard.writeText(comparisonText);
+        if (copyTimeoutRef.current) {
+          clearTimeout(copyTimeoutRef.current);
+        }
         setCopied(true);
         toast.success("Comparison summary copied to clipboard!");
-        setTimeout(() => setCopied(false), 2500);
+        copyTimeoutRef.current = setTimeout(() => {
+          setCopied(false);
+        }, 2500);
       }
     } catch {
       toast.error("Failed to copy comparison to clipboard");
@@ -290,7 +308,10 @@ export function PerspectiveComparisonModal({
           <DialogHeader className="space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2">
-                <span className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200">
+                <span
+                  aria-hidden="true"
+                  className="p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200"
+                >
                   <ArrowRightLeft className="h-4 w-4" />
                 </span>
                 <DialogTitle className="text-xl font-extrabold tracking-tight">
@@ -304,7 +325,7 @@ export function PerspectiveComparisonModal({
                   divergenceBadgeColor
                 )}
               >
-                <Scale className="h-3.5 w-3.5" />
+                <Scale className="h-3.5 w-3.5" aria-hidden="true" />
                 <span>{divergenceLevel} ({Math.round(divergenceDelta)}% Delta)</span>
               </div>
             </div>
@@ -314,30 +335,40 @@ export function PerspectiveComparisonModal({
           </DialogHeader>
 
           {/* Top Divergence Highlights Bar */}
-          <div className="bg-zinc-50 dark:bg-zinc-900/70 border border-zinc-200/70 dark:border-zinc-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-medium">
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <span className="font-bold text-zinc-800 dark:text-zinc-200">{primaryArticle.sourceName}</span>
-              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800", biasLabelColorClass(primaryArticle.biasLabel || "unclear"))}>
+          <div className="bg-zinc-50 dark:bg-zinc-900/70 border border-zinc-200/70 dark:border-zinc-800 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-xs font-medium">
+            <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto min-w-0">
+              <span
+                className="font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[130px] sm:max-w-[160px] md:max-w-[200px]"
+                title={primaryArticle.sourceName}
+              >
+                {primaryArticle.sourceName}
+              </span>
+              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800 shrink-0", biasLabelColorClass(primaryArticle.biasLabel || "unclear"))}>
                 {primaryArticle.biasLabel || "unclear"}
               </span>
-              <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 mx-1 shrink-0" />
-              <span className="font-bold text-zinc-800 dark:text-zinc-200">{targetSourceName}</span>
-              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800", biasLabelColorClass(targetBiasLabel))}>
+              <ArrowRightLeft className="h-3.5 w-3.5 text-zinc-400 mx-1 shrink-0" aria-hidden="true" />
+              <span
+                className="font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[130px] sm:max-w-[160px] md:max-w-[200px]"
+                title={targetSourceName}
+              >
+                {targetSourceName}
+              </span>
+              <span className={cn("font-extrabold uppercase text-[10px] px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-800 shrink-0", biasLabelColorClass(targetBiasLabel))}>
                 {targetBiasLabel}
               </span>
             </div>
 
-            <div className="flex items-center gap-4 text-[11px] text-zinc-500 dark:text-zinc-400 w-full sm:w-auto justify-between sm:justify-end">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] text-zinc-500 dark:text-zinc-400 w-full sm:w-auto justify-between sm:justify-end shrink-0">
               {sentimentContrasting ? (
-                <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold">
-                  <ShieldAlert className="h-3.5 w-3.5" /> Contrasting Tone
+                <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold shrink-0">
+                  <ShieldAlert className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> Contrasting Tone
                 </span>
               ) : (
-                <span className="flex items-center gap-1 font-semibold">
-                  <Sparkles className="h-3.5 w-3.5 text-emerald-500" /> Similar Sentiment
+                <span className="flex items-center gap-1 font-semibold shrink-0">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-500 shrink-0" aria-hidden="true" /> Similar Sentiment
                 </span>
               )}
-              <span>
+              <span className="shrink-0 font-medium">
                 {targetSimilarity !== undefined
                   ? `Similarity: ${Math.round(targetSimilarity * 100)}%`
                   : `Divergence Delta: ${Math.round(divergenceDelta)}%`}
@@ -346,11 +377,20 @@ export function PerspectiveComparisonModal({
           </div>
 
           {/* Mobile Viewport Tab Switcher (< md) */}
-          <div className="flex md:hidden rounded-lg bg-zinc-100 dark:bg-zinc-800/80 p-1 text-xs font-bold">
+          <div
+            role="tablist"
+            aria-label="Perspective comparison view mode"
+            className="flex md:hidden rounded-lg bg-zinc-100 dark:bg-zinc-800/80 p-1 text-xs font-bold"
+          >
             <button
+              role="tab"
+              type="button"
+              id="tab-split"
+              aria-selected={mobileTab === "split"}
+              aria-controls="panel-primary panel-target"
               onClick={() => setMobileTab("split")}
               className={cn(
-                "flex-1 py-1.5 px-2 truncate rounded-md transition-all",
+                "flex-1 py-1.5 px-2 truncate min-w-0 rounded-md transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500",
                 mobileTab === "split"
                   ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -359,9 +399,15 @@ export function PerspectiveComparisonModal({
               Side-by-Side
             </button>
             <button
+              role="tab"
+              type="button"
+              id="tab-primary"
+              aria-selected={mobileTab === "primary"}
+              aria-controls="panel-primary"
+              title={primaryArticle.sourceName}
               onClick={() => setMobileTab("primary")}
               className={cn(
-                "flex-1 py-1.5 px-2 truncate rounded-md transition-all",
+                "flex-1 py-1.5 px-2 truncate min-w-0 rounded-md transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500",
                 mobileTab === "primary"
                   ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -370,9 +416,15 @@ export function PerspectiveComparisonModal({
               {primaryArticle.sourceName}
             </button>
             <button
+              role="tab"
+              type="button"
+              id="tab-target"
+              aria-selected={mobileTab === "target"}
+              aria-controls="panel-target"
+              title={targetSourceName}
               onClick={() => setMobileTab("target")}
               className={cn(
-                "flex-1 py-1.5 px-2 truncate rounded-md transition-all",
+                "flex-1 py-1.5 px-2 truncate min-w-0 rounded-md transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500",
                 mobileTab === "target"
                   ? "bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white shadow-xs"
                   : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
@@ -386,6 +438,9 @@ export function PerspectiveComparisonModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Column 1: Primary Article */}
             <div
+              id="panel-primary"
+              role="tabpanel"
+              aria-labelledby="tab-primary"
               className={cn(
                 "compare-card-col flex flex-col justify-between rounded-xl border border-[var(--border)] bg-zinc-50/50 dark:bg-zinc-900/30 p-5 space-y-4",
                 mobileTab === "target" && "hidden md:flex"
@@ -446,7 +501,7 @@ export function PerspectiveComparisonModal({
                 {primaryArticle.loadedTerms && primaryArticle.loadedTerms.length > 0 && (
                   <div className="space-y-1.5 pt-1">
                     <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1">
-                      <Flame className="h-3 w-3 text-orange-500" /> Loaded terms
+                      <Flame className="h-3 w-3 text-orange-500" aria-hidden="true" /> Loaded terms
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {primaryArticle.loadedTerms.map((term) => (
@@ -468,6 +523,7 @@ export function PerspectiveComparisonModal({
                     href={`/article/${primaryArticle.id}`}
                     target={isDesktop ? "_blank" : undefined}
                     rel={isDesktop ? "noopener noreferrer" : undefined}
+                    aria-label={`Read full coverage from ${primaryArticle.sourceName}`}
                     onClick={(e) => {
                       if (!isDesktop) {
                         e.preventDefault();
@@ -481,10 +537,10 @@ export function PerspectiveComparisonModal({
                         router.push(`/article/${primaryArticle.id}`, { scroll: true });
                       }
                     }}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
                   >
                     <span>Read Full Coverage</span>
-                    <ExternalLink className="h-3.5 w-3.5" />
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
                 </div>
               )}
@@ -492,6 +548,9 @@ export function PerspectiveComparisonModal({
 
             {/* Column 2: Target Related Article */}
             <div
+              id="panel-target"
+              role="tabpanel"
+              aria-labelledby="tab-target"
               className={cn(
                 "compare-card-col flex flex-col justify-between rounded-xl border border-[var(--border)] bg-zinc-50/50 dark:bg-zinc-900/30 p-5 space-y-4",
                 mobileTab === "primary" && "hidden md:flex"
@@ -552,7 +611,7 @@ export function PerspectiveComparisonModal({
                 {targetLoadedTerms && targetLoadedTerms.length > 0 && (
                   <div className="space-y-1.5 pt-1">
                     <span className="text-[10px] uppercase font-bold text-zinc-400 tracking-wider flex items-center gap-1">
-                      <Flame className="h-3 w-3 text-orange-500" /> Loaded terms
+                      <Flame className="h-3 w-3 text-orange-500" aria-hidden="true" /> Loaded terms
                     </span>
                     <div className="flex flex-wrap gap-1">
                       {targetLoadedTerms.map((term) => (
@@ -596,6 +655,7 @@ export function PerspectiveComparisonModal({
                     href={`/article/${targetId}`}
                     target={isDesktop ? "_blank" : undefined}
                     rel={isDesktop ? "noopener noreferrer" : undefined}
+                    aria-label={`Read full coverage from ${targetSourceName}`}
                     onClick={(e) => {
                       if (!isDesktop) {
                         e.preventDefault();
@@ -609,10 +669,10 @@ export function PerspectiveComparisonModal({
                         router.push(`/article/${targetId}`, { scroll: true });
                       }
                     }}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
                   >
                     <span>Read Full Coverage</span>
-                    <ExternalLink className="h-3.5 w-3.5" />
+                    <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                   </Link>
                 </div>
               )}
@@ -625,9 +685,10 @@ export function PerspectiveComparisonModal({
               variant="outline"
               size="sm"
               onClick={handleCopyLink}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs font-bold"
+              aria-label="Copy comparison summary to clipboard"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-xs font-bold cursor-pointer"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
               <span>{copied ? "Copied Link" : "Copy Comparison"}</span>
             </Button>
 
@@ -635,7 +696,8 @@ export function PerspectiveComparisonModal({
               variant="secondary"
               size="sm"
               onClick={() => onOpenChange(false)}
-              className="w-full sm:w-auto text-xs font-bold"
+              aria-label="Close comparison dialog"
+              className="w-full sm:w-auto text-xs font-bold cursor-pointer"
             >
               Close
             </Button>
