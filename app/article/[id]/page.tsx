@@ -86,10 +86,10 @@ function SidebarProgressBar({
   colorClass: string
 }) {
   return (
-    <div className="grid grid-cols-[60px_45px_1fr] items-center gap-3 text-[11px] font-bold select-none">
-      <div className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px]">{label}</div>
+    <div className="grid grid-cols-[50px_40px_1fr] sm:grid-cols-[60px_45px_1fr] items-center gap-2 sm:gap-3 text-[11px] font-bold select-none min-w-0 max-w-full">
+      <div className="text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[10px] truncate">{label}</div>
       <div className="text-zinc-800 dark:text-zinc-200 text-right">{valueText || `${percentage}%`}</div>
-      <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 rounded-full overflow-hidden min-w-0">
         <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
@@ -187,14 +187,14 @@ export default async function ArticleDetailsPage({
   }
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] pb-16">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] pb-16 overflow-x-hidden">
       <ArticleScrollReset articleId={article.id} />
       <JsonLd schema={articleSchema} />
       {/* Reading Progress Indicator */}
       <ReadingProgress />
 
       {/* Top Back Navigation Bar */}
-      <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-3 px-6 shadow-xs">
+      <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-3 px-4 sm:px-6 shadow-xs">
         <div className="container mx-auto max-w-[1400px] flex items-center">
           <Link href="/" className="inline-flex items-center gap-2 text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors">
             <ChevronLeft className="h-4 w-4" />
@@ -204,11 +204,11 @@ export default async function ArticleDetailsPage({
       </div>
 
       {/* Main Grid Wrapper */}
-      <div className="container mx-auto max-w-[1400px] px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 items-start">
+      <div className="container mx-auto max-w-[1400px] px-4 sm:px-6 py-6 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8 items-start min-w-0 max-w-full">
 
           {/* LEFT COLUMN: ARTICLE CONTENT */}
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0 max-w-full">
 
             {/* Metadata Breadcrumb */}
             <div className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
@@ -216,19 +216,19 @@ export default async function ArticleDetailsPage({
             </div>
 
             {/* Headline */}
-            <h1 className="text-[28px] md:text-[36px] font-extrabold tracking-tight text-[var(--text-primary)] leading-tight">
+            <h1 className="text-[24px] sm:text-[28px] md:text-[36px] font-extrabold tracking-tight text-[var(--text-primary)] leading-tight break-words">
               {article.title}
             </h1>
 
             {/* Byline & Actions Row */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y border-[var(--border)] py-4 gap-4">
-              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-y border-[var(--border)] py-4 gap-4 min-w-0 max-w-full">
+              <div className="text-xs font-medium text-zinc-500 dark:text-zinc-400 break-words min-w-0">
                 <span className="font-bold text-zinc-800 dark:text-zinc-200">{article.source.name}</span> <span className="mx-1">•</span> {formatArticleDate(article.published_at)} <span className="mx-1">•</span>{" "}
                 <a
                   href={article.original_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-bold text-zinc-800 dark:text-zinc-200 hover:text-black dark:hover:text-white underline underline-offset-2"
+                  className="font-bold text-zinc-800 dark:text-zinc-200 hover:text-black dark:hover:text-white underline underline-offset-2 break-all"
                 >
                   Read original
                 </a>
@@ -250,21 +250,27 @@ export default async function ArticleDetailsPage({
             </div>
 
             {/* Hero Image */}
-            <img
-              src={article.image_url}
-              alt={article.title}
-              className="w-full aspect-[16/9] object-cover rounded-xl border border-[var(--border)] shadow-xs"
-            />
+            {article.image_url ? (
+              <img
+                src={article.image_url}
+                alt={article.title}
+                className="w-full max-w-full aspect-[16/9] object-cover rounded-xl border border-[var(--border)] shadow-xs"
+              />
+            ) : (
+              <div className="flex w-full aspect-[16/9] items-center justify-center bg-[var(--bg-secondary)] text-[var(--text-secondary)] p-4 rounded-xl border border-[var(--border)] text-center">
+                <span className="text-[13px] font-medium leading-[1.6]">Image Placeholder</span>
+              </div>
+            )}
 
             {/* Inline Bias Distribution Card */}
             {analysis && (
-              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-5 shadow-xs space-y-4">
-                <div className="flex justify-between items-center gap-3">
-                  <span className="text-xs uppercase font-bold tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-4 sm:p-5 shadow-xs space-y-4 min-w-0 max-w-full">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-3">
+                  <span className="text-xs uppercase font-bold tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 shrink-0">
                     Bias Distribution
                     <AiMetricExplainer type="bias-distribution" />
                   </span>
-                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 text-right">
+                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 text-left sm:text-right break-words">
                     AI-estimated: {titleCase(analysis.bias_label)} • {formatConfidence(analysis.confidence)} confidence
                   </span>
                 </div>
@@ -278,17 +284,17 @@ export default async function ArticleDetailsPage({
             )}
 
             {/* Article Text Content */}
-            <article className="text-zinc-800 dark:text-zinc-200 text-[15px] md:text-[16px] leading-[1.7] font-medium space-y-6 max-w-none">
+            <article className="text-zinc-800 dark:text-zinc-200 text-[15px] md:text-[16px] leading-[1.7] font-medium space-y-6 max-w-none break-words min-w-0">
               {paragraphs.map((paragraph, index) => (
                 <p key={index}>{paragraph}</p>
               ))}
             </article>
 
             {/* Full-width Newsletter Block */}
-            <div className="bg-zinc-50 dark:bg-card rounded-xl border border-[var(--border)] p-6 md:p-8 shadow-xs flex flex-col md:flex-row justify-between items-center gap-6 mt-10">
-              <div className="space-y-1 text-center md:text-left">
-                <h3 className="text-lg font-extrabold text-[var(--text-primary)]">Stay Informed. Stay Balanced.</h3>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold">Get the top stories and bias analysis delivered to your inbox.</p>
+            <div className="bg-zinc-50 dark:bg-card rounded-xl border border-[var(--border)] p-5 sm:p-6 md:p-8 shadow-xs flex flex-col md:flex-row justify-between items-center gap-6 mt-10 min-w-0 max-w-full">
+              <div className="space-y-1 text-center md:text-left min-w-0">
+                <h3 className="text-lg font-extrabold text-[var(--text-primary)] break-words">Stay Informed. Stay Balanced.</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-semibold break-words">Get the top stories and bias analysis delivered to your inbox.</p>
               </div>
               <NewsletterSubscribe />
             </div>
@@ -318,12 +324,12 @@ export default async function ArticleDetailsPage({
           </div>
 
           {/* RIGHT COLUMN: SIDEBAR WIDGETS */}
-          <div className="space-y-6">
+          <div className="space-y-6 min-w-0 max-w-full">
 
             {analysis && framing ? (
               <>
                 {/* WIDGET 1: BIAS ANALYSIS */}
-                <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
+                <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-5 sm:p-6 shadow-xs space-y-4 min-w-0 max-w-full">
                   <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                     <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Bias Analysis</h3>
                     <AiMetricExplainer type="bias-analysis" iconClassName="h-4 w-4" />
@@ -353,14 +359,14 @@ export default async function ArticleDetailsPage({
                     </div>
                   </div>
                   {analysis.framing_notes && (
-                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-semibold">
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-semibold break-words">
                       {analysis.framing_notes}
                     </p>
                   )}
                 </div>
 
                 {/* WIDGET 2: AI SUMMARY */}
-                <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
+                <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-5 sm:p-6 shadow-xs space-y-4 min-w-0 max-w-full">
                   <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                     <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">AI Summary</h3>
                     <AiMetricExplainer type="ai-summary" iconClassName="h-4 w-4" />
@@ -368,7 +374,7 @@ export default async function ArticleDetailsPage({
                   <div className="text-[11px] font-bold text-zinc-400 flex flex-wrap items-center gap-1 leading-none">
                     Generated {formatArticleDate(analysis.created_at)} <span className="text-zinc-300 dark:text-zinc-700">•</span> {analysis.model}
                   </div>
-                  <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                  <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed break-words">
                     {analysis.summary}
                   </p>
                   {analysis.loaded_terms.length > 0 && (
@@ -378,7 +384,7 @@ export default async function ArticleDetailsPage({
                         {analysis.loaded_terms.map((term) => (
                           <span
                             key={term}
-                            className="rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[11px] font-bold text-zinc-700 dark:text-zinc-300"
+                            className="rounded-full bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 px-2.5 py-1 text-[11px] font-bold text-zinc-700 dark:text-zinc-300 break-words"
                           >
                             {term}
                           </span>
@@ -386,19 +392,19 @@ export default async function ArticleDetailsPage({
                       </div>
                     </div>
                   )}
-                  <div className="text-[10px] text-zinc-400 font-bold italic leading-tight pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="text-[10px] text-zinc-400 font-bold italic leading-tight pt-2 border-t border-zinc-100 dark:border-zinc-800 break-words">
                     {analysis.disclaimer}
                   </div>
                 </div>
               </>
             ) : (
               /* ANALYSIS PENDING NOTICE */
-              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-6 shadow-xs space-y-4">
+              <div className="bg-card text-card-foreground rounded-xl border border-[var(--border)] p-5 sm:p-6 shadow-xs space-y-4 min-w-0 max-w-full">
                 <div className="flex justify-between items-center border-b border-zinc-100 dark:border-zinc-800 pb-3">
                   <h3 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">Analysis Pending</h3>
                   <AiMetricExplainer type="analysis-pending" iconClassName="h-4 w-4" />
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-semibold">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-semibold break-words">
                   This article has not been analyzed yet. Sentiment and AI-estimated framing appear here once analysis has run.
                 </p>
               </div>

@@ -43,7 +43,7 @@ export function RelatedArticles({
   };
 
   return (
-    <section className="space-y-4 pt-10 border-t border-[var(--border)]">
+    <section className="space-y-4 pt-10 border-t border-[var(--border)] min-w-0 max-w-full">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="space-y-1">
           <h2 className="font-extrabold text-sm uppercase tracking-wider text-zinc-800 dark:text-zinc-200">
@@ -61,12 +61,12 @@ export function RelatedArticles({
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 min-w-0 max-w-full">
         {articles.map((article) => (
-          <div key={article.article_id} className="relative group">
+          <div key={article.article_id} className="relative group min-w-0 max-w-full">
             <Link
               href={`/article/${article.article_id}`}
-              className="block transition-transform hover:-translate-y-0.5 h-full"
+              className="block transition-transform hover:-translate-y-0.5 h-full min-w-0 max-w-full"
             >
               <NewsCard
                 articleId={article.article_id}

@@ -123,7 +123,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
       <div
         ref={ref}
         className={cn(
-          "flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-card text-card-foreground shadow-sm hover:shadow-md transition-all w-full",
+          "flex flex-col overflow-hidden rounded-lg border border-[var(--border)] bg-card text-card-foreground shadow-sm hover:shadow-md transition-all w-full min-w-0 max-w-full",
           isVertical ? "" : "sm:flex-row max-w-2xl",
           className
         )}
@@ -169,25 +169,25 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
         </div>
 
         {/* Content Container */}
-        <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0")}>
-          <div className="space-y-2">
+        <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0 overflow-hidden")}>
+          <div className="space-y-2 min-w-0">
             {/* Source / Published date — falls back to category / location */}
             {(primaryMeta || secondaryMeta) && (
-              <div className="flex items-center gap-1.5 text-caption font-semibold text-[var(--text-secondary)]">
-                {primaryMeta && <span>{primaryMeta}</span>}
+              <div className="flex items-center gap-1.5 text-caption font-semibold text-[var(--text-secondary)] flex-wrap">
+                {primaryMeta && <span className="break-words">{primaryMeta}</span>}
                 {primaryMeta && secondaryMeta && <span>•</span>}
-                {secondaryMeta && <span>{secondaryMeta}</span>}
+                {secondaryMeta && <span className="break-words">{secondaryMeta}</span>}
               </div>
             )}
 
             {/* Title */}
-            <h3 className="text-h3 text-[var(--text-primary)] hover:text-[var(--bias-right)] transition-colors line-clamp-2">
+            <h3 className="text-h3 text-[var(--text-primary)] hover:text-[var(--bias-right)] transition-colors line-clamp-2 break-words">
               {title}
             </h3>
 
             {/* Subtitle */}
             {subtitle && (
-              <p className="text-body-sm text-[var(--text-secondary)] line-clamp-2">
+              <p className="text-body-sm text-[var(--text-secondary)] line-clamp-2 break-words">
                 {subtitle}
               </p>
             )}

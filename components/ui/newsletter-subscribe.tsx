@@ -119,24 +119,24 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
   };
 
   return (
-    <div ref={containerRef} className={cn("w-full md:w-auto shrink-0", className)}>
+    <div ref={containerRef} className={cn("w-full md:w-auto shrink-0 min-w-0 max-w-full", className)}>
       {status === "success" ? (
-        <div className="newsletter-success-badge flex flex-col sm:flex-row items-center gap-3 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 rounded-lg py-2.5 px-4 text-xs font-semibold">
-          <div className="flex items-center gap-2">
+        <div className="newsletter-success-badge flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 rounded-lg py-2.5 px-4 text-xs font-semibold w-full max-w-full min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-            <span>You&apos;re subscribed! We&apos;ve added you to our weekly digest.</span>
+            <span className="break-words">You&apos;re subscribed! We&apos;ve added you to our weekly digest.</span>
           </div>
           <button
             type="button"
             onClick={handleReset}
-            className="text-[11px] text-emerald-700 dark:text-emerald-400 underline hover:text-emerald-900 dark:hover:text-emerald-200 font-bold shrink-0 cursor-pointer ml-auto transition-colors"
+            className="text-[11px] text-emerald-700 dark:text-emerald-400 underline hover:text-emerald-900 dark:hover:text-emerald-200 font-bold shrink-0 cursor-pointer sm:ml-auto transition-colors"
           >
             Subscribe another email
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 w-full md:w-auto" noValidate>
-          <div className="flex w-full md:w-auto items-center gap-3 shrink-0">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-full md:w-auto min-w-0 max-w-full" noValidate>
+          <div className="flex flex-col sm:flex-row w-full md:w-auto items-stretch sm:items-center gap-2.5 sm:gap-3">
             <input
               type="email"
               placeholder="Enter your email"
@@ -153,7 +153,7 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
               aria-label="Email address"
               aria-invalid={status === "error"}
               className={cn(
-                "bg-white dark:bg-zinc-900 border text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 rounded-md text-xs font-medium py-2.5 px-4 outline-none focus:border-zinc-400 dark:focus:border-zinc-600 flex-1 md:w-64 transition-colors disabled:opacity-60 disabled:cursor-not-allowed",
+                "bg-white dark:bg-zinc-900 border text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 dark:placeholder:text-zinc-500 rounded-md text-xs font-medium py-2.5 px-4 outline-none focus:border-zinc-400 dark:focus:border-zinc-600 w-full sm:w-64 transition-colors disabled:opacity-60 disabled:cursor-not-allowed",
                 status === "error"
                   ? "border-red-500 dark:border-red-500 focus:border-red-600 dark:focus:border-red-500"
                   : "border-zinc-200 dark:border-zinc-800"
@@ -163,7 +163,7 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
               type="submit"
               variant="default"
               disabled={status === "submitting" || !email.trim()}
-              className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 font-bold text-xs py-2.5 px-5 h-auto rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[96px]"
+              className="bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-white text-white dark:text-zinc-900 font-bold text-xs py-2.5 px-5 h-auto rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center w-full sm:w-auto min-w-[96px]"
             >
               {status === "submitting" ? (
                 <>
@@ -179,7 +179,7 @@ export function NewsletterSubscribe({ className }: { className?: string }) {
             <div
               role="alert"
               aria-live="polite"
-              className="flex flex-wrap items-center gap-1 text-[11px] font-semibold text-red-600 dark:text-red-400 pl-1"
+              className="flex flex-wrap items-center gap-1 text-[11px] font-semibold text-red-600 dark:text-red-400 pl-1 max-w-full break-words"
             >
               <span>{errorMessage}</span>
               {suggestion && (
