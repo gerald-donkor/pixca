@@ -132,7 +132,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
         {/* Image Container */}
         <div
           className={cn(
-            "relative shrink-0 bg-[var(--surface)] w-full",
+            "relative shrink-0 bg-[var(--surface)] w-full overflow-hidden",
             isVertical ? "h-52" : "h-40 sm:h-auto sm:w-[35%]"
           )}
         >
@@ -150,7 +150,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
               onClick={handleBookmarkClick}
               aria-label={isSaved ? "Remove bookmark" : "Save article bookmark"}
               className={cn(
-                "absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm transition-all cursor-pointer z-10 shadow-sm",
+                "absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-sm transition-all cursor-pointer z-10 shadow-sm shrink-0",
                 isSaved
                   ? "bg-blue-600 hover:bg-blue-700 text-white"
                   : "bg-black/50 hover:bg-black/80 text-white/90 hover:text-white"
@@ -162,20 +162,20 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
               />
             </button>
           ) : (
-            <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm pointer-events-none">
+            <div className="absolute right-3 top-3 flex h-6 w-6 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm pointer-events-none shrink-0">
               <Info className="h-3.5 w-3.5" />
             </div>
           )}
         </div>
 
         {/* Content Container */}
-        <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0 overflow-hidden")}>
+        <div className={cn("flex flex-1 flex-col justify-between p-4 sm:p-5 min-w-0 overflow-hidden w-full")}>
           <div className="space-y-2 min-w-0">
             {/* Source / Published date — falls back to category / location */}
             {(primaryMeta || secondaryMeta) && (
-              <div className="flex items-center gap-1.5 text-caption font-semibold text-[var(--text-secondary)] flex-wrap">
+              <div className="flex items-center gap-1.5 text-caption font-semibold text-[var(--text-secondary)] flex-wrap min-w-0">
                 {primaryMeta && <span className="break-words">{primaryMeta}</span>}
-                {primaryMeta && secondaryMeta && <span>•</span>}
+                {primaryMeta && secondaryMeta && <span className="shrink-0">•</span>}
                 {secondaryMeta && <span className="break-words">{secondaryMeta}</span>}
               </div>
             )}
@@ -195,7 +195,7 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
 
           {/* Bias Meter */}
           {bias && (
-            <div className="mt-4 mb-3">
+            <div className="mt-4 mb-3 w-full min-w-0">
               <BiasMeter
                 leftValue={bias.left}
                 centerValue={bias.center}
@@ -206,37 +206,37 @@ export const NewsCard = React.forwardRef<HTMLDivElement, NewsCardProps>(
           )}
 
           {/* Footer Metadata */}
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-caption font-medium text-[var(--text-secondary)]">
+          <div className="flex flex-wrap items-center gap-x-2.5 sm:gap-x-3 gap-y-1 text-caption font-medium text-[var(--text-secondary)] min-w-0">
             {hasAnalysisFooter ? (
               <>
                 {sentimentLabel && (
-                  <span className={cn("text-[12px] font-semibold", sentimentLabelColorClass(sentimentLabel))}>
+                  <span className={cn("text-[12px] font-semibold break-words", sentimentLabelColorClass(sentimentLabel))}>
                     {titleCase(sentimentLabel)}
                   </span>
                 )}
                 {framingLabel && (
-                  <span className={cn("text-[12px] font-semibold", biasLabelColorClass(framingLabel))}>
+                  <span className={cn("text-[12px] font-semibold break-words", biasLabelColorClass(framingLabel))}>
                     AI-estimated: {titleCase(framingLabel)}
                   </span>
                 )}
                 {confidence !== undefined && (
-                  <span className="text-[12px] font-semibold text-[var(--text-secondary)]">
+                  <span className="text-[12px] font-semibold text-[var(--text-secondary)] break-words">
                     {formatConfidence(confidence)} confidence
                   </span>
                 )}
               </>
             ) : sourcesCount !== undefined ? (
-              <span className="text-[12px] font-semibold text-[var(--text-secondary)]">{sourcesCount} sources</span>
+              <span className="text-[12px] font-semibold text-[var(--text-secondary)] break-words">{sourcesCount} sources</span>
             ) : (
               <>
                 {timeAgo && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
                     <Clock className="h-3.5 w-3.5" />
                     <span>{timeAgo}</span>
                   </div>
                 )}
                 {readTime && (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 shrink-0">
                     <Bookmark className="h-3.5 w-3.5" />
                     <span>{readTime}</span>
                   </div>

@@ -63,8 +63,8 @@ export function SourcePillsBar({ sources, activeSource }: SourcePillsBarProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-3 px-6 shadow-xs overflow-hidden">
-      <div className="container mx-auto max-w-[1400px] flex items-center gap-3">
+    <div className="bg-white dark:bg-[#121215] border-b border-[var(--border)] py-2.5 sm:py-3 px-3 sm:px-6 shadow-xs overflow-hidden w-full min-w-0 max-w-full">
+      <div className="container mx-auto max-w-[1400px] w-full min-w-0 flex items-center gap-2 sm:gap-3">
         {/* Left Scroll Trigger */}
         <button
           type="button"
@@ -79,14 +79,14 @@ export function SourcePillsBar({ sources, activeSource }: SourcePillsBarProps) {
         {/* Scrolling Sources */}
         <div
           ref={scrollContainerRef}
-          className="flex flex-1 items-center gap-2 overflow-x-auto no-scrollbar py-0.5"
+          className="flex flex-1 min-w-0 items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5"
         >
           {/* All Sources Pill */}
           <button
             type="button"
             onClick={() => handleSelectSource(undefined)}
             className={cn(
-              "shrink-0 text-xs font-semibold py-1.5 px-3.5 rounded-full transition-colors cursor-pointer",
+              "shrink-0 text-xs font-semibold py-1.5 px-3 sm:px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap",
               !activeSource
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs font-bold"
                 : "bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"
@@ -107,7 +107,7 @@ export function SourcePillsBar({ sources, activeSource }: SourcePillsBarProps) {
                 type="button"
                 onClick={() => handleSelectSource(source.name)}
                 className={cn(
-                  "shrink-0 text-xs font-semibold py-1.5 px-3.5 rounded-full transition-colors cursor-pointer",
+                  "shrink-0 text-xs font-semibold py-1.5 px-3 sm:px-3.5 rounded-full transition-colors cursor-pointer whitespace-nowrap",
                   isActive
                     ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs font-bold"
                     : "bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700"

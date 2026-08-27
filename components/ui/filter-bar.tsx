@@ -102,12 +102,12 @@ export function FilterBar({
   const hasAnyFilter = Boolean(activeBias || activeSentiment || searchQuery || hasActiveSource)
 
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--border)] bg-card p-4 sm:p-5 shadow-xs">
+    <div className="space-y-4 rounded-xl border border-[var(--border)] bg-card p-3.5 sm:p-5 shadow-xs w-full min-w-0 max-w-full">
       {/* Top row: Search input & Results stats */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full min-w-0">
         {/* Search input */}
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+        <div className="relative flex-1 w-full max-w-full sm:max-w-md min-w-0">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 dark:text-zinc-500 shrink-0" />
           <input
             type="text"
             value={searchTerm}
@@ -128,15 +128,15 @@ export function FilterBar({
         </div>
 
         {/* Results summary and Reset action */}
-        <div className="flex items-center gap-3 self-end sm:self-center text-xs">
-          <span className="font-semibold text-[var(--text-secondary)]">
+        <div className="flex items-center justify-between sm:justify-end gap-3 self-stretch sm:self-center text-xs min-w-0 flex-wrap">
+          <span className="font-semibold text-[var(--text-secondary)] whitespace-nowrap">
             {totalResults} {totalResults === 1 ? "article" : "articles"} found
           </span>
           {hasAnyFilter && (
             <button
               type="button"
               onClick={handleResetAll}
-              className="inline-flex items-center gap-1 font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors cursor-pointer whitespace-nowrap"
             >
               <RotateCcw className="h-3 w-3" />
               Reset all
@@ -146,10 +146,10 @@ export function FilterBar({
       </div>
 
       {/* Filter Groups Divider */}
-      <div className="border-t border-[var(--border)] pt-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="border-t border-[var(--border)] pt-3.5 flex flex-col md:flex-row md:items-center justify-between gap-3.5 w-full min-w-0">
         {/* Political Framing Filter Group */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-semibold text-[var(--text-secondary)] mr-1 flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] mr-1 flex items-center gap-1 shrink-0">
             <SlidersHorizontal className="h-3 w-3" />
             Framing:
           </span>
@@ -161,7 +161,7 @@ export function FilterBar({
                 type="button"
                 onClick={() => updateParam("bias", opt.value)}
                 className={cn(
-                  "text-xs px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer",
+                  "text-xs px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap",
                   isSelected
                     ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold shadow-xs"
                     : "bg-zinc-100 dark:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
@@ -174,8 +174,8 @@ export function FilterBar({
         </div>
 
         {/* Sentiment Filter Group */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-semibold text-[var(--text-secondary)] mr-1">
+        <div className="flex flex-wrap items-center gap-1.5 min-w-0">
+          <span className="text-xs font-semibold text-[var(--text-secondary)] mr-1 shrink-0">
             Sentiment:
           </span>
           {SENTIMENT_OPTIONS.map((opt) => {
@@ -187,7 +187,7 @@ export function FilterBar({
                 type="button"
                 onClick={() => updateParam("sentiment", opt.value)}
                 className={cn(
-                  "text-xs px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer",
+                  "text-xs px-2.5 py-1 rounded-md font-medium transition-colors cursor-pointer whitespace-nowrap",
                   isSelected
                     ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 font-semibold shadow-xs"
                     : "bg-zinc-100 dark:bg-zinc-800/70 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"

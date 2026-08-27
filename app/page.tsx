@@ -134,7 +134,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] w-full min-w-0 max-w-full overflow-x-hidden">
       <JsonLd schema={[websiteSchema, organizationSchema]} />
       {/* Category / Source Pills Bar */}
       <SourcePillsBar
@@ -143,14 +143,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       />
 
       {/* Main Body Container */}
-      <main className="container mx-auto max-w-[1400px] px-6 py-8 space-y-6">
+      <main className="container mx-auto max-w-[1400px] w-full min-w-0 px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Page Heading & Search/Filters */}
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-[28px] font-extrabold tracking-tight text-[var(--text-primary)]">
+        <div className="space-y-4 min-w-0">
+          <div className="min-w-0">
+            <h1 className="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[var(--text-primary)] break-words">
               {headingTitle}
             </h1>
-            <p className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] font-medium mt-0.5 break-words">
               Real-time AI framing, sentiment, and bias analysis across trusted media
             </p>
           </div>
