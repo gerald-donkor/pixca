@@ -323,12 +323,12 @@ export function CommandPalette({
         className="relative w-full max-w-2xl bg-white dark:bg-[#131316] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[80vh]"
       >
         {/* Search Header Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-zinc-200 dark:border-zinc-800 gap-3">
+        <div className="flex items-center px-3.5 sm:px-4 py-3 sm:py-3.5 border-b border-zinc-200 dark:border-zinc-800 gap-2.5 sm:gap-3 min-w-0">
           <div className="text-zinc-400 dark:text-zinc-500 shrink-0">
             {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+              <Loader2 className="h-4.5 w-4.5 sm:h-5 sm:w-5 animate-spin text-blue-500" />
             ) : (
-              <Search className="h-5 w-5" />
+              <Search className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             )}
           </div>
           <input
@@ -339,8 +339,8 @@ export function CommandPalette({
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            placeholder="Search news, topics, publishers, or perspectives..."
-            className="flex-1 bg-transparent text-sm sm:text-base font-medium text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 outline-none"
+            placeholder="Search news, topics, perspectives..."
+            className="flex-1 min-w-0 bg-transparent text-sm sm:text-base font-medium text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 outline-none placeholder:truncate"
             aria-autocomplete="list"
           />
           {query && (
@@ -353,12 +353,13 @@ export function CommandPalette({
                 setSelectedIndex(0);
                 inputRef.current?.focus();
               }}
-              className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer"
+              className="p-1 rounded-md text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors cursor-pointer shrink-0"
+              aria-label="Clear search input"
             >
               <X className="h-4 w-4" />
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-md">
+          <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-md shrink-0">
             ESC
           </kbd>
         </div>
@@ -441,10 +442,10 @@ export function CommandPalette({
                           {item.badge && (
                             <span
                               className={cn(
-                                "text-[9px] font-bold px-1.5 py-0.2 rounded-sm",
+                                "text-[9px] font-bold px-1.5 py-0.5 rounded-sm",
                                 item.badge === "New"
-                                  ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                                  : "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                                   ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                                   : "bg-blue-500/15 text-blue-600 dark:text-blue-400"
                               )}
                             >
                               {item.badge}
@@ -522,18 +523,18 @@ export function CommandPalette({
                 onClick={() => handleSelect(activeItems[0])}
                 onMouseEnter={() => setSelectedIndex(0)}
                 className={cn(
-                  "flex items-center justify-between p-2.5 rounded-xl text-left transition-colors cursor-pointer w-full border border-blue-500/20",
+                  "flex items-center justify-between p-2.5 rounded-xl text-left transition-colors cursor-pointer w-full border border-blue-500/20 gap-2",
                   selectedIndex === 0
                     ? "bg-blue-500/10 text-blue-700 dark:text-blue-300"
                     : "bg-blue-500/5 text-zinc-800 dark:text-zinc-200"
                 )}
               >
-                <div className="flex items-center gap-2.5">
-                  <Search className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs font-bold">Search &ldquo;{query.trim()}&rdquo; on Home Feed</span>
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                  <Search className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+                  <span className="text-xs font-bold truncate">Search &ldquo;{query.trim()}&rdquo; on Home Feed</span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-400">
-                  <span>Enter</span>
+                <div className="flex items-center gap-1 text-[10px] font-mono text-zinc-400 shrink-0">
+                  <span className="hidden sm:inline">Enter</span>
                   <CornerDownLeft className="h-3 w-3" />
                 </div>
               </button>
@@ -628,7 +629,7 @@ export function CommandPalette({
                               )}
                               <span
                                 className={cn(
-                                  "text-[9px] font-bold px-1.5 py-0.2 rounded-sm uppercase tracking-wide",
+                                  "text-[9px] font-bold px-1.5 py-0.5 rounded-sm uppercase tracking-wide",
                                   bias === "left" && "bg-blue-500/15 text-blue-600 dark:text-blue-400",
                                   bias === "right" && "bg-red-500/15 text-red-600 dark:text-red-400",
                                   bias === "center" && "bg-purple-500/15 text-purple-600 dark:text-purple-400",
@@ -670,19 +671,24 @@ export function CommandPalette({
         </div>
 
         {/* Footer Shortcut Helper Bar */}
-        <div className="px-4 py-2 bg-zinc-50 dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[11px] text-zinc-400">
-          <div className="flex items-center gap-3">
+        <div className="px-3 sm:px-4 py-2 bg-zinc-50 dark:bg-zinc-900/80 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between text-[11px] text-zinc-400 min-w-0 gap-2">
+          <div className="hidden sm:flex items-center gap-3 shrink-0">
             <span className="flex items-center gap-1">
-              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 py-0.2 rounded text-[10px]">↑</kbd>
-              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 py-0.2 rounded text-[10px]">↓</kbd>
+              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded text-[10px]">↑</kbd>
+              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1 py-0.5 rounded text-[10px]">↓</kbd>
               Navigate
             </span>
             <span className="flex items-center gap-1">
-              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.2 rounded text-[10px]">↵</kbd>
+              <kbd className="font-mono bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 rounded text-[10px]">↵</kbd>
               Select
             </span>
           </div>
-          <span className="text-[10px] text-zinc-500">Pixca Intelligence Search</span>
+          <div className="flex sm:hidden items-center gap-1 text-[10px] text-zinc-400 shrink-0">
+            <span>Tap item to open</span>
+          </div>
+          <span className="text-[10px] text-zinc-500 dark:text-zinc-400 whitespace-nowrap shrink-0">
+            Pixca Intelligence Search
+          </span>
         </div>
       </div>
     </div>
