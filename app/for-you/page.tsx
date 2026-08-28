@@ -58,51 +58,51 @@ export default async function ForYouPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] w-full overflow-x-hidden">
       <JsonLd schema={webpageSchema} />
 
-      <main className="container mx-auto max-w-[1400px] px-6 py-8 space-y-8">
+      <main className="container mx-auto max-w-[1400px] w-full min-w-0 px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Header Hero Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-6 sm:p-8 border border-zinc-800 shadow-xl">
-          <div className="relative z-10 space-y-4 max-w-3xl">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-5 sm:p-8 border border-zinc-800 shadow-xl w-full min-w-0">
+          <div className="relative z-10 space-y-4 max-w-3xl min-w-0">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-400 text-xs font-semibold">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
               <span>Personalized Intelligence</span>
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <div className="space-y-2 min-w-0">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white break-words">
                 For You Feed
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal break-words">
                 Curated articles and balanced counter-perspectives dynamically tuned to your saved topics and reading patterns.
               </p>
             </div>
 
             {/* Feature Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <Cpu className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Adaptive Affinity</span>
+            <div className="grid grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-2">
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <Cpu className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <span className="truncate">Adaptive Affinity</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Source Relevance</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Source Relevance</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <Compass className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Echo-Chamber Defense</span>
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <Compass className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                  <span className="truncate">Echo-Chamber Defense</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Counter-Perspectives</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Counter-Perspectives</div>
               </div>
 
-              <div className="hidden sm:block p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Privacy First</span>
+              <div className="hidden sm:block p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="truncate">Privacy First</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Client-Side Only</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Client-Side Only</div>
               </div>
             </div>
           </div>

@@ -503,41 +503,41 @@ ${currentUrl}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[540px] p-6 gap-5 max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[540px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-            <span>Share Reading Diet</span>
+          <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <Share2 className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0" />
+            <span className="truncate">Share Reading Diet</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs sm:text-sm">
             Share your balanced news perspective insights and publisher diversity with your network.
           </DialogDescription>
         </DialogHeader>
 
         {/* Branded Visual Preview Card */}
-        <div ref={previewRef} className="space-y-2">
-          <div className="reading-diet-preview-card rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-5 border border-zinc-800 shadow-xl space-y-4">
+        <div ref={previewRef} className="space-y-2 w-full min-w-0">
+          <div className="reading-diet-preview-card rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-4 sm:p-5 border border-zinc-800 shadow-xl space-y-3.5 sm:space-y-4 w-full min-w-0">
             {/* Top Card Row */}
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-base font-extrabold tracking-tight text-white">PIXCA</span>
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+            <div className="flex items-center justify-between gap-2 min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="text-base font-extrabold tracking-tight text-white shrink-0">PIXCA</span>
+                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider truncate">
                   Reading Diet Profile
                 </span>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 whitespace-nowrap">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 whitespace-nowrap shrink-0">
                 {stats.dominantLean}
               </span>
             </div>
 
             {/* Perspective Spectrum Bar */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-300">
-                <span className="text-blue-400">Left {stats.leftPct}%</span>
-                <span className="text-zinc-400">Center {stats.centerPct}%</span>
-                <span className="text-red-400">Right {stats.rightPct}%</span>
+            <div className="space-y-1.5 w-full min-w-0">
+              <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-semibold text-zinc-300">
+                <span className="text-blue-400 truncate">Left {stats.leftPct}%</span>
+                <span className="text-zinc-400 truncate">Center {stats.centerPct}%</span>
+                <span className="text-red-400 truncate">Right {stats.rightPct}%</span>
               </div>
-              <div className="h-3.5 w-full bg-zinc-800 rounded-full overflow-hidden flex gap-0.5 p-0.5">
+              <div className="h-3.5 w-full bg-zinc-800 rounded-full overflow-hidden flex gap-0.5 p-0.5 min-w-0">
                 {stats.leftPct > 0 && (
                   <div
                     className="h-full rounded-l-full bg-blue-500"
@@ -564,49 +564,49 @@ ${currentUrl}`;
             </div>
 
             {/* Quick Metrics Grid */}
-            <div className="grid grid-cols-3 gap-2 pt-1">
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5">
-                <div className="text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1">
-                  <Bookmark className="w-3 h-3 text-blue-400" />
-                  <span>Stories</span>
+            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-1 w-full min-w-0">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5 min-w-0">
+                <div className="text-[9px] sm:text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1 truncate">
+                  <Bookmark className="w-3 h-3 text-blue-400 shrink-0" />
+                  <span className="truncate">Stories</span>
                 </div>
-                <div className="text-sm font-extrabold text-white">{stats.totalBookmarks}</div>
+                <div className="text-xs sm:text-sm font-extrabold text-white truncate">{stats.totalBookmarks}</div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5">
-                <div className="text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1">
-                  <Scale className="w-3 h-3 text-purple-400" />
-                  <span>Sources</span>
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5 min-w-0">
+                <div className="text-[9px] sm:text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1 truncate">
+                  <Scale className="w-3 h-3 text-purple-400 shrink-0" />
+                  <span className="truncate">Sources</span>
                 </div>
-                <div className="text-sm font-extrabold text-white">{stats.uniqueSourcesCount}</div>
+                <div className="text-xs sm:text-sm font-extrabold text-white truncate">{stats.uniqueSourcesCount}</div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5">
-                <div className="text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-emerald-400" />
-                  <span>Shield</span>
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white/5 border border-white/10 text-center space-y-0.5 min-w-0">
+                <div className="text-[9px] sm:text-[10px] font-semibold text-zinc-400 flex items-center justify-center gap-1 truncate">
+                  <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span className="truncate">Shield</span>
                 </div>
-                <div className="text-sm font-extrabold text-white">
+                <div className="text-xs sm:text-sm font-extrabold text-white truncate">
                   {stats.resilienceScore ?? 85}%
                 </div>
               </div>
             </div>
 
             {/* Card Watermark */}
-            <div className="pt-1 text-[10px] text-zinc-500 flex items-center justify-between border-t border-zinc-800/80">
-              <span>pixca.vercel.app</span>
-              <span>AI Perspective Intelligence</span>
+            <div className="pt-1 text-[9px] sm:text-[10px] text-zinc-500 flex items-center justify-between border-t border-zinc-800/80 min-w-0">
+              <span className="truncate">pixca.vercel.app</span>
+              <span className="truncate">AI Perspective Intelligence</span>
             </div>
           </div>
         </div>
 
         {/* Primary Export Actions */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5 sm:gap-3 w-full">
           <Button
             type="button"
             onClick={handleCopySummary}
             className={cn(
-              "text-xs font-semibold h-10 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs",
+              "text-xs font-semibold h-10 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs w-full",
               copied
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                 : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white"
@@ -614,13 +614,13 @@ ${currentUrl}`;
           >
             {copied ? (
               <>
-                <Check className="h-4 w-4" />
-                <span>Copied Summary!</span>
+                <Check className="h-4 w-4 shrink-0" />
+                <span className="truncate">Copied Summary!</span>
               </>
             ) : (
               <>
-                <Copy className="h-4 w-4" />
-                <span>Copy Summary</span>
+                <Copy className="h-4 w-4 shrink-0" />
+                <span className="truncate">Copy Summary</span>
               </>
             )}
           </Button>
@@ -630,28 +630,28 @@ ${currentUrl}`;
             onClick={handleDownloadImage}
             disabled={downloading}
             variant="outline"
-            className="text-xs font-semibold h-10 rounded-xl flex items-center justify-center gap-2 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer shadow-xs"
+            className="text-xs font-semibold h-10 rounded-xl flex items-center justify-center gap-2 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer shadow-xs w-full"
           >
             {downloading ? (
               <>
-                <ImageIcon className="h-4 w-4 animate-spin text-blue-500" />
-                <span>Generating...</span>
+                <ImageIcon className="h-4 w-4 animate-spin text-blue-500 shrink-0" />
+                <span className="truncate">Generating...</span>
               </>
             ) : (
               <>
-                <Download className="h-4 w-4 text-blue-500" />
-                <span>Download PNG</span>
+                <Download className="h-4 w-4 text-blue-500 shrink-0" />
+                <span className="truncate">Download PNG</span>
               </>
             )}
           </Button>
         </div>
 
         {/* Social Share Grid */}
-        <div className="space-y-2">
+        <div className="space-y-2 w-full min-w-0">
           <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Share to Platform
           </label>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 min-[440px]:grid-cols-4 gap-2">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
@@ -660,11 +660,11 @@ ${currentUrl}`;
                 rel="noopener noreferrer"
                 onClick={() => onOpenChange(false)}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
+                  "flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer min-w-0",
                   social.colorClass
                 )}
               >
-                <div className="p-1.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xs">
+                <div className="p-1.5 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xs shrink-0">
                   {social.icon}
                 </div>
                 <span className="text-[10px] font-semibold truncate max-w-full">{social.name}</span>
@@ -675,7 +675,7 @@ ${currentUrl}`;
 
         {/* Native Device Share Option if supported */}
         {canNativeShare && (
-          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center">
+          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center w-full">
             <button
               type="button"
               onClick={handleNativeShare}

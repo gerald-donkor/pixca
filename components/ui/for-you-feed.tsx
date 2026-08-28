@@ -356,7 +356,7 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
   );
 
   return (
-    <div ref={containerRef} className="space-y-8">
+    <div ref={containerRef} className="space-y-6 sm:space-y-8 w-full min-w-0 max-w-full">
       {/* Top Adaptive Reading Affinity Profile (when bookmarks exist) */}
       {bookmarks.length > 0 ? (
         <ForYouAffinitySummary
@@ -365,28 +365,28 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
         />
       ) : (
         /* First-Time Onboarding Experience */
-        <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent border border-blue-500/20 rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-xs">
-          <div className="space-y-2 max-w-2xl">
+        <div className="bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent border border-blue-500/20 rounded-2xl p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 sm:gap-6 shadow-xs w-full min-w-0">
+          <div className="space-y-2 max-w-2xl min-w-0">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/15 text-blue-600 dark:text-blue-400">
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
               <span>Smart Recommendation Engine</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+            <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)] break-words">
               Personalize Your AI News Experience
             </h2>
-            <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed break-words">
               Pixca dynamically curates top stories and balanced counter-perspectives tailored to your reading interests.
               Bookmark articles across the site to teach the recommendation model your favorite publishers and topics, or explore sample topic areas below.
             </p>
           </div>
-          <Link href="/" className="shrink-0">
+          <Link href="/" className="w-full sm:w-auto shrink-0">
             <Button
               variant="outline"
-              className="border-blue-500/30 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-xs h-10 px-4 rounded-xl flex items-center gap-2"
+              className="w-full sm:w-auto justify-center border-blue-500/30 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-semibold text-xs h-10 px-4 rounded-xl flex items-center gap-2"
             >
-              <BookOpen className="w-4 h-4" />
+              <BookOpen className="w-4 h-4 shrink-0" />
               <span>Explore Top News</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </Button>
           </Link>
         </div>
@@ -407,15 +407,15 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
 
       {/* News Article Grid */}
       {rankedArticles.length === 0 ? (
-        <div className="bg-card rounded-2xl border border-[var(--border)] p-12 text-center space-y-4 shadow-xs">
-          <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 mx-auto">
+        <div className="bg-card rounded-2xl border border-[var(--border)] p-6 sm:p-12 text-center space-y-4 shadow-xs w-full min-w-0">
+          <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 mx-auto shrink-0">
             <Compass className="w-6 h-6" />
           </div>
-          <div className="space-y-1 max-w-md mx-auto">
-            <h3 className="text-base font-bold text-[var(--text-primary)]">
+          <div className="space-y-1 max-w-md mx-auto min-w-0">
+            <h3 className="text-base font-bold text-[var(--text-primary)] break-words">
               No matching articles for this tuning filter
             </h3>
-            <p className="text-xs text-[var(--text-secondary)]">
+            <p className="text-xs text-[var(--text-secondary)] break-words">
               {activeTopic
                 ? `No stories found matching topic "${activeTopic}" under ${activeMode} mode.`
                 : "Check back as new articles are scraped and analyzed hourly, or reset your filters."}
@@ -434,38 +434,38 @@ export function ForYouFeed({ initialArticles }: ForYouFeedProps) {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full min-w-0">
           {rankedArticles.map((article) => (
-            <div key={article.id} className="for-you-card-item h-full">
-                <Link
-                  href={`/article/${article.id}`}
-                  prefetch={false}
-                  className="block h-full transition-transform hover:-translate-y-0.5"
-                >
-                  <NewsCard
-                    articleId={article.id}
-                    variant="vertical"
-                    title={article.title}
-                    imageUrl={article.image_url}
-                    sourceName={article.source?.name || "Unknown Source"}
-                    publishedLabel={formatArticleDate(article.published_at)}
-                    bias={
-                      article.analysis
-                        ? {
-                            left: article.analysis.left_percentage,
-                            center: article.analysis.center_percentage,
-                            right: article.analysis.right_percentage,
-                          }
-                        : undefined
-                    }
-                    sentimentLabel={article.analysis?.sentiment_label}
-                    framingLabel={article.analysis?.bias_label}
-                    confidence={article.analysis?.confidence}
-                    className="bg-card rounded-xl border border-[var(--border)] shadow-xs h-full"
-                  />
-                </Link>
-              </div>
-            ))}
+            <div key={article.id} className="for-you-card-item h-full w-full min-w-0">
+              <Link
+                href={`/article/${article.id}`}
+                prefetch={false}
+                className="block h-full w-full min-w-0 transition-transform hover:-translate-y-0.5"
+              >
+                <NewsCard
+                  articleId={article.id}
+                  variant="vertical"
+                  title={article.title}
+                  imageUrl={article.image_url}
+                  sourceName={article.source?.name || "Unknown Source"}
+                  publishedLabel={formatArticleDate(article.published_at)}
+                  bias={
+                    article.analysis
+                      ? {
+                          left: article.analysis.left_percentage,
+                          center: article.analysis.center_percentage,
+                          right: article.analysis.right_percentage,
+                        }
+                      : undefined
+                  }
+                  sentimentLabel={article.analysis?.sentiment_label}
+                  framingLabel={article.analysis?.bias_label}
+                  confidence={article.analysis?.confidence}
+                  className="bg-card rounded-xl border border-[var(--border)] shadow-xs h-full w-full min-w-0"
+                />
+              </Link>
+            </div>
+          ))}
         </div>
       )}
     </div>

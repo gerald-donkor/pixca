@@ -233,24 +233,24 @@ export function ForYouAffinitySummary({
     <div
       ref={containerRef}
       className={cn(
-        "rounded-2xl bg-card border border-[var(--border)] p-5 sm:p-6 shadow-xs space-y-5",
+        "rounded-2xl bg-card border border-[var(--border)] p-4 sm:p-6 shadow-xs space-y-5 w-full min-w-0 max-w-full",
         className
       )}
     >
       {/* Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full min-w-0">
+        <div className="flex items-start sm:items-center gap-3 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <Sparkles className="w-4 h-4" />
           </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-base font-bold text-[var(--text-primary)]">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2 min-w-0">
+              <h2 className="text-base font-bold text-[var(--text-primary)] break-words">
                 Adaptive Reading Profile
               </h2>
               <span
                 className={cn(
-                  "px-2 py-0.5 rounded-full text-[10px] font-bold border whitespace-nowrap shrink-0",
+                  "px-2 py-0.5 rounded-full text-[10px] font-bold border whitespace-nowrap shrink-0 max-w-full",
                   stats.dominantBg,
                   stats.dominantColor
                 )}
@@ -258,7 +258,7 @@ export function ForYouAffinitySummary({
                 {stats.dominantLean}
               </span>
             </div>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5 break-words">
               Personalized intelligence computed from your {stats.totalBookmarks} saved{" "}
               {stats.totalBookmarks === 1 ? "article" : "articles"} across{" "}
               {stats.uniqueSourcesCount} {stats.uniqueSourcesCount === 1 ? "publisher" : "publishers"}.
@@ -267,15 +267,15 @@ export function ForYouAffinitySummary({
         </div>
 
         {/* Actions & Echo-Chamber Shield Indicator */}
-        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto w-full sm:w-auto justify-start sm:justify-end">
           <div
             className={cn(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold",
+              "inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border text-[11px] sm:text-xs font-semibold shrink-0",
               stats.resilienceBadge,
               stats.resilienceColor
             )}
           >
-            <ShieldIcon className="w-3.5 h-3.5" />
+            <ShieldIcon className="w-3.5 h-3.5 shrink-0" />
             <span>{stats.resilienceLabel}</span>
             <span className="opacity-60 text-[10px]">({stats.resilienceScore}%)</span>
           </div>
@@ -285,32 +285,32 @@ export function ForYouAffinitySummary({
             variant="outline"
             size="sm"
             onClick={() => setShareModalOpen(true)}
-            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
           >
-            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Share Profile</span>
           </Button>
         </div>
       </div>
 
       {/* 3-Segment Perspective Balance Meter */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-medium text-[var(--text-muted)]">
-          <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
+      <div className="space-y-2 w-full min-w-0">
+        <div className="flex items-center justify-between text-[11px] sm:text-xs font-medium text-[var(--text-muted)] gap-1 flex-wrap min-[360px]:flex-nowrap">
+          <span className="flex items-center gap-1 sm:gap-1.5 text-blue-600 dark:text-blue-400 font-semibold truncate">
+            <span className="w-2 h-2 rounded-full bg-blue-500 inline-block shrink-0" />
             Left {stats.leftPct}%
           </span>
-          <span className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-500 inline-block" />
+          <span className="flex items-center gap-1 sm:gap-1.5 text-zinc-600 dark:text-zinc-400 font-semibold truncate">
+            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-500 inline-block shrink-0" />
             Center {stats.centerPct}%
           </span>
-          <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
+          <span className="flex items-center gap-1 sm:gap-1.5 text-red-600 dark:text-red-400 font-semibold truncate">
+            <span className="w-2 h-2 rounded-full bg-red-500 inline-block shrink-0" />
             Right {stats.rightPct}%
           </span>
         </div>
 
-        <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden flex gap-0.5 p-0.5">
+        <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden flex gap-0.5 p-0.5 min-w-0">
           {stats.leftPct > 0 && (
             <div
               className="for-you-meter-segment h-full rounded-l-full bg-blue-500 transition-[width] duration-300"
@@ -340,54 +340,54 @@ export function ForYouAffinitySummary({
       </div>
 
       {/* Summary Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1">
-        <div className="for-you-metric-card p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)]">
-          <div className="text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1.5">
-            <Bookmark className="w-3.5 h-3.5 text-blue-500" />
-            <span>Saved Library</span>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 pt-1 w-full min-w-0">
+        <div className="for-you-metric-card p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)] min-w-0 overflow-hidden">
+          <div className="text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1 sm:gap-1.5 truncate">
+            <Bookmark className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+            <span className="truncate">Saved Library</span>
           </div>
-          <div className="text-base font-extrabold text-[var(--text-primary)] mt-1">
-            {stats.totalBookmarks} <span className="text-xs font-normal text-[var(--text-muted)]">articles</span>
-          </div>
-        </div>
-
-        <div className="for-you-metric-card p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)]">
-          <div className="text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1.5">
-            <Scale className="w-3.5 h-3.5 text-purple-500" />
-            <span>Source Breadth</span>
-          </div>
-          <div className="text-base font-extrabold text-[var(--text-primary)] mt-1">
-            {stats.uniqueSourcesCount} <span className="text-xs font-normal text-[var(--text-muted)]">publishers</span>
+          <div className="text-sm sm:text-base font-extrabold text-[var(--text-primary)] mt-1 truncate">
+            {stats.totalBookmarks} <span className="text-[10px] sm:text-xs font-normal text-[var(--text-muted)]">articles</span>
           </div>
         </div>
 
-        <div className="for-you-metric-card p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)]">
-          <div className="text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1.5">
-            <ShieldIcon className="w-3.5 h-3.5 text-emerald-500" />
-            <span>Shield Score</span>
+        <div className="for-you-metric-card p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)] min-w-0 overflow-hidden">
+          <div className="text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1 sm:gap-1.5 truncate">
+            <Scale className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+            <span className="truncate">Source Breadth</span>
           </div>
-          <div className="text-base font-extrabold text-[var(--text-primary)] mt-1">
-            {stats.resilienceScore}% <span className="text-xs font-normal text-[var(--text-muted)]">resilience</span>
+          <div className="text-sm sm:text-base font-extrabold text-[var(--text-primary)] mt-1 truncate">
+            {stats.uniqueSourcesCount} <span className="text-[10px] sm:text-xs font-normal text-[var(--text-muted)]">publishers</span>
           </div>
         </div>
 
-        <div className="for-you-metric-card p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)]">
-          <div className="text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1.5">
-            <Tag className="w-3.5 h-3.5 text-amber-500" />
-            <span>Topic Interests</span>
+        <div className="for-you-metric-card p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)] min-w-0 overflow-hidden">
+          <div className="text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1 sm:gap-1.5 truncate">
+            <ShieldIcon className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+            <span className="truncate">Shield Score</span>
+          </div>
+          <div className="text-sm sm:text-base font-extrabold text-[var(--text-primary)] mt-1 truncate">
+            {stats.resilienceScore}% <span className="text-[10px] sm:text-xs font-normal text-[var(--text-muted)]">resilience</span>
+          </div>
+        </div>
+
+        <div className="for-you-metric-card p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/50 border border-[var(--border)] min-w-0 overflow-hidden">
+          <div className="text-[10px] sm:text-[11px] font-semibold text-[var(--text-muted)] flex items-center gap-1 sm:gap-1.5 truncate">
+            <Tag className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+            <span className="truncate">Topic Interests</span>
           </div>
           <div className="flex items-center gap-1 mt-1.5 flex-wrap overflow-hidden">
             {topTopics.length > 0 ? (
               topTopics.slice(0, 2).map((topic) => (
                 <span
                   key={topic}
-                  className="px-1.5 py-0.5 rounded bg-zinc-200/70 dark:bg-zinc-800 text-[10px] font-semibold text-[var(--text-secondary)] capitalize truncate max-w-[80px]"
+                  className="px-1.5 py-0.5 rounded bg-zinc-200/70 dark:bg-zinc-800 text-[9px] sm:text-[10px] font-semibold text-[var(--text-secondary)] capitalize truncate max-w-[65px] sm:max-w-[80px]"
                 >
                   {topic}
                 </span>
               ))
             ) : (
-              <span className="text-xs text-[var(--text-muted)] font-normal">General News</span>
+              <span className="text-[10px] sm:text-xs text-[var(--text-muted)] font-normal truncate">General News</span>
             )}
           </div>
         </div>
