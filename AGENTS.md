@@ -82,7 +82,7 @@ Implement → Self-verify / run checks → Request review (requesting-code-revie
 
 ## Interactive Shorthand & User Inputs
 
-- Entering `i` or `I` = **Next prompt query / Inspection**. Always use `i` or `I` to know what prompt is next to be written for a specific task or roadmap phase. When `i` or `I` is entered, the agent must immediately inspect `prompts/` to identify the highest existing prompt number, check the project roadmap (e.g. Section 23) and active task context, determine the exact next sequential prompt (number, filename, goal, target files, skills, verification), and present a detailed breakdown of what prompt is next to be written without writing code or executing unapproved steps.
+- Entering `i` or `I` = **Next prompt draft / Inspection**. Always use `i` or `I` to determine what implementation prompt comes first for the current task or roadmap phase. When `i` or `I` is entered, the agent must immediately inspect `prompts/` to identify the highest existing prompt number, check the project roadmap (e.g. Section 23) and active task context, determine the exact next sequential prompt (number, filename, goal, target files, skills, verification), draft the complete prompt file in `/home/dg/Projects/nextjs/pixca/prompts`, and then ask for approval with `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?` Do not write application code or execute implementation steps until the user approves with `y` or `Y`.
 - Entering `y` or `Y` = **Approved. Execute.** Entering `y` or `Y` approves the prepared prompt and instructs the agent to implement it strictly.
 
 Design references and assets
@@ -164,21 +164,23 @@ When creating a new prompt:
 - never overwrite an existing prompt
 - never renumber existing prompt files
 
-## Determining the Next Prompt (`i` or `I` Protocol)
+## Determining and Drafting the Next Prompt (`i` or `I` Protocol)
 
-Always use `i` or `I` to know what prompt is next to be written for a specific task:
+Always use `i` or `I` to determine and draft the next implementation prompt for a specific task:
 
 1. **Scan `prompts/`**: Check all existing prompt files in `prompts/` to determine the current highest two-digit sequential number (e.g. `18` in `18-ui-interactive-foundations.md`).
 2. **Compute Next Sequence Number**: The next prompt file must strictly be `N + 1` (zero-padded to two digits, e.g. `19`).
 3. **Map Task/Roadmap to Prompt**: Cross-reference the active feature roadmap (such as Section 23 UI Interactivity & GSAP Animation Roadmap) or user task requirements to identify the specific feature name and filename (e.g. `prompts/19-header-interactive-navigation.md`).
-4. **Present Detailed Next Prompt Specification**: When the user provides `i` or `I`, respond with a complete, structured overview of the next prompt to be written:
+4. **Draft the Prompt File**: When the user provides `i` or `I`, write the complete next sequential prompt file into `/home/dg/Projects/nextjs/pixca/prompts` using the required prompt format below. This is the only file mutation allowed before approval.
+5. **Present Detailed Next Prompt Summary**: After writing the prompt file, respond with a complete, structured overview of the drafted prompt:
    - **Prompt Number & Filename**: e.g., `prompts/19-header-interactive-navigation.md`
    - **Feature Goal**: Clear 1-2 sentence description of what the prompt achieves.
    - **Files to Modify/Create**: Explicit list of target file paths with `[NEW]` or `[MODIFY]` tags.
    - **Skills Required**: Relevant skills from Section 3 (e.g., `gsap-core`, `gsap-react`, `gsap-timeline`).
    - **Key Architecture & Design Requirements**: Core technical rules, state boundaries, or GSAP patterns to adhere to.
    - **Verification Checks**: Commands to run (`npm run typecheck`, `npm run lint`).
-5. **Strict No-Code Rule on Query**: Answering an `i` or `I` prompt query is purely informational and planning-oriented; do not generate code or mutate application state during prompt inspection.
+6. **Approval Gate**: End the response by asking exactly: `I prepared the implementation prompt at prompts/<file-name>.md. Is this good to execute?`
+7. **Strict No-Implementation Rule on Query**: Answering an `i` or `I` prompt query may create only the next prompt file. Do not write application code, run implementation commands, or mutate any other project files until the user approves with `y` or `Y`.
 
 Each prompt must include:
 
@@ -797,14 +799,13 @@ When in doubt:
 2. Use the relevant skill.
 3. Preserve server/client boundaries.
 4. Ask a focused question if needed.
-5. Use `i` or `I` to know what prompt is next to be written.
-6. Save a prompt before coding.
-7. Ask if it is good to execute (confirm with `y` or `Y`).
-8. Implement after confirmation.
-9. Run available checks.
-10. Run the two-stage code review loop (`requesting-code-review` and `receiving-code-review`).
-11. Commit to main using `.agents/skills/caveman-commit`.
-12. Share exact test steps.
+5. Use `i` or `I` to determine what implementation prompt comes first and draft it in `prompts/`.
+6. Ask if it is good to execute (confirm with `y` or `Y`).
+7. Implement after confirmation.
+8. Run available checks.
+9. Run the two-stage code review loop (`requesting-code-review` and `receiving-code-review`).
+10. Commit to main using `.agents/skills/caveman-commit`.
+11. Share exact test steps.
 
 ---
 

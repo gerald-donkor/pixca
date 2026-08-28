@@ -59,10 +59,10 @@ function StatusBannerContent({
 
   if (status === "no_active_subscription") {
     return (
-      <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-center gap-3">
-          <CreditCard className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-          <span>
+      <div className="p-3.5 sm:p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs sm:text-sm flex items-start sm:items-center justify-between gap-3 shadow-xs w-full min-w-0 max-w-full">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+          <CreditCard className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5 sm:mt-0" />
+          <span className="break-words">
             No active Polar subscription record found for your account. Please select a plan below to subscribe.
           </span>
         </div>
@@ -80,11 +80,11 @@ function StatusBannerContent({
 
   if (status === "simulated_portal") {
     return (
-      <div className="p-4 sm:p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs sm:text-sm flex items-center justify-between gap-3 shadow-xs">
-        <div className="flex items-center gap-3">
-          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-          <span>
-            <strong>Polar Dev Simulation Mode:</strong> In production with <code>POLAR_ACCESS_TOKEN</code> configured, you are redirected to the self-service Polar Customer Portal to manage subscriptions, payment methods, and invoices.
+      <div className="p-3.5 sm:p-5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-800 dark:text-blue-300 text-xs sm:text-sm flex items-start sm:items-center justify-between gap-3 shadow-xs w-full min-w-0 max-w-full">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+          <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5 sm:mt-0" />
+          <span className="break-words">
+            <strong>Polar Dev Simulation Mode:</strong> In production with <code className="break-all">POLAR_ACCESS_TOKEN</code> configured, you are redirected to the self-service Polar Customer Portal to manage subscriptions, payment methods, and invoices.
           </span>
         </div>
         <button
@@ -101,16 +101,16 @@ function StatusBannerContent({
 
   if (status === "success") {
     return (
-      <div className="p-4 sm:p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm flex items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+      <div className="p-3.5 sm:p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm flex items-start sm:items-center justify-between gap-3 sm:gap-4 shadow-sm w-full min-w-0 max-w-full">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
             <Check className="w-4 h-4 stroke-[3]" />
           </div>
-          <div>
+          <div className="min-w-0 space-y-0.5">
             <p className="font-bold text-emerald-900 dark:text-emerald-100">
               Subscription payment successful!
             </p>
-            <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 mt-0.5">
+            <p className="text-xs text-emerald-800/80 dark:text-emerald-300/80 break-words">
               Thank you for subscribing to Pixca. Your upgraded features and entitlements are now active.
             </p>
           </div>
@@ -331,14 +331,14 @@ export function PricingCards() {
       </React.Suspense>
 
       {/* Control Toggles: Currency & Billing Interval */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-2">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 pt-2 w-full min-w-0 max-w-full">
         {/* Currency Switcher */}
-        <div className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900/80 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs">
+        <div className="w-full sm:w-auto inline-flex items-center justify-center p-1 bg-zinc-100 dark:bg-zinc-900/80 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs max-w-full">
           <button
             type="button"
             onClick={() => setCurrency("USD")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+              "flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer text-center",
               currency === "USD"
                 ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                 : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
@@ -350,26 +350,26 @@ export function PricingCards() {
             type="button"
             onClick={() => setCurrency("GHS")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+              "flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5",
               currency === "GHS"
                 ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                 : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
             )}
           >
             <span>GHS (GH₵) Local MoMo</span>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 font-semibold">
+            <span className="text-[9px] px-1 py-0.5 rounded bg-amber-500/15 text-amber-600 dark:text-amber-400 font-semibold shrink-0">
               Ghana
             </span>
           </button>
         </div>
 
         {/* Interval Switcher */}
-        <div className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900/80 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs">
+        <div className="w-full sm:w-auto inline-flex items-center justify-center p-1 bg-zinc-100 dark:bg-zinc-900/80 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-xs max-w-full">
           <button
             type="button"
             onClick={() => setInterval("monthly")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+              "flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer text-center",
               interval === "monthly"
                 ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                 : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
@@ -381,14 +381,14 @@ export function PricingCards() {
             type="button"
             onClick={() => setInterval("annual")}
             className={cn(
-              "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5",
+              "flex-1 sm:flex-initial px-2.5 sm:px-3.5 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5",
               interval === "annual"
                 ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                 : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
             )}
           >
             <span>Annual</span>
-            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
               Save up to 25%
             </span>
           </button>
@@ -396,7 +396,7 @@ export function PricingCards() {
       </div>
 
       {/* Pricing Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch w-full min-w-0 max-w-full">
         {PLANS.map((plan) => {
           const pricing = plan.prices[currency];
           const isFree = plan.id === "free";
@@ -411,7 +411,7 @@ export function PricingCards() {
             <div
               key={plan.id}
               className={cn(
-                "pricing-card-item group relative rounded-3xl p-6 sm:p-7 flex flex-col justify-between transform-gpu transition-all duration-300 ease-out will-change-transform hover:-translate-y-4 hover:scale-[1.03] hover:shadow-2xl active:scale-[0.98] cursor-pointer",
+                "pricing-card-item group relative rounded-3xl p-5 sm:p-7 flex flex-col justify-between transform-gpu transition-all duration-300 ease-out will-change-transform hover:-translate-y-2 sm:hover:-translate-y-4 hover:scale-[1.01] sm:hover:scale-[1.03] hover:shadow-2xl active:scale-[0.98] cursor-pointer w-full min-w-0 max-w-full",
                 planGlowStyles[plan.id],
                 isCurrentPlan
                   ? "bg-white dark:bg-[#121215] border-2 border-emerald-500 shadow-xl shadow-emerald-500/15"
@@ -422,36 +422,36 @@ export function PricingCards() {
             >
               {/* Highlight / Current Plan Badge */}
               {isCurrentPlan ? (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-600 text-white shadow-md">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    Current Plan
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 max-w-[90%]">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-600 text-white shadow-md truncate">
+                    <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                    <span>Current Plan</span>
                   </span>
                 </div>
               ) : plan.badge ? (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md">
-                    <Sparkles className="w-3 h-3" />
-                    {plan.badge}
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 max-w-[90%]">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md truncate">
+                    <Sparkles className="w-3 h-3 shrink-0" />
+                    <span>{plan.badge}</span>
                   </span>
                 </div>
               ) : null}
 
               {/* Card Top Section */}
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <h3 className="text-xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">
+              <div className="space-y-5 sm:space-y-6 min-w-0">
+                <div className="space-y-1.5 sm:space-y-2 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight break-words">
                     {plan.name}
                   </h3>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed min-h-[36px]">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed min-h-[36px] break-words">
                     {plan.description}
                   </p>
                 </div>
 
                 {/* Price Display */}
-                <div className="space-y-1 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="text-4xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-100">
+                <div className="space-y-1 pb-4 border-b border-zinc-200 dark:border-zinc-800 min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-1.5 min-w-0">
+                    <span className="text-3xl sm:text-5xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 break-words">
                       {formatPrice(displayPrice, currencySymbol)}
                     </span>
                     <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
@@ -460,7 +460,7 @@ export function PricingCards() {
                   </div>
 
                   {!isFree && interval === "annual" && (
-                    <div className="flex items-center gap-2 pt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold break-words">
                       <span>
                         Equivalent to {formatPrice(pricing.monthlyEq, currencySymbol)}/mo
                       </span>
@@ -479,13 +479,13 @@ export function PricingCards() {
                 </div>
 
                 {/* Feature List */}
-                <div className="space-y-3">
+                <div className="space-y-2.5 sm:space-y-3 min-w-0">
                   <span className="text-[11px] font-bold tracking-wider text-zinc-500 dark:text-zinc-400 uppercase">
                     What’s included
                   </span>
-                  <ul className="space-y-2.5">
+                  <ul className="space-y-2 sm:space-y-2.5">
                     {plan.features.map((feat, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-zinc-700 dark:text-zinc-300">
+                      <li key={i} className="flex items-start gap-2.5 text-xs text-zinc-700 dark:text-zinc-300 min-w-0">
                         <div
                           className={cn(
                             "w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5",
@@ -502,7 +502,7 @@ export function PricingCards() {
                         >
                           <Check className="w-2.5 h-2.5 stroke-[3]" />
                         </div>
-                        <span className={cn(i === 0 && (plan.highlight || isCurrentPlan) ? "font-bold text-zinc-900 dark:text-zinc-100" : "")}>
+                        <span className={cn("break-words flex-1", i === 0 && (plan.highlight || isCurrentPlan) ? "font-bold text-zinc-900 dark:text-zinc-100" : "")}>
                           {feat}
                         </span>
                       </li>
@@ -512,18 +512,18 @@ export function PricingCards() {
               </div>
 
               {/* Action Button */}
-              <div className="pt-8 space-y-3">
+              <div className="pt-6 sm:pt-8 space-y-2.5 sm:space-y-3 min-w-0">
                 <Button
                   type="button"
                   disabled={isCurrentPlan}
                   onClick={() => !isCurrentPlan && handleSelectPlan(plan)}
                   className={cn(
-                    "w-full h-11 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2",
+                    "w-full h-11 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer",
                     isCurrentPlan
                       ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 cursor-default opacity-90 disabled:opacity-90"
                       : plan.highlight
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 cursor-pointer group-hover:scale-[1.01] transition-transform"
-                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white cursor-pointer group-hover:scale-[1.01] transition-transform"
+                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/25 group-hover:scale-[1.01] transition-transform"
+                      : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white group-hover:scale-[1.01] transition-transform"
                   )}
                 >
                   {isCurrentPlan ? (
@@ -539,7 +539,7 @@ export function PricingCards() {
                   )}
                 </Button>
 
-                <p className="text-[10px] text-center text-zinc-500 dark:text-zinc-400">
+                <p className="text-[10px] text-center text-zinc-500 dark:text-zinc-400 break-words leading-normal">
                   {isCurrentPlan
                     ? "Included in your current subscription"
                     : currency === "GHS" && !isFree
@@ -555,23 +555,23 @@ export function PricingCards() {
       </div>
 
       {/* Customer Self-Service Portal Access */}
-      <div className="flex flex-col sm:flex-row items-center justify-between p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 gap-4 shadow-sm">
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <CreditCard className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 gap-4 shadow-sm w-full min-w-0 max-w-full">
+        <div className="flex items-start sm:items-center gap-3 sm:gap-3.5 min-w-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+            <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0 space-y-0.5">
+            <div className="flex flex-wrap items-center gap-2">
               <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
                 Manage Existing Polar Subscription
               </h4>
               {isSubscribed && (
-                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wide">
+                <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wide shrink-0">
                   {tier} Active
                 </span>
               )}
             </div>
-            <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 break-words">
               {isSubscribed
                 ? `Manage your active Pixca ${tier.toUpperCase()} subscription, update billing details, switch payment methods, cancel, or download EU/UK VAT tax invoices.`
                 : "Update billing details, switch cards, cancel plans, or download EU/UK VAT tax invoices directly in the Customer Portal."}
@@ -580,7 +580,7 @@ export function PricingCards() {
         </div>
         <a
           href="/api/portal/polar"
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 transition-all shrink-0 cursor-pointer border border-zinc-200 dark:border-zinc-700 shadow-xs"
+          className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-zinc-100 transition-all shrink-0 cursor-pointer border border-zinc-200 dark:border-zinc-700 shadow-xs w-full sm:w-auto"
         >
           <span>Open Customer Portal</span>
           <ArrowRight className="w-3.5 h-3.5" />

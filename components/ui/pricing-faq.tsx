@@ -55,14 +55,14 @@ export function PricingFaq() {
   };
 
   return (
-    <div className="space-y-4 max-w-3xl mx-auto">
+    <div className="space-y-3 sm:space-y-4 max-w-3xl mx-auto w-full min-w-0 max-w-full">
       {FAQS.map((faq, index) => {
         const isOpen = openIndex === index;
         return (
           <div
             key={index}
             className={cn(
-              "rounded-2xl border transition-all duration-200 overflow-hidden",
+              "rounded-2xl border transition-all duration-200 overflow-hidden w-full min-w-0 max-w-full",
               isOpen
                 ? "bg-[var(--surface-elevated)] border-blue-500/40 shadow-sm"
                 : "bg-[var(--surface-elevated)] border-[var(--border)] hover:border-zinc-400 dark:hover:border-zinc-700"
@@ -73,21 +73,21 @@ export function PricingFaq() {
               id={`faq-trigger-${index}`}
               aria-controls={`faq-panel-${index}`}
               onClick={() => toggle(index)}
-              className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+              className="w-full p-4 sm:p-6 text-left flex items-center justify-between gap-3 sm:gap-4 cursor-pointer min-w-0"
               aria-expanded={isOpen}
             >
-              <span className="text-sm sm:text-base font-bold text-[var(--text-primary)]">
+              <span className="text-xs sm:text-base font-bold text-[var(--text-primary)] min-w-0 flex-1 break-words">
                 {faq.question}
               </span>
               <div
                 className={cn(
-                  "w-7 h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200",
+                  "w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200",
                   isOpen
                     ? "rotate-180 bg-blue-500/15 text-blue-600 dark:text-blue-400"
                     : "bg-zinc-100 dark:bg-zinc-800 text-[var(--text-secondary)]"
                 )}
               >
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </div>
             </button>
 
@@ -96,7 +96,7 @@ export function PricingFaq() {
                 id={`faq-panel-${index}`}
                 role="region"
                 aria-labelledby={`faq-trigger-${index}`}
-                className="px-5 pb-5 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed border-t border-[var(--border)] pt-4 animate-in fade-in-50 duration-200"
+                className="px-4 pb-4 sm:px-6 sm:pb-6 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed border-t border-[var(--border)] pt-3.5 sm:pt-4 animate-in fade-in-50 duration-200 break-words min-w-0"
               >
                 {faq.answer}
               </div>

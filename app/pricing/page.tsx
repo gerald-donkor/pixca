@@ -196,38 +196,38 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] w-full min-w-0 max-w-full overflow-x-hidden">
       <JsonLd schema={jsonLdSchema} />
 
-      <main className="container mx-auto max-w-[1240px] px-4 sm:px-6 py-12 space-y-20">
+      <main className="container mx-auto max-w-[1240px] px-4 sm:px-6 py-8 sm:py-12 space-y-12 sm:space-y-20 w-full min-w-0 max-w-full">
         {/* Hero Section */}
-        <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs font-bold tracking-wide">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Transparent Dual Local & Global Subscriptions</span>
+        <div className="text-center space-y-3 sm:space-y-4 max-w-3xl mx-auto w-full min-w-0">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] sm:text-xs font-bold tracking-wide max-w-full">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate sm:whitespace-normal">Transparent Dual Local & Global Subscriptions</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--text-primary)] leading-tight">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[var(--text-primary)] leading-tight break-words">
             Unbiased AI News Intelligence for Everyone
           </h1>
 
-          <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+          <p className="text-xs sm:text-base text-[var(--text-secondary)] leading-relaxed max-w-2xl mx-auto break-words">
             Gain immediate clarity on political bias, sentiment framing, and underreported stories. Pay locally with Ghana Mobile Money or internationally with global cards.
           </p>
 
           {/* Payment Trust Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2 text-[11px] text-[var(--text-secondary)] font-medium">
-            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
-              <CreditCard className="w-3.5 h-3.5 text-blue-500" />
-              <span>Polar (Global Cards, Apple Pay & MoR Tax)</span>
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-2 text-[10px] sm:text-[11px] text-[var(--text-secondary)] font-medium max-w-full">
+            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-2.5 sm:px-3 py-1.5 rounded-lg shadow-xs max-w-full text-left">
+              <CreditCard className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+              <span className="break-words">Polar (Global Cards, Apple Pay & MoR Tax)</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
-              <Smartphone className="w-3.5 h-3.5 text-amber-500" />
-              <span>MTN MoMo • Telecel • AirtelTigo (Paystack)</span>
+            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-2.5 sm:px-3 py-1.5 rounded-lg shadow-xs max-w-full text-left">
+              <Smartphone className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span className="break-words">MTN MoMo • Telecel • AirtelTigo (Paystack)</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-3 py-1.5 rounded-lg shadow-xs">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-              <span>256-Bit SSL Encrypted</span>
+            <div className="flex items-center gap-1.5 bg-[var(--surface-elevated)] border border-[var(--border)] px-2.5 sm:px-3 py-1.5 rounded-lg shadow-xs max-w-full text-left">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <span className="break-words">256-Bit SSL Encrypted</span>
             </div>
           </div>
         </div>
@@ -236,9 +236,9 @@ export default function PricingPage() {
         <PricingCards />
 
         {/* Comprehensive Feature Comparison Matrix */}
-        <div className="space-y-8 pt-6">
-          <div className="text-center space-y-2 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
+        <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 w-full min-w-0 max-w-full">
+          <div className="text-center space-y-2 max-w-2xl mx-auto w-full min-w-0">
+            <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
               Full Feature Comparison Matrix
             </h2>
             <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
@@ -246,23 +246,23 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] shadow-sm">
-            <table className="w-full text-left border-collapse min-w-[700px]">
+          <div className="w-full min-w-0 max-w-full overflow-x-auto rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] shadow-sm">
+            <table className="w-full text-left border-collapse min-w-[640px] sm:min-w-[700px]">
               <thead>
                 <tr className="border-b border-[var(--border)] bg-zinc-50/50 dark:bg-zinc-900/50">
-                  <th className="p-4 sm:p-5 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] w-5/12">
+                  <th className="p-3.5 sm:p-5 text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] w-5/12">
                     Features & Capabilities
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
+                  <th className="p-3.5 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
                     Free Reader
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
+                  <th className="p-3.5 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
                     Starter
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-blue-600 dark:text-blue-400 bg-blue-500/5 w-[15%]">
+                  <th className="p-3.5 sm:p-5 text-xs font-extrabold text-center text-blue-600 dark:text-blue-400 bg-blue-500/5 w-[15%]">
                     Pixca Pro
                   </th>
-                  <th className="p-4 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
+                  <th className="p-3.5 sm:p-5 text-xs font-extrabold text-center text-[var(--text-primary)] w-[14%]">
                     Enterprise
                   </th>
                 </tr>
@@ -274,7 +274,7 @@ export default function PricingPage() {
                     <tr className="bg-zinc-100/60 dark:bg-zinc-800/40 border-t border-b border-[var(--border)]">
                       <td
                         colSpan={5}
-                        className="px-4 py-2.5 sm:px-5 sm:py-3 text-xs font-bold text-[var(--text-primary)] tracking-wide uppercase"
+                        className="px-3.5 py-2.5 sm:px-5 sm:py-3 text-xs font-bold text-[var(--text-primary)] tracking-wide uppercase"
                       >
                         {section.category}
                       </td>
@@ -286,19 +286,19 @@ export default function PricingPage() {
                         key={rIdx}
                         className="border-b border-[var(--border)] hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30 transition-colors"
                       >
-                        <td className="p-4 sm:p-5 text-xs font-medium text-[var(--text-primary)]">
+                        <td className="p-3.5 sm:p-5 text-xs font-medium text-[var(--text-primary)]">
                           {row.name}
                         </td>
-                        <td className="p-4 sm:p-5 text-center">
+                        <td className="p-3.5 sm:p-5 text-center">
                           <RenderCell value={row.free} />
                         </td>
-                        <td className="p-4 sm:p-5 text-center">
+                        <td className="p-3.5 sm:p-5 text-center">
                           <RenderCell value={row.starter} />
                         </td>
-                        <td className="p-4 sm:p-5 text-center bg-blue-500/5">
+                        <td className="p-3.5 sm:p-5 text-center bg-blue-500/5">
                           <RenderCell value={row.pro} />
                         </td>
-                        <td className="p-4 sm:p-5 text-center">
+                        <td className="p-3.5 sm:p-5 text-center">
                           <RenderCell value={row.enterprise} />
                         </td>
                       </tr>
@@ -311,9 +311,9 @@ export default function PricingPage() {
         </div>
 
         {/* Interactive FAQ Section */}
-        <div className="space-y-8 pt-6">
-          <div className="text-center space-y-2 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
+        <div className="space-y-6 sm:space-y-8 pt-4 sm:pt-6 w-full min-w-0 max-w-full">
+          <div className="text-center space-y-2 max-w-2xl mx-auto w-full min-w-0">
+            <h2 className="text-xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
               Frequently Asked Questions
             </h2>
             <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
@@ -325,20 +325,20 @@ export default function PricingPage() {
         </div>
 
         {/* Bottom Banner */}
-        <div className="rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-8 sm:p-12 border border-zinc-800 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-2 text-center md:text-left">
-            <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+        <div className="rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-6 sm:p-12 border border-zinc-800 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 w-full min-w-0 max-w-full">
+          <div className="space-y-2 text-center md:text-left min-w-0">
+            <h3 className="text-xl sm:text-3xl font-black tracking-tight text-white break-words">
               Ready to see the full picture?
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 max-w-xl">
+            <p className="text-xs sm:text-sm text-zinc-400 max-w-xl break-words">
               Join thousands of readers, journalists, and researchers making informed decisions with Pixca intelligence.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center justify-center w-full md:w-auto shrink-0">
             <Link
               href="/"
-              className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md hover:shadow-blue-500/25 flex items-center gap-2"
+              className="w-full sm:w-auto px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition-all shadow-md hover:shadow-blue-500/25 flex items-center justify-center gap-2"
             >
               <span>Explore Top News</span>
               <ArrowRight className="w-4 h-4" />
