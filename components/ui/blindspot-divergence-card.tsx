@@ -110,42 +110,42 @@ export function BlindspotDivergenceCard({
   return (
     <div
       ref={containerRef}
-      className="relative rounded-3xl bg-white dark:bg-[#121215] border-2 border-blue-500/30 dark:border-blue-500/40 p-5 sm:p-7 shadow-lg shadow-blue-500/5 space-y-6 overflow-hidden"
+      className="relative rounded-2xl sm:rounded-3xl bg-white dark:bg-[#121215] border-2 border-blue-500/30 dark:border-blue-500/40 p-4 sm:p-7 shadow-lg shadow-blue-500/5 space-y-5 sm:space-y-6 overflow-hidden w-full min-w-0 max-w-full"
     >
       {/* Background Subtle Gradient */}
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-gradient-to-bl from-blue-500/10 via-red-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Banner Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-5">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
-            <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Perspective Divergence Feature</span>
+      <div className="flex flex-col sm:flex-row sm:items-start md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4 sm:pb-5 w-full min-w-0">
+        <div className="space-y-1 min-w-0 max-w-full">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 max-w-full">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span className="truncate">Perspective Divergence Feature</span>
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+          <h2 className="text-base sm:text-lg md:text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight break-words">
             {topicTitle}
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 break-words">
             Comparing how left-leaning and right-leaning outlets frame related events with contrasting rhetoric.
           </p>
         </div>
 
         {/* View Toggle Mode & Modal Action */}
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto shrink-0">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 self-start sm:self-auto shrink-0 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => setCompareModalOpen(true)}
             aria-label={`Compare ${leftArticle.source.name} and ${rightArticle.source.name} perspectives in modal`}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
+            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl text-xs font-extrabold bg-blue-600 hover:bg-blue-500 text-white shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 shrink-0"
           >
-            <ArrowRightLeft className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Compare in Modal</span>
+            <ArrowRightLeft className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+            <span className="whitespace-nowrap">Compare in Modal</span>
           </button>
 
           <div
             role="tablist"
             aria-label="Perspective divergence view"
-            className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0 shadow-xs"
+            className="inline-flex items-center p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 shrink-0 shadow-xs max-w-full"
           >
             <button
               role="tab"
@@ -156,13 +156,13 @@ export function BlindspotDivergenceCard({
               aria-label="Side by side comparison view"
               onClick={() => setActiveTab("side-by-side")}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500",
+                "flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 shrink-0 whitespace-nowrap",
                 activeTab === "side-by-side"
                   ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
               )}
             >
-              <Columns2 className="w-3.5 h-3.5" aria-hidden="true" />
+              <Columns2 className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               <span>Side by Side</span>
             </button>
             <button
@@ -174,13 +174,13 @@ export function BlindspotDivergenceCard({
               aria-label="Framing and rhetoric analysis view"
               onClick={() => setActiveTab("framing-matrix")}
               className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500",
+                "flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 shrink-0 whitespace-nowrap",
                 activeTab === "framing-matrix"
                   ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs"
                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
               )}
             >
-              <Quote className="w-3.5 h-3.5" aria-hidden="true" />
+              <Quote className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               <span>Framing & Rhetoric</span>
             </button>
           </div>
@@ -193,25 +193,25 @@ export function BlindspotDivergenceCard({
           id="blindspot-panel-side-by-side"
           role="tabpanel"
           aria-labelledby="blindspot-tab-side-by-side"
-          className="tab-content-panel grid grid-cols-1 lg:grid-cols-2 gap-6"
+          className="tab-content-panel grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full min-w-0"
         >
           {/* Left Column Story */}
-          <div className="flex flex-col justify-between rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-blue-500/30 p-5 sm:p-6 space-y-5 transition-all hover:border-blue-500/60 hover:shadow-md">
-            <div className="space-y-4">
+          <div className="flex flex-col justify-between rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-blue-500/30 p-4 sm:p-6 space-y-4 sm:space-y-5 transition-all hover:border-blue-500/60 hover:shadow-md w-full min-w-0">
+            <div className="space-y-3.5 sm:space-y-4 min-w-0 w-full">
               {/* Header Meta */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30">
+              <div className="flex flex-wrap items-center justify-between gap-2 min-w-0 w-full">
+                <div className="flex items-center gap-2 min-w-0 max-w-full">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 shrink-0">
                     Left Perspective
                   </span>
-                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 truncate max-w-[130px] sm:max-w-[180px]">
                     {leftArticle.source.name}
                   </span>
                 </div>
                 {leftAnalysis && (
                   <span
                     className={cn(
-                      "text-[11px] font-bold px-2 py-0.5 rounded-md capitalize bg-zinc-200 dark:bg-zinc-800",
+                      "text-[11px] font-bold px-2 py-0.5 rounded-md capitalize bg-zinc-200 dark:bg-zinc-800 shrink-0",
                       sentimentLabelColorClass(leftAnalysis.sentiment_label)
                     )}
                   >
@@ -221,21 +221,21 @@ export function BlindspotDivergenceCard({
               </div>
 
               {/* Title */}
-              <h3 className="text-base font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2">
+              <h3 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2 break-words">
                 {leftArticle.title}
               </h3>
 
               {/* Summary */}
               {leftAnalysis?.summary && (
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 break-words">
                   {leftAnalysis.summary}
                 </p>
               )}
 
               {/* Bias Meter */}
               {leftAnalysis && (
-                <div className="space-y-1 pt-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <div className="space-y-1 pt-1 w-full min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 block truncate">
                     Estimated Framing Breakdown
                   </span>
                   <BiasMeter
@@ -248,35 +248,35 @@ export function BlindspotDivergenceCard({
             </div>
 
             {/* Link to Full Analysis */}
-            <div className="pt-2">
+            <div className="pt-2 w-full min-w-0">
               <Link
                 href={`/article/${leftArticle.id}`}
                 aria-label={`Read full left-angle analysis from ${leftArticle.source.name}`}
-                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 break-words"
               >
-                <span>Read Full Left-Angle Analysis</span>
-                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="truncate">Read Full Left-Angle Analysis</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               </Link>
             </div>
           </div>
 
           {/* Right Column Story */}
-          <div className="flex flex-col justify-between rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-red-500/30 p-5 sm:p-6 space-y-5 transition-all hover:border-red-500/60 hover:shadow-md">
-            <div className="space-y-4">
+          <div className="flex flex-col justify-between rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-red-500/30 p-4 sm:p-6 space-y-4 sm:space-y-5 transition-all hover:border-red-500/60 hover:shadow-md w-full min-w-0">
+            <div className="space-y-3.5 sm:space-y-4 min-w-0 w-full">
               {/* Header Meta */}
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30">
+              <div className="flex flex-wrap items-center justify-between gap-2 min-w-0 w-full">
+                <div className="flex items-center gap-2 min-w-0 max-w-full">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-red-500/15 text-red-600 dark:text-red-400 border border-red-500/30 shrink-0">
                     Right Perspective
                   </span>
-                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300 truncate max-w-[130px] sm:max-w-[180px]">
                     {rightArticle.source.name}
                   </span>
                 </div>
                 {rightAnalysis && (
                   <span
                     className={cn(
-                      "text-[11px] font-bold px-2 py-0.5 rounded-md capitalize bg-zinc-200 dark:bg-zinc-800",
+                      "text-[11px] font-bold px-2 py-0.5 rounded-md capitalize bg-zinc-200 dark:bg-zinc-800 shrink-0",
                       sentimentLabelColorClass(rightAnalysis.sentiment_label)
                     )}
                   >
@@ -286,21 +286,21 @@ export function BlindspotDivergenceCard({
               </div>
 
               {/* Title */}
-              <h3 className="text-base font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2">
+              <h3 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2 break-words">
                 {rightArticle.title}
               </h3>
 
               {/* Summary */}
               {rightAnalysis?.summary && (
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3">
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed line-clamp-3 break-words">
                   {rightAnalysis.summary}
                 </p>
               )}
 
               {/* Bias Meter */}
               {rightAnalysis && (
-                <div className="space-y-1 pt-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                <div className="space-y-1 pt-1 w-full min-w-0">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 block truncate">
                     Estimated Framing Breakdown
                   </span>
                   <BiasMeter
@@ -313,14 +313,14 @@ export function BlindspotDivergenceCard({
             </div>
 
             {/* Link to Full Analysis */}
-            <div className="pt-2">
+            <div className="pt-2 w-full min-w-0">
               <Link
                 href={`/article/${rightArticle.id}`}
                 aria-label={`Read full right-angle analysis from ${rightArticle.source.name}`}
-                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-500 text-white transition-all shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500"
+                className="inline-flex items-center justify-center gap-1.5 w-full py-2.5 px-4 rounded-xl text-xs font-bold bg-red-600 hover:bg-red-500 text-white transition-all shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500 break-words"
               >
-                <span>Read Full Right-Angle Analysis</span>
-                <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="truncate">Read Full Right-Angle Analysis</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -333,41 +333,41 @@ export function BlindspotDivergenceCard({
           id="blindspot-panel-framing-matrix"
           role="tabpanel"
           aria-labelledby="blindspot-tab-framing-matrix"
-          className="tab-content-panel grid grid-cols-1 lg:grid-cols-2 gap-6"
+          className="tab-content-panel grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 w-full min-w-0"
         >
           {/* Left Angle Framing Notes & Loaded Terms */}
-          <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-blue-500/30 p-5 sm:p-6 space-y-4">
-            <div className="flex items-center gap-2">
+          <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-blue-500/30 p-4 sm:p-6 space-y-4 w-full min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               <span className="w-3 h-3 rounded-full bg-blue-600 shrink-0" aria-hidden="true" />
-              <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+              <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
                 {leftArticle.source.name} Framing & Loaded Rhetoric
               </h4>
             </div>
 
             {/* Framing Notes */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 w-full min-w-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-blue-500" aria-hidden="true" />
+                <FileText className="w-3.5 h-3.5 text-blue-500 shrink-0" aria-hidden="true" />
                 <span>Editorial Framing Notes</span>
               </span>
-              <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed bg-white dark:bg-zinc-800/80 p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700">
+              <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed bg-white dark:bg-zinc-800/80 p-3 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 break-words">
                 {leftAnalysis?.framing_notes ||
                   "Standard reporting focusing on policy consequences and societal impact."}
               </p>
             </div>
 
             {/* Loaded Terms */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 w-full min-w-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
+                <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" aria-hidden="true" />
                 <span>Extracted Loaded Terms</span>
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 w-full min-w-0">
                 {leftAnalysis?.loaded_terms && leftAnalysis.loaded_terms.length > 0 ? (
                   leftAnalysis.loaded_terms.map((term, i) => (
                     <span
                       key={`${term}-${i}`}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20"
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20 break-words max-w-full"
                     >
                       &ldquo;{term}&rdquo;
                     </span>
@@ -382,38 +382,38 @@ export function BlindspotDivergenceCard({
           </div>
 
           {/* Right Angle Framing Notes & Loaded Terms */}
-          <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-red-500/30 p-5 sm:p-6 space-y-4">
-            <div className="flex items-center gap-2">
+          <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-red-500/30 p-4 sm:p-6 space-y-4 w-full min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               <span className="w-3 h-3 rounded-full bg-red-600 shrink-0" aria-hidden="true" />
-              <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
+              <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">
                 {rightArticle.source.name} Framing & Loaded Rhetoric
               </h4>
             </div>
 
             {/* Framing Notes */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 w-full min-w-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-red-500" aria-hidden="true" />
+                <FileText className="w-3.5 h-3.5 text-red-500 shrink-0" aria-hidden="true" />
                 <span>Editorial Framing Notes</span>
               </span>
-              <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed bg-white dark:bg-zinc-800/80 p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700">
+              <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed bg-white dark:bg-zinc-800/80 p-3 sm:p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-700 break-words">
                 {rightAnalysis?.framing_notes ||
                   "Standard reporting emphasizing institutional accountability and economic factors."}
               </p>
             </div>
 
             {/* Loaded Terms */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 w-full min-w-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-                <Flame className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
+                <Flame className="w-3.5 h-3.5 text-amber-500 shrink-0" aria-hidden="true" />
                 <span>Extracted Loaded Terms</span>
               </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-1.5 w-full min-w-0">
                 {rightAnalysis?.loaded_terms && rightAnalysis.loaded_terms.length > 0 ? (
                   rightAnalysis.loaded_terms.map((term, i) => (
                     <span
                       key={`${term}-${i}`}
-                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-500/10 text-red-700 dark:text-red-300 border border-red-500/20"
+                      className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-500/10 text-red-700 dark:text-red-300 border border-red-500/20 break-words max-w-full"
                     >
                       &ldquo;{term}&rdquo;
                     </span>

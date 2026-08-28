@@ -129,50 +129,50 @@ export function BlindspotSpectrumSummary({
   return (
     <div
       ref={containerRef}
-      className="rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 p-5 sm:p-6 shadow-sm space-y-5"
+      className="w-full min-w-0 max-w-full overflow-hidden rounded-2xl bg-white dark:bg-[#121215] border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5"
     >
       {/* Top Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-start md:items-center justify-between gap-3 sm:gap-4 w-full min-w-0">
+        <div className="flex items-start sm:items-center gap-2.5 min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
             <Scale className="w-4 h-4" />
           </div>
-          <div>
-            <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+          <div className="min-w-0 flex-1">
+            <h2 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex flex-wrap items-center gap-2">
               <span>Blindspot Spectrum Distribution</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 shrink-0">
                 {stats.total} {stats.total === 1 ? "Story" : "Stories"}
               </span>
             </h2>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 break-words">
               Aggregated framing breakdown across all analyzed stories in this feed.
             </p>
           </div>
         </div>
 
         {/* Dataset Lean Indicator */}
-        <div className="flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 text-xs">
-          <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium">
+        <div className="flex items-center gap-2 self-start sm:self-auto px-3 py-1.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 text-xs shrink-0 max-w-full">
+          <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium shrink-0">
             Overall Distribution:
           </span>
-          <span className={cn("font-bold", stats.dominantColor)}>
+          <span className={cn("font-bold truncate", stats.dominantColor)}>
             {stats.dominantLean}
           </span>
         </div>
       </div>
 
       {/* Visual Multi-Color Spectrum Bar */}
-      <div className="space-y-2">
+      <div className="space-y-2 w-full min-w-0">
         <div className="relative flex h-7 w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900/90 border border-zinc-200 dark:border-zinc-800 select-none">
           {/* Left Segment */}
           {stats.leftPct > 0 && (
             <div
-              className="spectrum-segment flex items-center justify-start bg-blue-600 text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="spectrum-segment flex items-center justify-start bg-blue-600 text-white px-2 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left min-w-0"
               style={{ width: `${stats.leftPct}%` }}
               title={`Left Framing: ${stats.leftPct}% (${stats.leftCount} stories)`}
             >
-              {stats.leftPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.leftPct >= 12 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Left {stats.leftPct}%
                 </span>
               )}
@@ -182,12 +182,12 @@ export function BlindspotSpectrumSummary({
           {/* Center Segment */}
           {stats.centerPct > 0 && (
             <div
-              className="spectrum-segment flex items-center justify-center bg-zinc-400 dark:bg-zinc-600 text-zinc-900 dark:text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="spectrum-segment flex items-center justify-center bg-zinc-400 dark:bg-zinc-600 text-zinc-900 dark:text-white px-2 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left min-w-0"
               style={{ width: `${stats.centerPct}%` }}
               title={`Center / Neutral Framing: ${stats.centerPct}% (${stats.centerCount} stories)`}
             >
-              {stats.centerPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.centerPct >= 12 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Center {stats.centerPct}%
                 </span>
               )}
@@ -197,12 +197,12 @@ export function BlindspotSpectrumSummary({
           {/* Right Segment */}
           {stats.rightPct > 0 && (
             <div
-              className="spectrum-segment flex items-center justify-end bg-red-600 text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="spectrum-segment flex items-center justify-end bg-red-600 text-white px-2 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left min-w-0"
               style={{ width: `${stats.rightPct}%` }}
               title={`Right Framing: ${stats.rightPct}% (${stats.rightCount} stories)`}
             >
-              {stats.rightPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.rightPct >= 12 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Right {stats.rightPct}%
                 </span>
               )}
@@ -211,37 +211,37 @@ export function BlindspotSpectrumSummary({
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-0.5 gap-2">
-          <div className="flex items-center gap-4 text-[11px]">
-            <div className="flex items-center gap-1.5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-0.5 gap-2 w-full min-w-0">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-[11px]">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0" />
               <span>Left ({stats.leftCount} stories)</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 shrink-0" />
               <span>Center ({stats.centerCount} stories)</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0" />
               <span>Right ({stats.rightCount} stories)</span>
             </div>
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-500 font-medium">
+          <div className="text-[11px] text-zinc-500 dark:text-zinc-500 font-medium shrink-0">
             Updated dynamically with AI analysis
           </div>
         </div>
       </div>
 
       {/* Mini Insight Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-1 w-full min-w-0">
+        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Left-Framed Stories
             </span>
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
+            <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-blue-600 dark:text-blue-400 mt-1">
+          <div className="text-base font-extrabold text-blue-600 dark:text-blue-400 mt-1 truncate">
             {stats.leftCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.leftPct}%)
@@ -249,14 +249,14 @@ export function BlindspotSpectrumSummary({
           </div>
         </div>
 
-        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Center / Balanced
             </span>
-            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-600" />
+            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-600 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-zinc-700 dark:text-zinc-300 mt-1">
+          <div className="text-base font-extrabold text-zinc-700 dark:text-zinc-300 mt-1 truncate">
             {stats.centerCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.centerPct}%)
@@ -264,14 +264,14 @@ export function BlindspotSpectrumSummary({
           </div>
         </div>
 
-        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="spectrum-metric p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2 min-w-0">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Right-Framed Stories
             </span>
-            <span className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-red-600 dark:text-red-400 mt-1">
+          <div className="text-base font-extrabold text-red-600 dark:text-red-400 mt-1 truncate">
             {stats.rightCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.rightPct}%)

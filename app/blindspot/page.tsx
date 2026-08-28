@@ -142,49 +142,49 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
   }
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
-      <main className="container mx-auto max-w-[1400px] px-6 py-8 space-y-8">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] w-full min-w-0 max-w-full overflow-x-hidden">
+      <main className="container mx-auto max-w-[1400px] w-full min-w-0 max-w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Blindspot Explanatory Header Banner */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-6 sm:p-8 border border-zinc-800 shadow-xl">
-          <div className="relative z-10 space-y-4 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-400 text-xs font-semibold">
-              <Eye className="w-3.5 h-3.5" />
-              <span>Perspective Intelligence</span>
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-zinc-900 via-zinc-950 to-black text-white p-5 sm:p-8 border border-zinc-800 shadow-xl w-full min-w-0 max-w-full">
+          <div className="relative z-10 space-y-4 max-w-3xl min-w-0">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-400 text-xs font-semibold max-w-full">
+              <Eye className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">Perspective Intelligence</span>
             </div>
 
-            <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <div className="space-y-2 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white break-words">
                 The Blindspot Feed
               </h1>
-              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal break-words">
                 Stories and angles disproportionately covered or framed by one side of the political spectrum. Discover perspectives you might miss in standard media feeds.
               </p>
             </div>
 
             {/* Quick Metrics / Highlights */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <Scale className="w-3.5 h-3.5 text-blue-400" />
-                  <span>Framing Balance</span>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-2 w-full min-w-0">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <Scale className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                  <span className="truncate">Framing Balance</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Multi-Source AI</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Multi-Source AI</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Skew Detection</span>
+              <div className="p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Skew Detection</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Real-Time Scoring</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Real-Time Scoring</div>
               </div>
 
-              <div className="hidden sm:block p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Topic Coverage</span>
+              <div className="hidden sm:block p-2.5 sm:p-3 rounded-xl bg-white/5 border border-white/10 min-w-0">
+                <div className="text-[10px] sm:text-[11px] font-semibold text-zinc-400 flex items-center gap-1.5 truncate">
+                  <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                  <span className="truncate">Topic Coverage</span>
                 </div>
-                <div className="text-sm font-bold text-white mt-1">Unbiased Analysis</div>
+                <div className="text-xs sm:text-sm font-bold text-white mt-1 truncate">Unbiased Analysis</div>
               </div>
             </div>
           </div>
@@ -210,12 +210,12 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
         )}
 
         {/* Filter Tabs & Stories Count */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[var(--border)]">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 pb-2 border-b border-[var(--border)] w-full min-w-0">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1.5 sm:pb-0 max-w-full min-w-0 scrollbar-none">
             <Link
               href="/blindspot"
               className={cn(
-                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer shrink-0 whitespace-nowrap",
                 activeBias === "all"
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs"
                   : "bg-muted text-text-secondary hover:text-text-primary hover:bg-zinc-200 dark:hover:bg-zinc-800"
@@ -226,30 +226,30 @@ export default async function BlindspotPage({ searchParams }: BlindspotPageProps
             <Link
               href="/blindspot?bias=left"
               className={cn(
-                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap",
                 activeBias === "left"
                   ? "bg-blue-600 text-white shadow-xs"
                   : "bg-muted text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
-              <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+              <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
               <span>Left Coverage / Skew</span>
             </Link>
             <Link
               href="/blindspot?bias=right"
               className={cn(
-                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 whitespace-nowrap",
                 activeBias === "right"
                   ? "bg-red-600 text-white shadow-xs"
                   : "bg-muted text-text-secondary hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
-              <span className="w-2 h-2 rounded-full bg-red-500"></span>
+              <span className="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>
               <span>Right Coverage / Skew</span>
             </Link>
           </div>
 
-          <div className="text-xs font-semibold text-[var(--text-secondary)]">
+          <div className="text-xs font-semibold text-[var(--text-secondary)] shrink-0 self-start sm:self-auto">
             Showing {articles.length} {articles.length === 1 ? "story" : "stories"}
           </div>
         </div>
