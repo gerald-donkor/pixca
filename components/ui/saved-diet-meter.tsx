@@ -208,39 +208,39 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
     <div
       ref={containerRef}
       className={cn(
-        "rounded-2xl bg-card border border-[var(--border)] p-5 sm:p-6 shadow-xs space-y-5",
+        "rounded-2xl bg-card border border-[var(--border)] p-4 sm:p-6 shadow-xs space-y-4 sm:space-y-5 w-full min-w-0 max-w-full",
         className
       )}
     >
       {/* Header Row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <Scale className="w-5 h-5" />
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full min-w-0">
+        <div className="flex items-start sm:items-center gap-2.5 sm:gap-3 min-w-0">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+            <Scale className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
-          <div>
-            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
-              <span>Personal Reading Diet & Perspective Balance</span>
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700">
+          <div className="min-w-0 space-y-0.5">
+            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)] flex flex-wrap items-center gap-1.5 sm:gap-2 leading-tight">
+              <span>Personal Reading Diet &amp; Perspective Balance</span>
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 shrink-0">
                 {stats.totalBookmarks} {stats.totalBookmarks === 1 ? "Story" : "Stories"}
               </span>
             </h2>
-            <p className="text-xs text-[var(--text-secondary)] font-medium">
+            <p className="text-xs text-[var(--text-secondary)] font-medium leading-normal">
               Aggregated framing distribution and source diversity across your saved library.
             </p>
           </div>
         </div>
 
         {/* Actions & Dominant Lean Indicator */}
-        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
           <div
             className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-semibold shadow-2xs",
+              "flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl border text-xs font-semibold shadow-2xs shrink-0",
               stats.dominantBg
             )}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium">
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="text-zinc-500 dark:text-zinc-400 text-[11px] font-medium hidden min-[360px]:inline">
               Reading Diet:
             </span>
             <span className={cn("font-bold", stats.dominantColor)}>
@@ -253,26 +253,26 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
             variant="outline"
             size="sm"
             onClick={() => setShareModalOpen(true)}
-            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            className="h-8 px-2.5 rounded-xl text-xs font-semibold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs shrink-0"
           >
-            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+            <Share2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Share Diet</span>
           </Button>
         </div>
       </div>
 
       {/* Visual Proportional Spectrum Bar */}
-      <div className="space-y-2">
-        <div className="relative flex h-7.5 w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 select-none">
+      <div className="space-y-2 w-full min-w-0">
+        <div className="relative flex h-7 sm:h-7.5 w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 select-none min-w-0">
           {/* Left Segment */}
           {stats.leftPct > 0 && (
             <div
-              className="diet-meter-segment flex items-center justify-start bg-blue-600 text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="diet-meter-segment flex items-center justify-start bg-blue-600 text-white px-2 sm:px-2.5 text-[10px] sm:text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300 min-w-0"
               style={{ width: `${stats.leftPct}%` }}
               title={`Left Framing: ${stats.leftPct}%`}
             >
-              {stats.leftPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.leftPct >= 14 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Left {stats.leftPct}%
                 </span>
               )}
@@ -282,12 +282,12 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
           {/* Center Segment */}
           {stats.centerPct > 0 && (
             <div
-              className="diet-meter-segment flex items-center justify-center bg-zinc-400 dark:bg-zinc-600 text-zinc-900 dark:text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="diet-meter-segment flex items-center justify-center bg-zinc-400 dark:bg-zinc-600 text-zinc-900 dark:text-white px-2 sm:px-2.5 text-[10px] sm:text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300 min-w-0"
               style={{ width: `${stats.centerPct}%` }}
               title={`Center / Neutral Framing: ${stats.centerPct}%`}
             >
-              {stats.centerPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.centerPct >= 14 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Center {stats.centerPct}%
                 </span>
               )}
@@ -297,12 +297,12 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
           {/* Right Segment */}
           {stats.rightPct > 0 && (
             <div
-              className="diet-meter-segment flex items-center justify-end bg-red-600 text-white px-2.5 text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300"
+              className="diet-meter-segment flex items-center justify-end bg-red-600 text-white px-2 sm:px-2.5 text-[10px] sm:text-[11px] font-bold overflow-hidden shrink-0 will-change-transform origin-left transition-[width] duration-300 min-w-0"
               style={{ width: `${stats.rightPct}%` }}
               title={`Right Framing: ${stats.rightPct}%`}
             >
-              {stats.rightPct >= 10 && (
-                <span className="whitespace-nowrap drop-shadow-xs">
+              {stats.rightPct >= 14 && (
+                <span className="whitespace-nowrap drop-shadow-xs truncate">
                   Right {stats.rightPct}%
                 </span>
               )}
@@ -311,38 +311,38 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-0.5 gap-2">
-          <div className="flex items-center gap-4 text-[11px]">
-            <div className="flex items-center gap-1.5">
+        <div className="flex flex-col min-[480px]:flex-row min-[480px]:items-center justify-between text-xs text-zinc-600 dark:text-zinc-400 pt-0.5 gap-1.5 sm:gap-2 w-full min-w-0">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-[11px] min-w-0">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-600 shrink-0" />
               <span>Left ({stats.leftPct}%)</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-zinc-400 dark:bg-zinc-600 shrink-0" />
               <span>Center ({stats.centerPct}%)</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 shrink-0">
               <span className="w-2.5 h-2.5 rounded-full bg-red-600 shrink-0" />
               <span>Right ({stats.rightPct}%)</span>
             </div>
           </div>
-          <div className="text-[11px] text-zinc-500 dark:text-zinc-500 font-medium">
+          <div className="text-[11px] text-zinc-500 dark:text-zinc-500 font-medium shrink-0">
             Calculated across your saved stories
           </div>
         </div>
       </div>
 
       {/* Metric Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 pt-1 w-full min-w-0">
         {/* Left Stories Card */}
-        <div className="diet-metric-card p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="diet-metric-card p-3 sm:p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Left-Framed
             </span>
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
+            <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-blue-600 dark:text-blue-400 mt-1">
+          <div className="text-base font-extrabold text-blue-600 dark:text-blue-400 mt-1 truncate">
             {stats.leftCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.leftPct}%)
@@ -351,14 +351,14 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
         </div>
 
         {/* Center Stories Card */}
-        <div className="diet-metric-card p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="diet-metric-card p-3 sm:p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Center / Balanced
             </span>
-            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-600" />
+            <span className="w-2 h-2 rounded-full bg-zinc-400 dark:bg-zinc-600 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-zinc-700 dark:text-zinc-300 mt-1">
+          <div className="text-base font-extrabold text-zinc-700 dark:text-zinc-300 mt-1 truncate">
             {stats.centerCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.centerPct}%)
@@ -367,14 +367,14 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
         </div>
 
         {/* Right Stories Card */}
-        <div className="diet-metric-card p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="diet-metric-card p-3 sm:p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Right-Framed
             </span>
-            <span className="w-2 h-2 rounded-full bg-red-500" />
+            <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-red-600 dark:text-red-400 mt-1">
+          <div className="text-base font-extrabold text-red-600 dark:text-red-400 mt-1 truncate">
             {stats.rightCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               ({stats.rightPct}%)
@@ -383,14 +383,14 @@ export function SavedDietMeter({ bookmarks, className }: SavedDietMeterProps) {
         </div>
 
         {/* Publisher Diversity Card */}
-        <div className="diet-metric-card p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="diet-metric-card p-3 sm:p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800/80 min-w-0">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 truncate">
               Publisher Diversity
             </span>
-            <Newspaper className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500" />
+            <Newspaper className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 shrink-0" />
           </div>
-          <div className="text-base font-extrabold text-[var(--text-primary)] mt-1">
+          <div className="text-base font-extrabold text-[var(--text-primary)] mt-1 truncate">
             {stats.uniqueSourcesCount}{" "}
             <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
               {stats.uniqueSourcesCount === 1 ? "source" : "sources"}

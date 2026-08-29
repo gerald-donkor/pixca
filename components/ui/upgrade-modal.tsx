@@ -49,7 +49,7 @@ export function UpgradeModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] p-6 gap-5">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[500px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[90vh] overflow-y-auto">
         <DialogHeader className="space-y-2 text-left">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">

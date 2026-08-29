@@ -231,55 +231,55 @@ export default function SavedArticlesPage() {
     bookmarks.length >= entitlements.maxBookmarks;
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)]">
+    <div className="min-h-screen bg-[var(--surface)] text-[var(--text-primary)] w-full min-w-0 max-w-full overflow-x-clip">
       <main
         ref={containerRef}
-        className="container mx-auto max-w-[1400px] px-6 py-8 space-y-8"
+        className="container mx-auto max-w-[1400px] px-4 sm:px-6 py-6 sm:py-8 space-y-6 sm:space-y-8 w-full min-w-0 max-w-full"
       >
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[var(--border)]">
-          <div className="space-y-1">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 sm:pb-6 border-b border-[var(--border)] w-full min-w-0">
+          <div className="space-y-1.5 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                 <Bookmark className="w-4 h-4 fill-current" />
               </div>
-              <h1 className="text-[28px] font-extrabold tracking-tight text-[var(--text-primary)]">
+              <h1 className="text-2xl sm:text-[28px] font-extrabold tracking-tight text-[var(--text-primary)]">
                 Saved Articles
               </h1>
               {bookmarks.length > 0 && (
-                <span className="text-xs font-bold px-2 py-0.5 bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-full">
+                <span className="text-xs font-bold px-2 py-0.5 bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-full shrink-0">
                   {bookmarks.length} {bookmarks.length === 1 ? "article" : "articles"}
                 </span>
               )}
               {/* Plan Quota Badge */}
               {entitlements.tier === "free" ? (
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full">
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 rounded-full shrink-0">
                   Free: {bookmarks.length} / 5
                 </span>
               ) : entitlements.tier === "starter" ? (
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full">
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 rounded-full shrink-0">
                   Starter: {bookmarks.length} / 25
                 </span>
               ) : (
-                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-full">
+                <span className="text-[11px] font-semibold px-2.5 py-0.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 rounded-full shrink-0">
                   Pro: Unlimited
                 </span>
               )}
             </div>
-            <p className="text-xs text-[var(--text-secondary)] font-medium">
+            <p className="text-xs text-[var(--text-secondary)] font-medium leading-relaxed">
               Your personal library of bookmarked stories and intelligence analyses
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
             {isAtLimit && (
               <Button
                 variant="default"
                 onClick={() => setUpgradeModalOpen(true)}
-                className="text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 h-9 px-3.5 rounded-lg shadow-xs cursor-pointer flex items-center gap-1.5"
+                className="text-xs font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 h-9 px-3.5 rounded-lg shadow-xs cursor-pointer flex items-center justify-center gap-1.5 flex-1 sm:flex-initial"
               >
-                <Sparkles className="w-3.5 h-3.5" />
-                Upgrade for Unlimited
+                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">Upgrade for Unlimited</span>
               </Button>
             )}
 
@@ -287,10 +287,10 @@ export default function SavedArticlesPage() {
               <Button
                 variant="outline"
                 onClick={() => setClearDialogOpen(true)}
-                className="text-xs font-semibold text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 h-9 px-3.5 rounded-lg transition-colors cursor-pointer"
+                className="text-xs font-semibold text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700 h-9 px-3.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center flex-1 sm:flex-initial"
               >
-                <Trash2 className="w-3.5 h-3.5 mr-1.5" />
-                Clear all
+                <Trash2 className="w-3.5 h-3.5 mr-1.5 shrink-0" />
+                <span>Clear all</span>
               </Button>
             )}
           </div>
@@ -298,12 +298,12 @@ export default function SavedArticlesPage() {
 
         {/* Empty State when no bookmarks at all */}
         {bookmarks.length === 0 ? (
-          <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-12 text-center space-y-6 max-w-lg mx-auto my-12">
-            <div className="mx-auto w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 shadow-inner">
-              <Bookmark className="h-8 w-8" />
+          <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-6 sm:p-12 text-center space-y-5 sm:space-y-6 max-w-lg mx-auto my-8 sm:my-12 w-full min-w-0">
+            <div className="mx-auto w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 shadow-inner shrink-0">
+              <Bookmark className="h-7 w-7 sm:h-8 sm:w-8" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-lg font-bold text-[var(--text-primary)] tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-[var(--text-primary)] tracking-tight">
                 No saved articles yet
               </h2>
               <p className="text-xs text-[var(--text-secondary)] leading-relaxed font-medium">
@@ -311,20 +311,20 @@ export default function SavedArticlesPage() {
               </p>
             </div>
             <div>
-              <Link href="/">
+              <Link href="/" className="inline-block w-full sm:w-auto">
                 <Button
                   variant="default"
-                  className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 px-5 rounded-lg shadow-sm cursor-pointer"
+                  className="w-full sm:w-auto bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 px-5 rounded-lg shadow-sm cursor-pointer"
                 >
-                  <Compass className="w-4 h-4 mr-2" />
-                  Discover Top Stories
-                  <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
+                  <Compass className="w-4 h-4 mr-2 shrink-0" />
+                  <span>Discover Top Stories</span>
+                  <ArrowRight className="w-3.5 h-3.5 ml-1.5 shrink-0" />
                 </Button>
               </Link>
             </div>
           </div>
         ) : (
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8 w-full min-w-0">
             {/* Personal Reading Diet & Perspective Balance Meter */}
             <SavedDietMeter bookmarks={bookmarks} />
 
@@ -346,8 +346,8 @@ export default function SavedArticlesPage() {
 
             {/* Filtered Empty State */}
             {filteredBookmarks.length === 0 ? (
-              <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-10 text-center space-y-4 max-w-md mx-auto my-8">
-                <div className="mx-auto w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500">
+              <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs p-6 sm:p-10 text-center space-y-4 max-w-md mx-auto my-6 sm:my-8 w-full min-w-0">
+                <div className="mx-auto w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500 shrink-0">
                   <RotateCcw className="h-6 w-6" />
                 </div>
                 <div className="space-y-1.5">
@@ -362,7 +362,7 @@ export default function SavedArticlesPage() {
                   <Button
                     variant="outline"
                     onClick={handleResetFilters}
-                    className="text-xs font-semibold h-9 px-4 rounded-lg cursor-pointer"
+                    className="text-xs font-semibold h-9 px-4 rounded-lg cursor-pointer w-full sm:w-auto"
                   >
                     Reset all filters
                   </Button>
@@ -370,7 +370,7 @@ export default function SavedArticlesPage() {
               </div>
             ) : (
               /* Bookmarked Articles Grid */
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 w-full min-w-0">
                 {filteredBookmarks.map((item) => {
                   const hasBias =
                     item.left_percentage !== undefined &&
@@ -384,12 +384,12 @@ export default function SavedArticlesPage() {
                         if (el) cardRefs.current.set(item.id, el);
                         else cardRefs.current.delete(item.id);
                       }}
-                      className="saved-card-item h-full flex flex-col bg-card rounded-xl border border-[var(--border)] shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700"
+                      className="saved-card-item h-full flex flex-col bg-card rounded-xl border border-[var(--border)] shadow-xs overflow-hidden transition-all duration-200 hover:shadow-md hover:border-zinc-300 dark:hover:border-zinc-700 w-full min-w-0"
                     >
                       {/* Thumbnail Image Container */}
                       <Link
                         href={`/article/${item.id}`}
-                        className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden block group"
+                        className="relative aspect-video w-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden block group min-w-0"
                       >
                         {item.image_url ? (
                           <Image
@@ -406,14 +406,14 @@ export default function SavedArticlesPage() {
                           </div>
                         )}
                         {/* Source Pill */}
-                        <div className="absolute top-3 left-3">
-                          <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/75 backdrop-blur-xs text-white rounded-md">
+                        <div className="absolute top-3 left-3 max-w-[calc(100%-6rem)] min-w-0">
+                          <span className="inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-black/75 backdrop-blur-xs text-white rounded-md truncate max-w-full">
                             {item.source_name}
                           </span>
                         </div>
                         {/* Perspective Lean Pill if available */}
                         {item.bias_label && (
-                          <div className="absolute top-3 right-3">
+                          <div className="absolute top-3 right-3 shrink-0">
                             <span
                               className={cn(
                                 "px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider backdrop-blur-xs rounded-md shadow-xs",
@@ -431,22 +431,22 @@ export default function SavedArticlesPage() {
                       </Link>
 
                       {/* Content Section */}
-                      <div className="p-5 flex flex-col justify-between flex-1 gap-4">
-                        <div className="space-y-2.5">
+                      <div className="p-4 sm:p-5 flex flex-col justify-between flex-1 gap-3.5 sm:gap-4 min-w-0">
+                        <div className="space-y-2.5 min-w-0">
                           <div className="text-[11px] text-[var(--text-secondary)] font-medium">
                             {item.saved_at
                               ? `Saved ${formatArticleDate(item.saved_at)}`
                               : "Saved recently"}
                           </div>
-                          <Link href={`/article/${item.id}`} className="block group">
-                            <h2 className="text-base font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug">
+                          <Link href={`/article/${item.id}`} className="block group min-w-0">
+                            <h2 className="text-sm sm:text-base font-bold text-[var(--text-primary)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 leading-snug break-words">
                               {item.title}
                             </h2>
                           </Link>
 
                           {/* Bias Meter if percentages available */}
                           {hasBias && (
-                            <div className="pt-1">
+                            <div className="pt-1 w-full min-w-0">
                               <BiasMeter
                                 leftValue={item.left_percentage!}
                                 centerValue={item.center_percentage!}
@@ -458,10 +458,10 @@ export default function SavedArticlesPage() {
                         </div>
 
                         {/* Actions & Perspective Footer */}
-                        <div className="pt-3 border-t border-[var(--border)] flex flex-col gap-2">
-                          <div className="flex items-center justify-between gap-2">
+                        <div className="pt-3 border-t border-[var(--border)] flex flex-col gap-2 min-w-0">
+                          <div className="flex flex-wrap items-center justify-between gap-2 min-w-0">
                             {/* Analysis metadata badges */}
-                            <div className="flex items-center gap-2 text-caption">
+                            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 min-w-0">
                               {item.sentiment_label && (
                                 <span
                                   className={cn(
@@ -484,7 +484,7 @@ export default function SavedArticlesPage() {
                               )}
                             </div>
 
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 shrink-0 ml-auto">
                               <Link
                                 href={`/article/${item.id}`}
                                 className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
@@ -517,25 +517,25 @@ export default function SavedArticlesPage() {
 
       {/* Clear All Confirmation Dialog */}
       <Dialog open={clearDialogOpen} onOpenChange={setClearDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-md p-4 sm:p-6 gap-4">
           <DialogHeader>
             <DialogTitle>Clear all saved articles?</DialogTitle>
             <DialogDescription>
               This will remove all {bookmarks.length} bookmarked stories from your personal reading list on this device. This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
-          <DialogFooter className="mt-4">
+          <DialogFooter className="mt-4 flex-col-reverse sm:flex-row gap-2">
             <Button
               variant="outline"
               onClick={() => setClearDialogOpen(false)}
-              className="text-xs font-semibold cursor-pointer"
+              className="w-full sm:w-auto text-xs font-semibold cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               variant="default"
               onClick={handleConfirmClear}
-              className="bg-red-600 hover:bg-red-700 text-white font-bold text-xs cursor-pointer"
+              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold text-xs cursor-pointer"
             >
               Clear All
             </Button>
