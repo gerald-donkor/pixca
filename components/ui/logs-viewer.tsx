@@ -254,50 +254,50 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
   const isHealthy = health.status === "connected";
 
   return (
-    <div ref={containerRef} className="space-y-6">
+    <div ref={containerRef} className="w-full min-w-0 space-y-6">
       {/* Top Health Status & Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="w-full min-w-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Metric 1: System Status */}
-        <div className="p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
-          <div className="flex items-center justify-between">
+        <div className="w-full min-w-0 p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-[var(--text-secondary)]">
               Overall Status
             </span>
             <div
               className={cn(
-                "w-2.5 h-2.5 rounded-full",
+                "shrink-0 w-2.5 h-2.5 rounded-full",
                 isHealthy
                   ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"
                   : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]"
               )}
             />
           </div>
-          <div>
-            <div className="text-lg font-bold text-[var(--text-primary)]">
+          <div className="min-w-0">
+            <div className="text-lg font-bold text-[var(--text-primary)] truncate">
               {isHealthy ? "Operational" : "Degraded"}
             </div>
-            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5 break-words">
               {isHealthy ? "All services healthy" : health.error || "System warning"}
             </div>
           </div>
         </div>
 
         {/* Metric 2: Database Connectivity */}
-        <div className="p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
-          <div className="flex items-center justify-between">
+        <div className="w-full min-w-0 p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-[var(--text-secondary)]">
               Database
             </span>
-            <Database className="w-4 h-4 text-blue-500" />
+            <Database className="shrink-0 w-4 h-4 text-blue-500" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-lg font-bold text-[var(--text-primary)]">
                 Supabase
               </span>
               <span
                 className={cn(
-                  "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider",
+                  "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0",
                   isHealthy
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
                     : "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20"
@@ -306,22 +306,22 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
                 {health.status}
               </span>
             </div>
-            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5 break-words">
               PostgreSQL & pgvector
             </div>
           </div>
         </div>
 
         {/* Metric 3: Round-Trip Latency */}
-        <div className="p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
-          <div className="flex items-center justify-between">
+        <div className="w-full min-w-0 p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-[var(--text-secondary)]">
               Query Latency
             </span>
-            <Activity className="w-4 h-4 text-purple-500" />
+            <Activity className="shrink-0 w-4 h-4 text-purple-500" />
           </div>
-          <div>
-            <div className="flex items-baseline gap-1.5">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-baseline gap-1.5">
               <span className="text-lg font-bold text-[var(--text-primary)]">
                 {health.latencyMs}
               </span>
@@ -330,7 +330,7 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               </span>
               <span
                 className={cn(
-                  "ml-auto text-[10px] font-bold px-2 py-0.5 rounded-md",
+                  "ml-auto text-[10px] font-bold px-2 py-0.5 rounded-md shrink-0",
                   health.latencyMs < 60
                     ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                     : health.latencyMs < 200
@@ -345,25 +345,25 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
                   : "Elevated"}
               </span>
             </div>
-            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5 break-words">
               Probe round-trip time
             </div>
           </div>
         </div>
 
         {/* Metric 4: Active News Sources */}
-        <div className="p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
-          <div className="flex items-center justify-between">
+        <div className="w-full min-w-0 p-4 rounded-xl bg-card border border-[var(--border)] shadow-xs flex flex-col justify-between gap-3">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-[var(--text-secondary)]">
               Active Sources
             </span>
-            <Radio className="w-4 h-4 text-emerald-500" />
+            <Radio className="shrink-0 w-4 h-4 text-emerald-500" />
           </div>
-          <div>
-            <div className="text-lg font-bold text-[var(--text-primary)]">
+          <div className="min-w-0">
+            <div className="text-lg font-bold text-[var(--text-primary)] truncate">
               {health.activeSources ?? "—"}
             </div>
-            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5">
+            <div className="text-xs text-[var(--text-secondary)] font-medium mt-0.5 break-words">
               Monitored publications
             </div>
           </div>
@@ -371,23 +371,23 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
       </div>
 
       {/* Main Logs Card Container */}
-      <div className="bg-card rounded-2xl border border-[var(--border)] shadow-xs overflow-hidden">
+      <div className="w-full min-w-0 bg-card rounded-2xl border border-[var(--border)] shadow-xs overflow-hidden">
         {/* Controls Toolbar: Filters, Search, and Refresh Action */}
-        <div className="p-4 sm:p-5 border-b border-[var(--border)] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="p-3.5 sm:p-5 border-b border-[var(--border)] flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4">
           {/* Level Filter Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0">
+          <div className="w-full lg:w-auto min-w-0 flex items-center gap-1.5 overflow-x-auto pb-1.5 lg:pb-0 scrollbar-none">
             <button
               type="button"
               onClick={() => setFilterLevel("all")}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
                 filterLevel === "all"
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-xs"
                   : "bg-muted text-text-secondary hover:text-text-primary hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
               <span>All Logs</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-white/20 dark:bg-black/20">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20 dark:bg-black/20">
                 {counts.total}
               </span>
             </button>
@@ -396,15 +396,15 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               type="button"
               onClick={() => setFilterLevel("info")}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
                 filterLevel === "info"
                   ? "bg-blue-600 text-white shadow-xs"
                   : "bg-muted text-text-secondary hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
-              <Info className="w-3.5 h-3.5" />
+              <Info className="w-3.5 h-3.5 shrink-0" />
               <span>Info</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-white/20">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20">
                 {counts.info}
               </span>
             </button>
@@ -413,15 +413,15 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               type="button"
               onClick={() => setFilterLevel("warn")}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
                 filterLevel === "warn"
                   ? "bg-amber-600 text-white shadow-xs"
                   : "bg-muted text-text-secondary hover:text-amber-600 dark:hover:text-amber-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
-              <AlertTriangle className="w-3.5 h-3.5" />
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
               <span>Warn</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-white/20">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20">
                 {counts.warn}
               </span>
             </button>
@@ -430,24 +430,24 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               type="button"
               onClick={() => setFilterLevel("error")}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
+                "shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5",
                 filterLevel === "error"
                   ? "bg-red-600 text-white shadow-xs"
                   : "bg-muted text-text-secondary hover:text-red-600 dark:hover:text-red-400 hover:bg-zinc-200 dark:hover:bg-zinc-800"
               )}
             >
-              <AlertCircle className="w-3.5 h-3.5" />
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
               <span>Error</span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-white/20">
+              <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-white/20">
                 {counts.error}
               </span>
             </button>
           </div>
 
           {/* Search Bar & Auto-Refresh Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div className="w-full lg:w-auto min-w-0 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3">
             {/* Search Input */}
-            <div className="relative flex-1 sm:w-64">
+            <div className="relative w-full sm:w-64 min-w-0">
               <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
               <input
                 type="text"
@@ -455,12 +455,13 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search messages & context..."
                 aria-label="Search messages and context"
-                className="w-full h-8.5 pl-8.5 pr-8 bg-zinc-50 dark:bg-zinc-900 border border-[var(--border)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full h-9 sm:h-8.5 pl-8.5 pr-8 bg-zinc-50 dark:bg-zinc-900 border border-[var(--border)] rounded-lg text-xs text-[var(--text-primary)] placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
+                  aria-label="Clear search query"
                   className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
@@ -468,43 +469,45 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               )}
             </div>
 
-            {/* Live Auto-Refresh Toggle */}
-            <button
-              type="button"
-              onClick={() => setAutoRefresh((prev) => !prev)}
-              className={cn(
-                "h-8.5 px-3 rounded-lg text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer border",
-                autoRefresh
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-                  : "bg-muted text-[var(--text-secondary)] border-[var(--border)] hover:text-[var(--text-primary)]"
-              )}
-              title={autoRefresh ? "Live polling active (10s)" : "Enable live polling"}
-            >
-              <span
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
+              {/* Live Auto-Refresh Toggle */}
+              <button
+                type="button"
+                onClick={() => setAutoRefresh((prev) => !prev)}
                 className={cn(
-                  "w-1.5 h-1.5 rounded-full",
-                  autoRefresh ? "bg-emerald-500 animate-ping" : "bg-zinc-400"
+                  "flex-1 sm:flex-initial h-9 sm:h-8.5 px-3 rounded-lg text-xs font-semibold transition-colors flex items-center justify-center gap-1.5 cursor-pointer border min-w-0",
+                  autoRefresh
+                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                    : "bg-muted text-[var(--text-secondary)] border-[var(--border)] hover:text-[var(--text-primary)]"
                 )}
-              />
-              <span>{autoRefresh ? "Live: 10s" : "Auto-Refresh"}</span>
-            </button>
+                title={autoRefresh ? "Live polling active (10s)" : "Enable live polling"}
+              >
+                <span
+                  className={cn(
+                    "shrink-0 w-1.5 h-1.5 rounded-full",
+                    autoRefresh ? "bg-emerald-500 animate-ping" : "bg-zinc-400"
+                  )}
+                />
+                <span className="truncate">{autoRefresh ? "Live: 10s" : "Auto-Refresh"}</span>
+              </button>
 
-            {/* Manual Refresh Button */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchFreshData(true)}
-              disabled={isRefreshing}
-              className="h-8.5 px-3 text-xs font-semibold border-[var(--border)] cursor-pointer"
-            >
-              <RefreshCw
-                className={cn(
-                  "w-3.5 h-3.5 mr-1.5",
-                  isRefreshing && "animate-spin text-blue-600 dark:text-blue-400"
-                )}
-              />
-              <span>Refresh</span>
-            </Button>
+              {/* Manual Refresh Button */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchFreshData(true)}
+                disabled={isRefreshing}
+                className="flex-1 sm:flex-initial h-9 sm:h-8.5 px-3 text-xs font-semibold border-[var(--border)] cursor-pointer min-w-0"
+              >
+                <RefreshCw
+                  className={cn(
+                    "shrink-0 w-3.5 h-3.5 mr-1.5",
+                    isRefreshing && "animate-spin text-blue-600 dark:text-blue-400"
+                  )}
+                />
+                <span className="truncate">Refresh</span>
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -517,16 +520,16 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
         </div>
 
         {/* Logs Feed List */}
-        <div className="divide-y divide-[var(--border)] max-h-[640px] overflow-y-auto font-mono text-xs">
+        <div className="w-full min-w-0 divide-y divide-[var(--border)] max-h-[640px] overflow-y-auto font-mono text-xs">
           {filteredLogs.length === 0 ? (
-            <div className="p-12 text-center space-y-3 font-sans">
+            <div className="p-8 sm:p-12 text-center space-y-3 font-sans w-full min-w-0 max-w-full">
               <div className="mx-auto w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
                 <SlidersHorizontal className="w-6 h-6" />
               </div>
               <div className="text-sm font-bold text-[var(--text-primary)]">
                 No logs match your filter
               </div>
-              <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto">
+              <p className="text-xs text-[var(--text-secondary)] max-w-sm mx-auto break-words">
                 {searchQuery
                   ? `No entries found for "${searchQuery}". Try changing your search keywords.`
                   : "No events logged for this severity level yet."}
@@ -542,55 +545,59 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               return (
                 <div
                   key={log.id}
-                  className="log-row-item p-4 sm:px-5 hover:bg-zinc-50/75 dark:hover:bg-zinc-900/50 transition-colors flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-center gap-2 group"
+                  className="log-row-item w-full min-w-0 p-3.5 sm:p-4 md:px-5 hover:bg-zinc-50/75 dark:hover:bg-zinc-900/50 transition-colors flex flex-col md:grid md:grid-cols-12 md:gap-4 md:items-center gap-2 sm:gap-2.5 group"
                 >
-                  {/* Column 1: Time */}
-                  <div className="col-span-2 flex md:flex-col items-center md:items-start justify-between text-[11px] text-[var(--text-secondary)]">
-                    <span className="font-semibold text-[var(--text-primary)]" title={formatFullDate(log.created_at)}>
-                      {formatLogTime(log.created_at)}
-                    </span>
-                    <span className="text-[10px] text-zinc-400">
-                      {new Date(log.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </span>
-                  </div>
+                  {/* Column 1 & 2 wrapper for mobile flex, unpacked by md:contents on desktop */}
+                  <div className="w-full min-w-0 flex items-center justify-between md:contents">
+                    {/* Column 1: Time */}
+                    <div className="col-span-2 flex md:flex-col items-center md:items-start gap-1.5 md:gap-0 text-[11px] text-[var(--text-secondary)] min-w-0">
+                      <span className="font-semibold text-[var(--text-primary)]" title={formatFullDate(log.created_at)}>
+                        {formatLogTime(log.created_at)}
+                      </span>
+                      <span className="text-[10px] text-zinc-400">
+                        {new Date(log.created_at).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </span>
+                    </div>
 
-                  {/* Column 2: Level Badge */}
-                  <div className="col-span-2">
-                    {log.level === "info" && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-sans">
-                        <Info className="w-3 h-3" />
-                        <span>INFO</span>
-                      </span>
-                    )}
-                    {log.level === "warn" && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-sans">
-                        <AlertTriangle className="w-3 h-3" />
-                        <span>WARN</span>
-                      </span>
-                    )}
-                    {log.level === "error" && (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-sans">
-                        <AlertCircle className="w-3 h-3" />
-                        <span>ERROR</span>
-                      </span>
-                    )}
+                    {/* Column 2: Level Badge */}
+                    <div className="col-span-2 shrink-0">
+                      {log.level === "info" && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-sans">
+                          <Info className="w-3 h-3 shrink-0" />
+                          <span>INFO</span>
+                        </span>
+                      )}
+                      {log.level === "warn" && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-sans">
+                          <AlertTriangle className="w-3 h-3 shrink-0" />
+                          <span>WARN</span>
+                        </span>
+                      )}
+                      {log.level === "error" && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 font-sans">
+                          <AlertCircle className="w-3 h-3 shrink-0" />
+                          <span>ERROR</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Column 3: Message Text */}
-                  <div className="col-span-6 break-words font-sans text-xs text-[var(--text-primary)] font-medium leading-relaxed">
+                  <div className="col-span-6 w-full min-w-0 break-words font-sans text-xs text-[var(--text-primary)] font-medium leading-relaxed">
                     {log.message}
                   </div>
 
                   {/* Column 4: Context Button */}
-                  <div className="col-span-2 flex items-center justify-end">
+                  <div className="col-span-2 w-full md:w-auto flex items-center justify-between md:justify-end gap-2 pt-1 md:pt-0 border-t border-[var(--border)]/40 md:border-t-0">
+                    <span className="md:hidden text-[10px] text-zinc-400 font-sans">Context</span>
                     {hasContext ? (
                       <button
                         type="button"
                         onClick={() => setSelectedLog(log)}
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer font-sans"
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer font-sans shrink-0"
                       >
                         <span>JSON</span>
                         <span className="text-[10px] opacity-60">
@@ -598,7 +605,7 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
                         </span>
                       </button>
                     ) : (
-                      <span className="text-[11px] text-zinc-400 italic font-sans">
+                      <span className="text-[11px] text-zinc-400 italic font-sans shrink-0">
                         No context
                       </span>
                     )}
@@ -610,13 +617,13 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
         </div>
 
         {/* Footer Summary Strip */}
-        <div className="p-3.5 bg-zinc-50/50 dark:bg-zinc-900/40 border-t border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[var(--text-secondary)] font-medium">
-          <div>
+        <div className="p-3.5 sm:px-5 bg-zinc-50/50 dark:bg-zinc-900/40 border-t border-[var(--border)] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-[var(--text-secondary)] font-medium">
+          <div className="min-w-0 truncate">
             Showing {filteredLogs.length} of {logs.length} logged events
           </div>
-          <div className="flex items-center gap-1.5 text-[11px]">
-            <Clock className="w-3.5 h-3.5 text-zinc-400" />
-            <span>
+          <div className="flex items-center gap-1.5 text-[11px] shrink-0">
+            <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+            <span className="truncate">
               Last refreshed at {lastRefreshedAt.toLocaleTimeString()}
             </span>
           </div>
@@ -625,16 +632,16 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
 
       {/* Expandable JSON Context Inspector Dialog */}
       <Dialog open={selectedLog !== null} onOpenChange={(open) => !open && setSelectedLog(null)}>
-        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
-          <DialogHeader>
-            <div className="flex items-center gap-2">
+        <DialogContent className="w-[calc(100vw-2rem)] sm:w-full max-w-2xl max-h-[85vh] p-4 sm:p-6 flex flex-col overflow-hidden">
+          <DialogHeader className="space-y-2 pr-6">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
                 Log Inspector
               </span>
               {selectedLog && (
                 <span
                   className={cn(
-                    "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase",
+                    "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase shrink-0",
                     selectedLog.level === "info" && "bg-blue-500/10 text-blue-600 dark:text-blue-400",
                     selectedLog.level === "warn" && "bg-amber-500/10 text-amber-600 dark:text-amber-400",
                     selectedLog.level === "error" && "bg-red-500/10 text-red-600 dark:text-red-400"
@@ -644,27 +651,27 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
                 </span>
               )}
             </div>
-            <DialogTitle className="text-base font-bold text-[var(--text-primary)]">
+            <DialogTitle className="text-sm sm:text-base font-bold text-[var(--text-primary)] break-words leading-snug">
               {selectedLog?.message}
             </DialogTitle>
-            <DialogDescription className="text-xs font-mono text-[var(--text-secondary)]">
+            <DialogDescription className="text-xs font-mono text-[var(--text-secondary)] break-all">
               ID: {selectedLog?.id} • {selectedLog && formatFullDate(selectedLog.created_at)}
             </DialogDescription>
           </DialogHeader>
 
           {/* Context JSON Viewer */}
-          <div className="flex-1 overflow-y-auto my-2 rounded-xl bg-zinc-950 p-4 border border-zinc-800 font-mono text-xs text-zinc-200">
-            <pre className="whitespace-pre-wrap break-all leading-relaxed">
+          <div className="flex-1 overflow-y-auto overflow-x-auto my-2 rounded-xl bg-zinc-950 p-3 sm:p-4 border border-zinc-800 font-mono text-xs text-zinc-200 min-w-0 max-w-full">
+            <pre className="whitespace-pre-wrap break-all leading-relaxed font-mono">
               {selectedLog?.context ? JSON.stringify(selectedLog.context, null, 2) : "{}"}
             </pre>
           </div>
 
-          <DialogFooter className="mt-2 flex items-center justify-between sm:justify-between">
+          <DialogFooter className="mt-2 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleCopyJson(selectedLog?.context ?? null)}
-              className="text-xs font-semibold cursor-pointer"
+              className="w-full sm:w-auto text-xs font-semibold cursor-pointer justify-center"
             >
               {hasCopied ? (
                 <>
@@ -682,7 +689,7 @@ export function LogsViewer({ initialLogs, initialHealth }: LogsViewerProps) {
               variant="default"
               size="sm"
               onClick={() => setSelectedLog(null)}
-              className="text-xs font-bold bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 cursor-pointer"
+              className="w-full sm:w-auto text-xs font-bold bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 cursor-pointer justify-center"
             >
               Close
             </Button>
