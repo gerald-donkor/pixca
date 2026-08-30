@@ -21,9 +21,9 @@ export default function Loading() {
       </div>
 
       {/* Main Body Container */}
-      <main className="container mx-auto max-w-[1400px] w-full min-w-0 px-4 sm:px-6 py-6 sm:py-8 space-y-6">
+      <main className="container mx-auto max-w-[1400px] w-full min-w-0 max-w-full px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {/* Page Heading & Search/Filters Skeleton */}
-        <div className="space-y-4 min-w-0">
+        <div className="space-y-4 min-w-0 w-full">
           <div className="space-y-1.5 min-w-0">
             <div className="h-8 w-40 sm:w-48 bg-zinc-200 dark:bg-zinc-800 rounded-md animate-pulse max-w-full" />
             <div className="h-4 w-60 sm:w-80 bg-zinc-200 dark:bg-zinc-800 rounded-md animate-pulse max-w-full" />
