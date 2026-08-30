@@ -503,13 +503,13 @@ ${currentUrl}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[540px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[540px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[calc(100dvh-2rem)] overflow-y-auto min-w-0">
+        <DialogHeader className="pr-8 space-y-1.5 min-w-0">
+          <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2 break-words">
             <Share2 className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0" />
             <span className="truncate">Share Reading Diet</span>
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm">
+          <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400 break-words">
             Share your balanced news perspective insights and publisher diversity with your network.
           </DialogDescription>
         </DialogHeader>
@@ -601,12 +601,12 @@ ${currentUrl}`;
         </div>
 
         {/* Primary Export Actions */}
-        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5 sm:gap-3 w-full">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5 sm:gap-3 w-full min-w-0">
           <Button
             type="button"
             onClick={handleCopySummary}
             className={cn(
-              "text-xs font-semibold h-10 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs w-full",
+              "text-xs font-semibold min-h-[44px] h-auto py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs w-full",
               copied
                 ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                 : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white"
@@ -630,7 +630,7 @@ ${currentUrl}`;
             onClick={handleDownloadImage}
             disabled={downloading}
             variant="outline"
-            className="text-xs font-semibold h-10 rounded-xl flex items-center justify-center gap-2 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer shadow-xs w-full"
+            className="text-xs font-semibold min-h-[44px] h-auto py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer shadow-xs w-full"
           >
             {downloading ? (
               <>
@@ -651,7 +651,7 @@ ${currentUrl}`;
           <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Share to Platform
           </label>
-          <div className="grid grid-cols-2 min-[440px]:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 min-[440px]:grid-cols-4 gap-2 min-w-0">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
@@ -659,8 +659,9 @@ ${currentUrl}`;
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => onOpenChange(false)}
+                aria-label={`Share on ${social.name}`}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer min-w-0",
+                  "flex flex-col items-center justify-center gap-1.5 p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer min-w-0 min-h-[48px]",
                   social.colorClass
                 )}
               >
@@ -675,11 +676,11 @@ ${currentUrl}`;
 
         {/* Native Device Share Option if supported */}
         {canNativeShare && (
-          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center w-full">
+          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center w-full min-w-0">
             <button
               type="button"
               onClick={handleNativeShare}
-              className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5 py-1 px-3 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5 py-2 px-3 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer min-h-[44px]"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span>More sharing options...</span>

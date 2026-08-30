@@ -122,7 +122,7 @@ export function CheckoutModal({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[540px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[90vh] overflow-y-auto min-w-0">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[540px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[calc(100dvh-2rem)] overflow-y-auto min-w-0">
         {status === "success" ? (
           <div className="py-4 sm:py-6 flex flex-col items-center text-center space-y-4 min-w-0">
             <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 animate-in zoom-in-50 duration-300 shrink-0">
@@ -215,7 +215,7 @@ export function CheckoutModal({
                 type="button"
                 onClick={() => setSelectedMethod("momo")}
                 className={cn(
-                  "flex items-center justify-center gap-2 py-2 px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0",
+                  "flex items-center justify-center gap-2 py-2.5 px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0 min-h-[44px]",
                   paymentMethod === "momo"
                     ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200 dark:border-zinc-700"
                     : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
@@ -229,7 +229,7 @@ export function CheckoutModal({
                 type="button"
                 onClick={() => setSelectedMethod("card")}
                 className={cn(
-                  "flex items-center justify-center gap-2 py-2 px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0",
+                  "flex items-center justify-center gap-2 py-2.5 px-2.5 sm:px-3 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0 min-h-[44px]",
                   paymentMethod === "card"
                     ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-xs border border-zinc-200 dark:border-zinc-700"
                     : "text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-200"
@@ -275,7 +275,7 @@ export function CheckoutModal({
                           type="button"
                           onClick={() => setSelectedNetwork(net.id)}
                           className={cn(
-                            "py-2 px-1 sm:px-2 rounded-lg text-[11px] sm:text-xs font-bold text-center border transition-all cursor-pointer truncate",
+                            "min-h-[44px] flex items-center justify-center py-2 px-1 sm:px-2 rounded-lg text-[11px] sm:text-xs font-bold text-center border transition-all cursor-pointer truncate",
                             selectedNetwork === net.id
                               ? "border-amber-500 bg-amber-500/15 text-amber-900 dark:text-amber-200 shadow-xs"
                               : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300"
@@ -395,7 +395,7 @@ export function CheckoutModal({
               <Button
                 type="submit"
                 disabled={status === "processing"}
-                className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs h-10 rounded-lg cursor-pointer transition-all"
+                className="w-full bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white font-bold text-xs min-h-[44px] h-auto py-2.5 px-3 rounded-lg cursor-pointer transition-all"
               >
                 {status === "processing" ? (
                   <span className="flex items-center justify-center gap-2">
@@ -403,7 +403,7 @@ export function CheckoutModal({
                     <span>Authorizing {formattedPrice}...</span>
                   </span>
                 ) : (
-                  <span className="truncate">
+                  <span className="break-words whitespace-normal text-center leading-tight">
                     Pay {formattedPrice} & Subscribe to {planName}
                   </span>
                 )}

@@ -158,62 +158,62 @@ export function ShareModal({ open, onOpenChange, article }: ShareModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[460px] p-6 gap-5">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <Share2 className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[460px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[calc(100dvh-2rem)] overflow-y-auto min-w-0">
+        <DialogHeader className="pr-8 space-y-1.5 min-w-0">
+          <DialogTitle className="text-lg sm:text-xl font-bold flex items-center gap-2 break-words">
+            <Share2 className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0" />
             <span>Share Article</span>
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-xs text-zinc-500 dark:text-zinc-400 break-words">
             Share this news analysis and balanced framing insights with your network.
           </DialogDescription>
         </DialogHeader>
 
         {/* Article Preview Card */}
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden">
+        <div className="flex items-center gap-3 p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden min-w-0">
           {article.image_url ? (
             <img
               src={article.image_url}
               alt={article.title}
-              className="h-14 w-14 rounded-lg object-cover shrink-0 border border-zinc-200 dark:border-zinc-800"
+              className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg object-cover shrink-0 border border-zinc-200 dark:border-zinc-800"
             />
           ) : (
-            <div className="h-14 w-14 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0 text-zinc-500">
+            <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-lg bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center shrink-0 text-zinc-500">
               <Globe className="h-6 w-6" />
             </div>
           )}
-          <div className="min-w-0 flex-1 space-y-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+          <div className="min-w-0 flex-1 space-y-0.5 sm:space-y-1">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 truncate">
               {article.source_name}
             </div>
-            <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-snug">
+            <h4 className="text-xs font-semibold text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-snug break-words">
               {article.title}
             </h4>
           </div>
         </div>
 
         {/* Quick Copy Link Input */}
-        <div className="space-y-1.5">
+        <div className="space-y-1.5 min-w-0">
           <label
             htmlFor="share-article-url"
             className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400"
           >
             Article Link
           </label>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col min-[420px]:flex-row items-stretch min-[420px]:items-center gap-2 min-w-0">
             <input
               id="share-article-url"
               type="text"
               readOnly
               value={shareUrl}
               aria-label="Article link"
-              className="flex-1 text-xs font-mono bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg px-3 py-2 outline-none select-all truncate"
+              className="flex-1 min-w-0 text-xs font-mono bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg px-3 py-2.5 outline-none select-all truncate"
             />
             <Button
               type="button"
               onClick={handleCopyLink}
               className={cn(
-                "shrink-0 text-xs font-semibold px-4 py-2 h-auto rounded-lg transition-all flex items-center gap-1.5 cursor-pointer",
+                "shrink-0 text-xs font-semibold px-4 py-2.5 h-auto rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer min-h-[40px]",
                 copied
                   ? "bg-emerald-600 hover:bg-emerald-700 text-white"
                   : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-white"
@@ -235,11 +235,11 @@ export function ShareModal({ open, onOpenChange, article }: ShareModalProps) {
         </div>
 
         {/* Social Share Grid */}
-        <div className="space-y-2">
+        <div className="space-y-2 min-w-0">
           <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
             Share to Platform
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5 min-w-0">
             {socialLinks.map((social) => {
               const isMailto = social.href.startsWith("mailto:");
               return (
@@ -249,15 +249,16 @@ export function ShareModal({ open, onOpenChange, article }: ShareModalProps) {
                   target={isMailto ? undefined : "_blank"}
                   rel={isMailto ? undefined : "noopener noreferrer"}
                   onClick={() => onOpenChange(false)}
+                  aria-label={`Share on ${social.name}`}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-1.5 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer",
+                    "flex flex-col items-center justify-center gap-1.5 p-2.5 sm:p-3 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-zinc-50/50 dark:bg-zinc-900/40 text-zinc-700 dark:text-zinc-300 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer min-h-[52px] min-w-0",
                     social.colorClass
                   )}
                 >
-                  <div className="p-2 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xs">
+                  <div className="p-1.5 sm:p-2 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-700/50 shadow-xs shrink-0">
                     {social.icon}
                   </div>
-                  <span className="text-[11px] font-semibold">{social.name}</span>
+                  <span className="text-[11px] font-semibold truncate max-w-full">{social.name}</span>
                 </a>
               );
             })}
@@ -266,11 +267,11 @@ export function ShareModal({ open, onOpenChange, article }: ShareModalProps) {
 
         {/* Native Device Share Option */}
         {canNativeShare && (
-          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center">
+          <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-center min-w-0">
             <button
               type="button"
               onClick={handleNativeShare}
-              className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5 py-1 px-3 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer"
+              className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center gap-1.5 py-2 px-3 rounded-md hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer min-h-[44px]"
             >
               <ExternalLink className="h-3.5 w-3.5" />
               <span>More sharing options...</span>

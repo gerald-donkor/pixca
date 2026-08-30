@@ -20,7 +20,7 @@ export interface SubscribeModalProps {
 export function SubscribeModal({ open, onOpenChange }: SubscribeModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[90vh] overflow-y-auto min-w-0">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[480px] p-4 sm:p-6 gap-4 sm:gap-5 max-h-[calc(100dvh-2rem)] overflow-y-auto min-w-0">
         <DialogHeader className="space-y-1.5 sm:space-y-2 min-w-0 pr-8">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shrink-0">
